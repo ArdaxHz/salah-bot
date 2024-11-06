@@ -88,9 +88,6 @@ export function calculateNextSalah(timingsObj) {
         const previousSalah = salaahs[(i + len - 1) % len];
         const nextSalah = salaahs[(i + 1) % len];
 
-        console.log(currentSalah, previousSalah, nextSalah)
-        console.log(currentSalah == 'isha')
-
         if (currentSalah == 'isha') {
             return 'fajr'
         }

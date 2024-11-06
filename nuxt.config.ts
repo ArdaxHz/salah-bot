@@ -7,7 +7,8 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@nuxtjs/color-mode',
-    '@vueuse/nuxt'
+    '@vueuse/nuxt',
+    '@nuxt/icon',
   ],
   i18n: {
     strategy: 'prefix_except_default',
@@ -39,5 +40,11 @@ export default defineNuxtConfig({
     classSuffix: '-mode',
     storage: 'localStorage', // or 'sessionStorage' or 'cookie'
     storageKey: 'nuxt-color-mode'
-  }
+  },
+  runtimeConfig: {
+    public: {
+      SUPABASE_URL: process.env.SUPABASE_URL,
+      SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY
+    }
+  },
 })

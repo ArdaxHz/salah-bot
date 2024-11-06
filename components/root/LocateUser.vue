@@ -1,44 +1,40 @@
 <script setup>
-const emits = defineEmits(['updateUserLocation']);
-const latitude = ref(null);
-const longitude = ref(null);
-
+const emits = defineEmits(['updateUserLocation'])
+const latitude = ref(null)
+const longitude = ref(null)
 
 function getCurrentLocation() {
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition((position) => {
-            latitude.value = position.coords.latitude
-            longitude.value = position.coords.longitude
+  if ('geolocation' in navigator) {
+    navigator.geolocation.getCurrentPosition((position) => {
+      latitude.value = position.coords.latitude
+      longitude.value = position.coords.longitude
 
-            console.log(latitude.value, longitude.value)
-            emitLocation()
-        },
-            (error) => {
-                console.log(error)
-                emitLocation()
-            },
-            { enableHighAccuracy: true }
-        )
-    }
+      console.log(latitude.value, longitude.value)
+      emitLocation()
+    }, (error) => {
+      console.log(error)
+      emitLocation()
+    }, { enableHighAccuracy: true })
+  }
 }
 
 function emitLocation() {
-    emits('updateUserLocation', {
-        latitude: latitude.value,
-        longitude: longitude.value
-    })
+  emits('updateUserLocation', {
+    latitude: latitude.value,
+    longitude: longitude.value
+  })
 }
 
 onMounted(() => {
-    getCurrentLocation()
+  getCurrentLocation()
 })
 </script>
 
 <template>
-    <button @click="getCurrentLocation">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-        </svg>
-    </button>
+  <button @click="getCurrentLocation">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+    </svg>
+  </button>
 </template>
