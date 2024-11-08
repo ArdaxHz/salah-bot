@@ -47,7 +47,7 @@ watch(() => props.expandedMenuVal, (newValue, _) => {
           <NuxtLink class="menu-item" :class="`${is_expanded ? 'menu-item-expanded ' : ''}`" to="/settings">
             <Icon name="mdi:cog-outline" size="1.75rem" class="text-black dark:text-white" /> <span class="menu-item-text" :class="`${is_expanded ? 'flex' : 'hidden'}`">Settings</span>
           </NuxtLink>
-          <RootThemeSelector class="grow w-100" :class="`${is_expanded ? 'rotate-0' : '-rotate-90'}`" :is_expanded="is_expanded" />
+          <RootThemeSelector class="grow w-100 " :class="`${is_expanded ? 'rotate-0' : '-rotate-90'}`" :is_expanded="is_expanded" />
         </div>
       </div>
     </div>
@@ -88,99 +88,97 @@ watch(() => props.expandedMenuVal, (newValue, _) => {
     }
 }
 
-aside {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--dark);
-    color: var(--light);
+.sidebar {
+  display: flex;
+  flex-direction: column;
 
-    box-shadow: 4px 0 2px -2px;
+  box-shadow: 4px 0 2px -2px;
 
-    min-width: var(--sidebar-width-collapse);
-    max-width: var(--sidebar-width-collapse);
-    overflow: hidden;
-    padding-block: 1.3rem;
-    padding-inline: 1rem;
+  min-width: var(--sidebar-width-collapse);
+  max-width: var(--sidebar-width-collapse);
+  overflow: hidden;
+  padding-block: 1.3rem;
+  padding-inline: 1rem;
 
-    transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+  box-shadow: 4px 0 2px -2px theme('colors.mulled.500');
+}
 
-    @media (max-width: 1023px) {
-        animation: translateOut 500ms forwards;
-    }
+.sidebar.is-expanded {
 
-    .logo {
-        margin-bottom: 1rem;
+  display: flex;
+  min-width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
+  height: 100%;
 
-        img {
-            width: 2rem;
-        }
-    }
+  transition: 0.2s ease-in-out;
+}
 
-    .menu-toggle-wrap {
-        transition: 0.2s ease-in-out;
-        line-height: 0;
+@media (max-width: 1023px) {
+  .sidebar.is-expanded {
+    animation: translateIn 500ms forwards;
+    position: absolute;
+  }
+}
 
-        .menu-toggle {
-            transition: 0.2s ease-in-out;
+@media (max-width: 1023px) {
+  .sidebar {
+    animation: translateOut 500ms forwards;
+  }
+}
 
-            &:hover {
-            }
-        }
-    }
+.menu-toggle {
+  transition: 0.2s ease-in-out;
+  line-height: 0;
+}
 
-    &.is-expanded {
-        box-shadow: 4px 0 2px -2px theme('colors.mulled.500');
-
-        display: flex;
-        min-width: var(--sidebar-width);
-        max-width: var(--sidebar-width);
-        height: 100%;
-
-        transition: 0.2s ease-in-out;
-
-        @media (max-width: 1023px) {
-            animation: translateIn 500ms forwards;
-            position: absolute;
-        }
-
-        .menu-toggle-wrap {
-            .menu-toggle {
-                transform: rotate(-180deg);
-            }
-        }
-    }
-
-    .menu-item-text {
-        font-size: 1.25rem;
-        line-height: 1.75rem;
-        font-weight: 600;
-    }
-
-    .menu-item {
-        justify-content: start;
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-        padding-block: 0.5rem;
-    }
-
-    .menu-item-expanded {
-        width: 100%;
-        background-color: theme('backgroundColor.slate.500');
-
-        padding-left: 0.25rem;
-        /* padding-inline: 2.5rem; */
-
-        border-radius: 0.375rem;
-        animation: fadeIn .75s;
-
-        justify-content: start;
-        align-items: start;
-    }
+.is-expanded .menu-toggle {
+  transform: rotate(-180deg);
 }
 
 @keyframes fadeIn {
-    from {opacity:0;}
-    to {opacity:1;}
+  from {opacity:0;}
+  to {opacity:1;}
+}
+
+.menu-item-text {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+}
+
+.dark .menu-item {
+  color: var(--dark-text-colour);
+}
+
+.light .menu-item {
+  color: var(--light-text-colour);
+}
+
+.menu-item {
+  justify-content: start;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding-block: 0.5rem;
+
+  padding: 0.25rem;
+  border-radius: theme(borderRadius.md);
+}
+
+.menu-item-expanded {
+  width: 100%;
+  animation: fadeIn .75s;
+
+  justify-content: start;
+  align-items: start;
+}
+
+.dark .menu-item:hover {
+  background-color: var(--dark-text-accent-color-hover);
+}
+
+.light .menu-item:hover {
+  background-color: var(--light-text-accent-color-hover);
 }
 </style>

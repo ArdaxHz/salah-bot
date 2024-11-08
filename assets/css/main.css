@@ -1,0 +1,104 @@
+@font-face {
+    font-family: 'Vazirmatn';
+    src: url('/public/fonts/Vazirmatn.ttf') format("truetype");
+}
+
+@font-face {
+    font-family: 'Gilroy';
+    src: url('/public/fonts/Gilroy Regular.ttf') format("truetype");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Gilroy';
+    src: url('/public/fonts/Gilroy Medium.ttf') format("truetype");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'Gilroy';
+    src: url('/public/fonts/Gilroy SemiBold.ttf') format("truetype");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'Gilroy';
+    src: url('/public/fonts/Gilroy Bold.ttf') format("truetype");
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Gilroy';
+    src: url('/public/fonts/Gilroy ExtraBold.ttf') format("truetype");
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: 'Gilroy';
+    src: url('/public/fonts/Gilroy Heavy.ttf') format("truetype");
+    font-weight: 900;
+}
+
+:root > * {
+    font-family: "Gilroy", system-ui, sans-serif !important;
+}
+
+
+:root {
+    --sidebar-width: 15.5rem;
+    --sidebar-width-collapse: 4rem;
+    --navbar-height: 4rem;
+
+    --light-text-colour: black;
+    --light-text-accent-colour: theme('colors.flax.800');
+    --light-text-secondary-colour: theme('colors.mulled.800');
+    
+    --dark-text-color: white;
+    --dark-text-accent-colour: theme('colors.flax.200');
+    --dark-text-secondary-colour: theme('colors.mulled.200');
+
+    --neutral-secondary-color: theme('colors.mulled.500');
+    
+    --light-text-accent-color-hover: theme('colors.flax.300');
+    --light-text-secondary-color-hover: theme('colors.mulled.800');
+    
+    --dark-text-accent-color-hover: theme('colors.flax.900');
+    --dark-text-secondary-color-hover: theme('colors.mulled.300');
+}
+
+html.dark {
+    background-color: theme('colors.flax.950');
+}
+
+html.light {
+    background-color: white;
+}
+
+/*
+.dark p,
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6,
+.dark span,
+.dark pre {
+    color: var(--light-text-colour);
+}
+
+.light p,
+.light h1,
+.light h2,
+.light h3,
+.light h4,
+.light h5,
+.light h6,
+.light span,
+.light pre {
+    color: var(--dark-text-color);
+} */
+
+.page {
+    transition: 0.2s ease-in-out;
+}

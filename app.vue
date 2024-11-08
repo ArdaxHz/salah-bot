@@ -10,7 +10,6 @@ const PageContentRef = ref(null)
 const windowWidth = ref(0)
 const windowHeight = ref(0)
 const is_mobile = ref(true)
-const salahTimesToday = ref(null)
 
 useResizeObserver(rootContainer, (entries) => {
   const entry = entries[0]
@@ -46,8 +45,10 @@ function handleMouseDown() {
     <div class="flex flex-col items-center justify-start w-full" @mousedown="handleMouseDown">
       <div class="!sticky top-0 leading-[0] z-[9] w-full">
         <NuxtLayout
-          name="header-logged-out" :is_mobile="is_mobile" :expanded-menu="expandedMenu"
-          :expanded-menu-val="expandedMenuVal"@toggle-menu="ToggleMenu"
+          name="header-logged-out" :is_mobile="is_mobile"
+          :expanded-menu="expandedMenu"
+          :expanded-menu-val="expandedMenuVal"
+          @toggle-menu="ToggleMenu"
         />
       </div>
       <div ref="PageContentRef" class="w-full max-w-7xl px-6 lg:px-8 py-2 page z-0 mt-4 sm:mt-6">
@@ -57,22 +58,3 @@ function handleMouseDown() {
     </div>
   </div>
 </template>
-
-<style>
-.page {
-  transition: 0.2s ease-in-out;
-}
-
-:root {
-  --sidebar-width: 15.5rem;
-  --sidebar-width-collapse: 4rem;
-  --navbar-height: 4rem;
-}
-
-html.dark {
-    background-color: theme('colors.flax.950');
-}
-html.light {
-    background-color: white;
-}
-</style>

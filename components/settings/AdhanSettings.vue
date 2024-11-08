@@ -75,9 +75,13 @@ function handleValidateButtonClick(e: MouseEvent) {
 
 <style>
 .dark .n-form-item .n-form-item-label {
---n-label-text-color: #FFF !important;
+--n-label-text-color: var(--dark-text-color) !important;
 }
 .light .n-form-item .n-form-item-label {
---n-label-text-color: #000 !important;
+--n-label-text-color: var(--light-text-color) !important;
+}
+
+.dark n-button {
+  color: red !important;
 }
 </style>

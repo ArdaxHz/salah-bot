@@ -3,13 +3,17 @@ const props = defineProps({
   is_expanded: Boolean
 })
 const colorMode = useColorMode()
+
+function checkDark() {
+  return colorMode.preference === 'dark'
+}
 </script>
 
 <template>
   <label class="grid cursor-pointer place-items-center" :class="`${is_expanded ? 'w-full' : ''}`">
     <input
       type="checkbox"
-      :checked="colorMode.preference === 'dark'"
+      :checked="checkDark()"
       class="toggle theme-controller col-span-2 col-start-1 row-start-1"
       @change="colorMode.preference = $event.target.checked ? 'dark' : 'light'"
     >

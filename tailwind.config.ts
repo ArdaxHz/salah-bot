@@ -5,6 +5,9 @@ export default <Partial<Config>>{
   plugins: [daisyui],
   theme: {
     extend: {
+      fontFamily: {
+        custom: ['Lexend', 'ui-sans-serif', 'system-ui'],
+      },
       screens: {
         'xs': '380px',
         '3xl': '1600px',

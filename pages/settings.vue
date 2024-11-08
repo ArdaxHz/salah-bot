@@ -31,9 +31,16 @@
 
 <style>
 .n-tabs {
-    --n-bar-color: theme('colors.mulled.500') !important;
-    --n-tab-text-color: theme('colors.mulled.700') !important;
-    --n-tab-text-color-active: theme('colors.mulled.500') !important;
-    --n-tab-text-color-hover: theme('colors.mulled.300') !important;
+  --n-bar-color: var(--neutral-secondary-color) !important;
+  --n-tab-text-color: var(--light-text-secondary-color-hover) !important;
+  --n-tab-text-color-active: var(--neutral-secondary-color) !important;
+}
+
+.dark .n-tabs-tab:hover {
+  color: var(--dark-text-secondary-color-hover) !important;
+}
+
+.light .n-tabs-tab:hover {
+  color: var(--light-text-secondary-color-hover) !important;
 }
 </style>

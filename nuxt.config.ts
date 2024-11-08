@@ -11,7 +11,8 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     '@pinia/nuxt',
     '@nuxt/icon',
-    'pinia-plugin-persistedstate/nuxt'
+    'pinia-plugin-persistedstate/nuxt',
+    '@nuxt/fonts'
   ],
   i18n: {
     strategy: 'prefix_except_default',
@@ -63,5 +64,6 @@ export default defineNuxtConfig({
   },
   imports: {
     dirs: ['composables', 'composables/stores']
-  }
+  },
+  css: ['~/assets/css/main.css']
 })

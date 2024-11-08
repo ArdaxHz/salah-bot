@@ -56,28 +56,28 @@ table {
 thead {
   text-align: center;
   width: max-content;
-  border-style: hidden!important;
+  border-style: hidden !important;
 }
 tbody {
-  border-style: hidden!important;
+  border-style: hidden !important;
   text-align: center;
   width: max-content;
 }
 
 .dark thead {
-  color: theme(colors.mulled.200);
+  color: var(--dark-text-secondary-colour);
 }
 
 .light thead {
-  color: theme(colors.mulled.800);
+  color: var(--light-text-secondary-colour);
 }
 
 .dark tbody {
-  color: white;
+  color: var(--dark-text-color);
 }
 
 .light tbody {
-  color: black;
+  color: var(--light-text-colour);
 }
 
 th, td {
