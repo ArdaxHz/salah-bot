@@ -4,10 +4,9 @@ import { capitalizeFirstLetter } from '~/composables/helpers'
 const props = defineProps({
   is_mobile: Boolean,
   expandedMenu: Boolean,
-  expandedMenuVal: Number,
-  salahTimesToday: Object
+  expandedMenuVal: Number
 })
-const emits = defineEmits(['ToggleMenu', 'updateUserLocation'])
+const emits = defineEmits(['ToggleMenu'])
 const is_expanded = ref(props.expandedMenu)
 function ToggleMenu() {
   is_expanded.value = !is_expanded.value
@@ -25,31 +24,19 @@ watch(() => props.expandedMenuVal, (newValue, _) => {
     }
   }
 })
-
-function updateUserLocation(updatedLocation) {
-  emits('updateUserLocation', updatedLocation)
-}
 </script>
 
 <template>
-  <div class="flex flex-grow flex-row w-full justify-between bg-white dark:bg-flax-950 ring-2 ring-mulled-500 header h-18">
-    <div class="container mx-auto max-w-7xl flex flex-grow flex-row w-full">
+  <div class="flex w-full items-center justify-center bg-white dark:bg-flax-950 ring-2 ring-mulled-500 header">
+    <div class="max-w-7xl flex w-full px-6 lg:px-8 py-4">
       <div class="flex flex-row gap-3 sm:gap-6 items-center">
         <div class="flex lg:hidden">
           <button class="menu-toggle flex lg:hidden" @click="ToggleMenu">
-            <svg
-              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="size-8"
-            >
-              <path
-                stroke-linecap="round" stroke-linejoin="round"
-                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-              />
-            </svg>
+            <Icon name="mdi:menu" size="2rem" class="text-black dark:text-white" />
           </button>
         </div>
         <NuxtLink to="/">
-          <RootTodayAdhanTimings :salah-times-today="salahTimesToday" />
+          <RootTodayAdhanTimings />
         </NuxtLink>
         <!-- <p class="text-2xl font-bold whitespace-normal">Assalamu Alaikum</p>
                 <NuxtLink class="text-2xl font-bold whitespace-normal" v-if="nextSalah" to="/">
@@ -61,7 +48,7 @@ function updateUserLocation(updatedLocation) {
                     <p class="">a</p>
                 </div> -->
         <div class="flex gap-2">
-          <RootLocateUser @update-user-location="updateUserLocation" />
+          <RootLocateUser />
         </div>
       </div>
     </div>
@@ -78,6 +65,7 @@ svg {
 }
 
 .header {
-    box-shadow: 0 4px 2px -2px theme('colors.mulled.500');;
+  height: var(--navbar-height);
+  box-shadow: 0 4px 2px -2px theme('colors.mulled.500');
 }
 </style>

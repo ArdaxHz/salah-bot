@@ -1,7 +1,5 @@
 <script setup>
 const props = defineProps({
-  windowHeight: Number,
-  windowWidth: Number,
   expandedMenu: Boolean,
   expandedMenuVal: Number
 })
@@ -36,7 +34,7 @@ watch(() => props.expandedMenuVal, (newValue, _) => {
     <div class="flex flex-col justify-center h-full w-full">
       <div class="menu-toggle-wrap mb-4">
         <button class="menu-toggle" @click="ToggleMenu">
-          <Icon name="mdi:menu" size="2rem" />
+          <Icon name="mdi:menu" size="2rem" class="text-black dark:text-white" />
         </button>
       </div>
 
@@ -47,7 +45,7 @@ watch(() => props.expandedMenuVal, (newValue, _) => {
           class="menu-footer flex gap-4" :class="`${is_expanded ? 'flex-col w-full justify-start items-start' : 'justify-center items-center flex-col-reverse gap-7'}`"
         >
           <NuxtLink class="menu-item" :class="`${is_expanded ? 'menu-item-expanded ' : ''}`" to="/settings">
-            <Icon name="mdi:cog-outline" size="1.75rem" /> <span class="menu-item-text" :class="`${is_expanded ? 'flex' : 'hidden'}`">Settings</span>
+            <Icon name="mdi:cog-outline" size="1.75rem" class="text-black dark:text-white" /> <span class="menu-item-text" :class="`${is_expanded ? 'flex' : 'hidden'}`">Settings</span>
           </NuxtLink>
           <RootThemeSelector class="grow w-100" :class="`${is_expanded ? 'rotate-0' : '-rotate-90'}`" :is_expanded="is_expanded" />
         </div>

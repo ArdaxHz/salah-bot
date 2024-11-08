@@ -8,7 +8,10 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
+    '@nuxtjs/supabase',
+    '@pinia/nuxt',
     '@nuxt/icon',
+    'pinia-plugin-persistedstate/nuxt'
   ],
   i18n: {
     strategy: 'prefix_except_default',
@@ -37,7 +40,7 @@ export default defineNuxtConfig({
     globalName: '__NUXT_COLOR_MODE__',
     componentName: 'ColorScheme',
     classPrefix: '',
-    classSuffix: '-mode',
+    classSuffix: '',
     storage: 'localStorage', // or 'sessionStorage' or 'cookie'
     storageKey: 'nuxt-color-mode'
   },
@@ -47,4 +50,18 @@ export default defineNuxtConfig({
       SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY
     }
   },
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_ANON_KEY,
+    redirectOptions: {
+      login: '/login',
+      callback: '/confirm',
+      include: undefined,
+      exclude: ['/*'],
+      cookieRedirect: false,
+    }
+  },
+  imports: {
+    dirs: ['composables', 'composables/stores']
+  }
 })

@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Coordinates, CalculationMethod, PrayerTimes, HighLatitudeRule } from 'adhan';
 import HijrahDate from 'hijrah-date';
 
 const HijriMonths = {
@@ -55,22 +55,33 @@ export function convertToHijri(date) {
 }
 
 export function calculateAdhanTimesDay(latitude, longitude, date, customParams) {
-    const coordinates = new Coordinates(latitude, longitude);
-
-    const paramsToUse = CalculationMethod[customParams['CalculationMethod']] ? CalculationMethod[customParams['CalculationMethod']]() : CalculationMethod.MuslimWorldLeague();
-    paramsToUse.fajrAngle = customParams['fajrAngle'] ? customParams['fajrAngle'] : 18;
-    paramsToUse.madhab = customParams['madhab'] ? customParams['madhab'] : 'shafi';
-
-    const prayerTimes = new PrayerTimes(coordinates, date, paramsToUse);
-    if (checkTimeWithinRange(prayerTimes.fajr, prayerTimes.isha, 5)) {
-        const newIshaTime = new Date(prayerTimes.maghrib.getTime() + 60 * 60 * 1000);
-        prayerTimes.isha = newIshaTime;
-    }
-
+    const prayerTimes = calculateAdhanTimesDayRaw(latitude, longitude, date, customParams)
+   
     const formattedDate = DateTime.fromJSDate(date).toISODate();
     const day = {}
-    day[formattedDate] = { ...prayerTimes, 'hijri': convertToHijri(formattedDate) }
+    day[formattedDate] = { ...prayerTimes, 'prayerTimes': prayerTimes, 'hijri': convertToHijri(formattedDate) }
     return day;
+}
+
+export function calculateAdhanTimesDayRaw(latitude, longitude, date, customParams) {
+    const coordinates = new Coordinates(latitude, longitude);
+
+    const paramsToUse = CalculationMethod[customParams.method]();
+    paramsToUse.fajrAngle = customParams.fajrAngle;
+    paramsToUse.madhab = customParams.madhab;
+
+    const prayerTimes = new PrayerTimes(coordinates, date, paramsToUse);
+    paramsToUse.highLatitudeRule = HighLatitudeRule.recommended(coordinates);
+    const prayerTimesIshaChanged = new PrayerTimes(coordinates, date, paramsToUse);
+
+    // if (checkTimeWithinRange(prayerTimes.fajr, prayerTimes.isha, 5)) {
+    //     const newIshaTime = new Date(prayerTimes.maghrib.getTime() + 60 * 60 * 1000);
+    //     prayerTimes.isha = newIshaTime;
+    // }
+
+    prayerTimes.isha = prayerTimesIshaChanged.isha
+    console.log(prayerTimes)
+    return prayerTimes;
 }
 
 export function calculateAdhanToday(latitude, longitude, customParams) {

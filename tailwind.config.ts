@@ -49,4 +49,5 @@ export default <Partial<Config>>{
     logs: true,
     themeRoot: ':root',
   },
+  darkMode: 'selector'
 }
