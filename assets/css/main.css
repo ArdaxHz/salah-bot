@@ -59,11 +59,11 @@
 
     --neutral-secondary-color: theme('colors.mulled.500');
     
-    --light-text-accent-color-hover: theme('colors.flax.300');
-    --light-text-secondary-color-hover: theme('colors.mulled.800');
+    --light-text-accent-color-hover: theme('colors.flax.200');
+    --light-text-secondary-color-hover: theme('colors.mulled.700');
     
-    --dark-text-accent-color-hover: theme('colors.flax.900');
-    --dark-text-secondary-color-hover: theme('colors.mulled.300');
+    --dark-text-accent-color-hover: theme('colors.flax.700');
+    --dark-text-secondary-color-hover: theme('colors.mulled.200');
 }
 
 html.dark {
