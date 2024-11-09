@@ -40,7 +40,6 @@ watch(() => props.expandedMenuVal, (newValue, _) => {
 
       <div class="flex flex-col justify-between h-full w-full">
         <RootNavMenuItems :is_expanded="is_expanded" />
-
         <div
           class="menu-footer flex gap-4" :class="`${is_expanded ? 'flex-col w-full justify-start items-start' : 'justify-center items-center flex-col-reverse gap-7'}`"
         >

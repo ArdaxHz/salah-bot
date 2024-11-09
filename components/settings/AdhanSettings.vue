@@ -60,8 +60,8 @@ function handleValidateButtonClick(e: MouseEvent) {
           <n-input-number v-model:value="model.fajrAngle" max="20" min="12" step="0.5" />
         </n-form-item-gi>
         <n-gi>
-          <div>
-            <n-button type="primary" class="rounded-md w-full" secondary strong @click="handleValidateButtonClick">
+          <div class="save-adhan-setting-button">
+            <n-button type="primary" class="rounded-md w-full" @click="handleValidateButtonClick">
               Save
             </n-button>
           </div>
@@ -69,8 +69,6 @@ function handleValidateButtonClick(e: MouseEvent) {
       </n-grid>
     </n-form>
   </div>
-  <pre>{{ JSON.stringify(model, null, 2) }}
-</pre>
 </template>
 
 <style>
@@ -81,7 +79,9 @@ function handleValidateButtonClick(e: MouseEvent) {
 --n-label-text-color: var(--light-text-color) !important;
 }
 
-.dark n-button {
-  color: red !important;
+.dark .save-adhan-setting-button .n-button {
+  background-color: red !important;
 }
+
+.dark {}
 </style>

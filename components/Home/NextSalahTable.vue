@@ -4,6 +4,8 @@ import { useMyLocationStore } from '@/composables/stores/location'
 
 const apiData = ref(null)
 const location = useMyLocationStore()
+const times = ref(null)
+const supabase = useSupabaseClient()
 
 const watcher = watch(location, async () => {
   if (location.location) {
@@ -11,15 +13,18 @@ const watcher = watch(location, async () => {
       return
     }
 
-    const { data } = await $fetch('/api/masjids', {
+    const { data, error } = await $fetch('/api/masjids', {
       headers: useRequestHeaders(['cookie']),
       params: { lat: location.latitude, long: location.longitude }
     })
     apiData.value = data
+    const { dataP, errorP } = await $fetch('/api/prayertimes', {
+      headers: useRequestHeaders(['cookie']),
+      params: { lat: location.latitude, long: location.longitude, datetime: DateTime.now().toISO(), next_prayer: 'fajr' }
+    })
+    times.value = dataP
   }
 }, { immediate: true })
-
-const times = [{ masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }, { masjid: 'Test', time: new Date() }, { masjid: 'Teaaaaaaaaaaaaast', time: new Date() }, { masjid: 'Tt', time: new Date() }]
 
 onMounted(() => {
 
@@ -28,8 +33,9 @@ onMounted(() => {
 
 <template>
   <p>{{ apiData }}</p>
+  <p>{{ times }}</p>
   <p>{{ location.location }}</p>
-  <table class="table table-auto">
+  <!-- <table class="table table-auto">
     <thead class="text-xl font-semibold sm:text-2xl sm:font-bold text-ellipsis text-pretty">
       <tr>
         <th class="">
@@ -59,7 +65,7 @@ onMounted(() => {
         </td>
       </tr>
     </tbody>
-  </table>
+  </table> -->
 </template>
 
 <style scoped>
