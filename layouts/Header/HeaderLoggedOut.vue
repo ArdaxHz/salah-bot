@@ -1,12 +1,16 @@
 <script setup>
-import { capitalizeFirstLetter } from '~/composables/helpers'
+import { useLocationStore } from '@/composables/stores/location'
 
 const props = defineProps({
   is_mobile: Boolean,
   expandedMenu: Boolean,
   expandedMenuVal: Number
 })
+
 const emits = defineEmits(['ToggleMenu'])
+
+const location = useLocationStore()
+
 const is_expanded = ref(props.expandedMenu)
 function ToggleMenu() {
   is_expanded.value = !is_expanded.value
@@ -27,7 +31,7 @@ watch(() => props.expandedMenuVal, (newValue, _) => {
 </script>
 
 <template>
-  <div class="flex w-full items-center justify-center bg-white dark:bg-flax-950 ring-2 ring-mulled-500 header">
+  <div class="flex w-full h-full items-center justify-center bg-white dark:bg-flax-950 ring-2 ring-mulled-500 header">
     <div class="max-w-7xl flex w-full px-6 lg:px-8 py-4">
       <div class="flex flex-row gap-3 sm:gap-6 items-center">
         <div class="flex lg:hidden">
@@ -47,7 +51,11 @@ watch(() => props.expandedMenuVal, (newValue, _) => {
         <!-- <div class="flex flex-grow rounded-lg bg-primary-200/65 px-2 py-1 leading-[0] w-24 bg-flax-700 h-[1.5rem] items-center">
                     <p class="">a</p>
                 </div> -->
-        <div class="flex gap-2">
+        <div
+          class="flex gap-2 tooltip tooltip-left"
+          :class="`${location.latitude ? '[.tooltip:opacity-0]' : ''}`"
+          data-tip="Enable location access for this site to work."
+        >
           <RootLocateUser />
         </div>
       </div>
@@ -65,7 +73,10 @@ svg {
 }
 
 .header {
-  height: var(--navbar-height);
   box-shadow: 0 4px 2px -2px theme('colors.mulled.500');
+}
+
+.tooltip {
+  /* opacity: 0; */
 }
 </style>

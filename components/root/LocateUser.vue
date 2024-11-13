@@ -1,7 +1,7 @@
 <script setup>
-import { useMyLocationStore } from '@/composables/stores/location'
+import { useLocationStore } from '@/composables/stores/location'
 
-const location = useMyLocationStore()
+const location = useLocationStore()
 
 function getCurrentLocation() {
   if ('geolocation' in navigator) {
@@ -19,7 +19,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <button @click="getCurrentLocation">
+  <button class="menu-item menu-item-press" @click="getCurrentLocation">
     <Icon name="mdi:map-marker-outline" size="2rem" class="text-black dark:text-white" />
   </button>
 </template>

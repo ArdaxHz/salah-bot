@@ -80,7 +80,55 @@ export function calculateAdhanMonth(latitude, longitude, date, customParams) {
 
   for (let i = 1; i <= daysInMonth; i++) {
     const dailyDate = new Date(date.getFullYear(), date.getMonth(), i, 12, 0)
-    month = Object.assign(month, calculateAdhanTimesDay(latitude, longitude, dailyDate, customParams))
+    month = Object.assign(month, calculateAdhanTimesDay(latitude, longitude, DateTime.fromJSDate(dailyDate), customParams))
   }
   return month
+}
+
+export function nextPrayer(prayerTimes, date = new Date()) {
+  if (date >= prayerTimes.isha) {
+    return null
+  }
+  else if (date >= prayerTimes.maghrib) {
+    return { prayer: 'isha', time: prayerTimes.isha }
+  }
+  else if (date >= prayerTimes.asr) {
+    return { prayer: 'maghrib', time: prayerTimes.maghrib }
+  }
+  else if (date >= prayerTimes.dhuhr) {
+    return { prayer: 'asr', time: prayerTimes.asr }
+  }
+  else if (date >= prayerTimes.sunrise) {
+    return { prayer: 'dhuhr', time: prayerTimes.dhuhr }
+  }
+  else if (date >= prayerTimes.fajr) {
+    return { prayer: 'sunrise', time: prayerTimes.sunrise }
+  }
+  else {
+    return { prayer: 'fajr', time: prayerTimes.fajr }
+  }
+}
+
+export function currentPrayer(prayerTimes, date = new Date()) {
+  if (date >= prayerTimes.isha) {
+    return { prayer: 'isha', time: prayerTimes.isha }
+  }
+  else if (date >= prayerTimes.maghrib) {
+    return { prayer: 'maghrib', time: prayerTimes.maghrib }
+  }
+  else if (date >= prayerTimes.asr) {
+    return { prayer: 'asr', time: prayerTimes.asr }
+  }
+  else if (date >= prayerTimes.dhuhr) {
+    return { prayer: 'dhuhr', time: prayerTimes.dhuhr }
+  }
+  else if (date >= prayerTimes.sunrise) {
+    return { prayer: 'sunrise', time: prayerTimes.sunrise }
+  }
+  else if (date >= prayerTimes.fajr) {
+    return { prayer: 'fajr', time: prayerTimes.fajr }
+  }
+  else {
+    return null
+  }
 }

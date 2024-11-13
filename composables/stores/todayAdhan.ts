@@ -1,5 +1,5 @@
-import { type PiniaPluginContext, defineStore } from 'pinia'
-import { useMyLocationStore } from '@/composables/stores/location'
+import { defineStore } from 'pinia'
+import { useLocationStore } from '@/composables/stores/location'
 import { useAdhanSettings } from '@/composables/stores/adhanSettings'
 
 export const useTodayAdhanStore = defineStore('todayAdhan', () => {
@@ -11,14 +11,30 @@ export const useTodayAdhanStore = defineStore('todayAdhan', () => {
   const sunset = ref(null)
   const isha = ref(null)
   const date = ref(new Date())
-  const originalObj = ref(null)
+
+  function daily() {
+    return {
+      fajr: fajr.value,
+      dhuhr: dhuhr.value,
+      asr: asr.value,
+      maghrib: maghrib.value,
+      isha: isha.value,
+    }
+  }
 
   function toJson() {
-    return { fajr: fajr.value, dhuhr: dhuhr.value, asr: asr.value, maghrib: maghrib.value, isha: isha.value }
+    return {
+      fajr: fajr.value,
+      sunrise: sunrise.value,
+      dhuhr: dhuhr.value,
+      asr: asr.value,
+      maghrib: maghrib.value,
+      isha: isha.value,
+    }
   }
 
   function calculateToday() {
-    const location = useMyLocationStore()
+    const location = useLocationStore()
     calculateAdhan(location)
   }
 
@@ -40,14 +56,26 @@ export const useTodayAdhanStore = defineStore('todayAdhan', () => {
       return
     }
 
-    const times = calculateAdhanToday(location.latitude, location.longitude, adhanSettings.params())
-    originalObj.value = times.prayerTimes
+    const times = calculateAdhanToday(
+      location.latitude,
+      location.longitude,
+      adhanSettings.params()
+    )
     return times.prayerTimes
   }
 
-  return { fajr, sunrise, dhuhr, asr, maghrib, isha, date, originalObj, toJson, calculateToday, calculateAdhan, createAdhanObj }
-}, {
-  persist: {
-    storage: piniaPluginPersistedstate.sessionStorage()
+  return {
+    fajr,
+    sunrise,
+    dhuhr,
+    asr,
+    maghrib,
+    isha,
+    date,
+    daily,
+    toJson,
+    calculateToday,
+    calculateAdhan,
+    createAdhanObj,
   }
 })

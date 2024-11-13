@@ -1,16 +1,13 @@
 <script setup>
 import { DateTime } from 'luxon'
 import { useAdhanStore } from '@/composables/stores/adhan'
-import { useMyLocationStore } from '@/composables/stores/location'
+import { useLocationStore } from '@/composables/stores/location'
 
-const location = useMyLocationStore()
+const location = useLocationStore()
 const adhan = ref(null)
 
 onMounted(() => {
   adhan.value = useAdhanStore()
-  console.log(adhan.value.today())
-  // console.log(adhan.value.todayStore.createAdhanObj(location))
-  // console.log(adhan.value.nextPrayer())
 })
 </script>
 
@@ -37,12 +34,20 @@ onMounted(() => {
     </thead>
     <tbody>
       <tr>
-        <td v-for="adhanTime in adhan.today()" v-if="adhan" class="px-2 py-1 text-center">
-          {{ (DateTime.fromJSDate(adhanTime) || DateTime.fromISO(adhanTime)).toLocaleString(DateTime.TIME_SIMPLE) }}
+        <td
+          v-for="adhanTime in adhan.today()"
+          v-if="adhan"
+          class="px-2 py-1 text-center"
+        >
+          {{
+            (
+              DateTime.fromJSDate(adhanTime) || DateTime.fromISO(adhanTime)
+            ).toLocaleString(DateTime.TIME_SIMPLE)
+          }}
         </td>
         <!-- <td v-for="adhanTime in adhan.today()" v-if="!adhan" class="px-2 py-1 text-center">
-          {{ (DateTime.fromJSDate(adhanTime) || DateTime.fromISO(adhanTime)).toLocaleString(DateTime.TIME_SIMPLE) }}
-        </td> -->
+{{ (DateTime.fromJSDate(adhanTime) || DateTime.fromISO(adhanTime)).toLocaleString(DateTime.TIME_SIMPLE) }}
+</td> -->
       </tr>
     </tbody>
   </table>
@@ -53,11 +58,13 @@ table {
   width: max-content;
   border-collapse: collapse;
 }
+
 thead {
   text-align: center;
   width: max-content;
   border-style: hidden !important;
 }
+
 tbody {
   border-style: hidden !important;
   text-align: center;
@@ -65,11 +72,11 @@ tbody {
 }
 
 .dark thead {
-  color: var(--dark-text-secondary-colour);
+  color: var(--dark-text-secondary-color);
 }
 
 .light thead {
-  color: var(--light-text-secondary-colour);
+  color: var(--light-text-secondary-color);
 }
 
 .dark tbody {
@@ -77,29 +84,32 @@ tbody {
 }
 
 .light tbody {
-  color: var(--light-text-colour);
+  color: var(--light-text-color);
 }
 
-th, td {
+th,
+td {
   padding: 0;
   width: 20%;
 }
 
-th, td {
+th,
+td {
   padding-left: 0.75rem;
 }
 
-th:first-child, td:first-child {
+th:first-child,
+td:first-child {
   padding-left: 0;
 }
 
 th {
   padding-bottom: 0.25rem;
-  font-size: theme('fontSize.sm');
+  font-size: theme("fontSize.sm");
 }
 
 td {
-  font-size: theme('fontSize.lg');
-  font-weight: theme('fontWeight.bold');
+  font-size: theme("fontSize.lg");
+  font-weight: theme("fontWeight.bold");
 }
 </style>

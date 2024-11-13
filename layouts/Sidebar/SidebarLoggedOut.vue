@@ -1,7 +1,7 @@
 <script setup>
 const props = defineProps({
   expandedMenu: Boolean,
-  expandedMenuVal: Number
+  expandedMenuVal: Number,
 })
 const emits = defineEmits(['ToggleMenu'])
 const SideBarMenu = ref(true)
@@ -12,41 +12,67 @@ function ToggleMenu() {
   emits('ToggleMenu', is_expanded.value)
 }
 
-watch(() => props.expandedMenuVal, (newValue, _) => {
-  if (newValue) {
-    if (newValue % 2 == 0) {
-      is_expanded.value = true
-    }
+watch(
+  () => props.expandedMenuVal,
+  (newValue, _) => {
+    if (newValue) {
+      if (newValue % 2 == 0) {
+        is_expanded.value = true
+      }
 
-    if (Math.abs(newValue % 2) == 1) {
-      is_expanded.value = false
+      if (Math.abs(newValue % 2) == 1) {
+        is_expanded.value = false
+      }
     }
   }
-})
+)
 </script>
 
 <template>
-  <aside ref="SideBarMenu" class="sidebar flex relative flex-col bg-whtie ring-2 ring-mulled-500 dark:bg-flax-950" :class="`${is_expanded ? 'is-expanded bg-white ' : ''}` ">
+  <aside
+    ref="SideBarMenu"
+    :class="`${is_expanded ? 'is-expanded bg-white ' : ''}`"
+    class="sidebar flex relative flex-col bg-whtie ring-2 ring-mulled-500 dark:bg-flax-950"
+  >
     <!-- <div class="logo">
              <img :src="logoURL" alt="Vue" />
         </div> -->
 
-    <div class="flex flex-col justify-center h-full w-full">
-      <div class="menu-toggle-wrap mb-4">
+    <div class="flex flex-col justify-b h-full w-full">
+      <div
+        class="menu-toggle-wrap flex flex-col mb-4 rounded-md justify-center items-center w-max"
+      >
         <button class="menu-toggle" @click="ToggleMenu">
-          <Icon name="mdi:menu" size="2rem" class="" />
+          <Icon class="" name="mdi:menu" size="2rem" />
         </button>
       </div>
 
       <div class="flex flex-col justify-between h-full w-full">
         <RootNavMenuItems :is_expanded="is_expanded" />
         <div
-          class="menu-footer flex gap-4" :class="`${is_expanded ? 'flex-col w-full justify-start items-start' : 'justify-center items-center flex-col-reverse gap-7'}`"
+          :class="`${
+            is_expanded
+              ? 'flex-col w-full justify-start items-start'
+              : 'justify-center items-center flex-col-reverse gap-7'
+          }`"
+          class="menu-footer flex gap-4"
         >
-          <NuxtLink class="menu-item" :class="`${is_expanded ? 'menu-item-expanded ' : ''}`" to="/settings">
-            <Icon name="mdi:cog-outline" size="1.75rem" class="" /> <span class="menu-item-text" :class="`${is_expanded ? 'flex' : 'hidden'}`">Settings</span>
+          <NuxtLink
+            :class="`${is_expanded ? 'menu-item-expanded ' : ''}`"
+            class="menu-item"
+            to="/settings"
+          >
+            <Icon class="" name="mdi:cog-outline" size="1.75rem" />
+            <span
+              :class="`${is_expanded ? 'flex' : 'hidden'}`"
+              class="menu-item-text"
+            >Settings</span>
           </NuxtLink>
-          <RootThemeSelector class="grow w-100 " :class="`${is_expanded ? 'rotate-0' : '-rotate-90'}`" :is_expanded="is_expanded" />
+          <RootThemeSelector
+            :class="`${is_expanded ? 'rotate-0' : '-rotate-90'}`"
+            :is_expanded="is_expanded"
+            class="grow w-100"
+          />
         </div>
       </div>
     </div>
@@ -55,36 +81,36 @@ watch(() => props.expandedMenuVal, (newValue, _) => {
 
 <style>
 @keyframes translateIn {
-    from {
-        transition: 0.2s ease-in-out;
-        transform: translateX(-100%);
-    }
+  from {
+    transition: 0.2s ease-in-out;
+    transform: translateX(-100%);
+  }
 
-    to {
-        transition: 0.2s ease-in-out;
-        transform: translateX(0);
-        display: flex;
-    }
+  to {
+    transition: 0.2s ease-in-out;
+    transform: translateX(0);
+    display: flex;
+  }
 }
 
 @keyframes translateOut {
-    from {
-        transition: 0.2s ease-in-out;
-        transform: translateX(0);
-        display: flex;
-    }
+  from {
+    transition: 0.2s ease-in-out;
+    transform: translateX(0);
+    display: flex;
+  }
 
-    to {
-        transition: 0.2s ease-in-out;
-        transform: translateX(-100%);
-        display: none;
-    }
+  to {
+    transition: 0.2s ease-in-out;
+    transform: translateX(-100%);
+    display: none;
+  }
 }
 
-.animateOut {
-    @media (max-width: 1023px) {
-        animation: translateOut 500ms forwards;
-    }
+@media (max-width: 1023px) {
+  .animateOut {
+    animation: translateOut 500ms forwards;
+  }
 }
 
 .sidebar {
@@ -100,11 +126,10 @@ watch(() => props.expandedMenuVal, (newValue, _) => {
   padding-inline: 1rem;
 
   transition: 0.2s ease-in-out;
-  box-shadow: 4px 0 2px -2px theme('colors.mulled.500');
+  box-shadow: 4px 0 2px -2px theme("colors.mulled.500");
 }
 
 .sidebar.is-expanded {
-
   display: flex;
   min-width: var(--sidebar-width);
   max-width: var(--sidebar-width);
@@ -126,7 +151,8 @@ watch(() => props.expandedMenuVal, (newValue, _) => {
   }
 }
 
-.menu-toggle {
+.menu-toggle,
+.menu-toggle-wrap {
   transition: 0.2s ease-in-out;
   line-height: 0;
 }
@@ -136,7 +162,7 @@ watch(() => props.expandedMenuVal, (newValue, _) => {
 }
 
 .light .menu-toggle > * {
-  color: var(--light-text-colour);
+  color: var(--light-text-color);
 }
 
 .is-expanded .menu-toggle {
@@ -144,8 +170,12 @@ watch(() => props.expandedMenuVal, (newValue, _) => {
 }
 
 @keyframes fadeIn {
-  from {opacity:0;}
-  to {opacity:1;}
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .menu-item-text {
@@ -159,7 +189,7 @@ watch(() => props.expandedMenuVal, (newValue, _) => {
 }
 
 .light .menu-item {
-  color: var(--light-text-colour);
+  color: var(--light-text-color);
 }
 
 .menu-item {
@@ -167,25 +197,31 @@ watch(() => props.expandedMenuVal, (newValue, _) => {
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  padding-block: 0.5rem;
 
-  padding: 0.25rem;
+  padding: 0.5rem;
   border-radius: theme(borderRadius.md);
 }
 
 .menu-item-expanded {
   width: 100%;
-  animation: fadeIn .75s;
+  animation: fadeIn 0.75s;
 
   justify-content: start;
   align-items: start;
 }
 
-.dark .menu-item:hover {
+.dark .menu-item:hover,
+.dark .menu-toggle-wrap:hover {
   background-color: var(--dark-text-accent-color-hover);
 }
 
-.light .menu-item:hover {
+.light .menu-item:hover,
+.light .menu-toggle-wrap:hover {
   background-color: var(--light-text-accent-color-hover);
+}
+
+.menu-item:active:focus {
+  animation: button-pop 0s ease-out;
+  transform: scale(var(--btn-focus-scale, 0.97));
 }
 </style>

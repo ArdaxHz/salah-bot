@@ -1,18 +1,21 @@
 import { defineStore } from 'pinia'
-import { DateTime } from 'luxon'
 import { useAdhanSettings } from '@/composables/stores/adhanSettings'
 import { useTodayAdhanStore } from '@/composables/stores/todayAdhan'
+import { nextPrayer as nextPrayerCalc } from '@/composables/adhantimes'
 
 export const useAdhanStore = defineStore('adhan', () => {
   const settingsStore = useAdhanSettings()
   const todayStore = useTodayAdhanStore()
 
-  const nextPrayer = function () {
-    // return todayStore?.originalObj.timeForPrayer(todayStore?.originalObj.nextPrayer())
+  function nextPrayer() {
+    todayStore.calculateToday()
+    return nextPrayerCalc(todayStore.toJson(), new Date())
   }
 
   const currentPrayer = computed((state) => {
-    // return todayStore?.originalObj.timeForPrayer(todayStore?.originalObj.currentPrayer())
+    return todayStore.originalObj.timeForPrayer(
+      todayStore.originalObj.currentPrayer()
+    )
   })
 
   const settings = computed((state) => {
@@ -21,7 +24,7 @@ export const useAdhanStore = defineStore('adhan', () => {
 
   function today() {
     todayStore.calculateToday()
-    return todayStore.toJson()
+    return todayStore.daily()
   }
 
   return { nextPrayer, currentPrayer, settings, today }

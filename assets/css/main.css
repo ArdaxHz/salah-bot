@@ -47,23 +47,31 @@
 :root {
     --sidebar-width: 15.5rem;
     --sidebar-width-collapse: 4rem;
-    --navbar-height: 4rem;
+    --header-height: 4rem;
+    --announcement-height: 2rem;
 
-    --light-text-colour: black;
-    --light-text-accent-colour: theme('colors.flax.800');
-    --light-text-secondary-colour: theme('colors.mulled.800');
-    
+    --light-text-color: black;
+    --light-text-accent-color: theme('colors.flax.800');
+    --light-text-secondary-color: theme('colors.mulled.800');
+
     --dark-text-color: white;
-    --dark-text-accent-colour: theme('colors.flax.200');
-    --dark-text-secondary-colour: theme('colors.mulled.200');
+    --dark-text-accent-color: theme('colors.flax.200');
+    --dark-text-secondary-color: theme('colors.mulled.200');
 
+    --neutral-accent-color: theme('colors.flax.500');
     --neutral-secondary-color: theme('colors.mulled.500');
-    
+
     --light-text-accent-color-hover: theme('colors.flax.200');
     --light-text-secondary-color-hover: theme('colors.mulled.700');
-    
+
+    --light-text-accent-color-hover-light: theme('colors.flax.300');
+    --light-text-secondary-color-hover-light: theme('colors.mulled.600');
+
     --dark-text-accent-color-hover: theme('colors.flax.700');
     --dark-text-secondary-color-hover: theme('colors.mulled.200');
+
+    --dark-text-accent-color-hover-light: theme('colors.flax.600');
+    --dark-text-secondary-color-hover-light: theme('colors.mulled.300');
 }
 
 html.dark {
@@ -74,31 +82,32 @@ html.light {
     background-color: white;
 }
 
-/*
-.dark p,
-.dark h1,
-.dark h2,
-.dark h3,
-.dark h4,
-.dark h5,
-.dark h6,
-.dark span,
-.dark pre {
-    color: var(--light-text-colour);
+
+.dark p {
+    color: var(--dark-text-color);
 }
 
-.light p,
-.light h1,
-.light h2,
-.light h3,
-.light h4,
-.light h5,
-.light h6,
-.light span,
-.light pre {
-    color: var(--dark-text-color);
-} */
+.light p {
+    color: var(--light-text-color);
+}
 
 .page {
     transition: 0.2s ease-in-out;
+}
+
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    font-size: 100%;
 }

@@ -1,8 +1,8 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
-  <div>
-    <HomeNextSalahTable />
+  <div class="flex flex-col gap-3">
+    <HomeNearestPrayer />
+    <!-- <HomeNearestMasjid /> -->
   </div>
 </template>

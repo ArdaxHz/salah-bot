@@ -65,5 +65,8 @@ export default defineNuxtConfig({
   imports: {
     dirs: ['composables', 'composables/stores']
   },
-  css: ['~/assets/css/main.css']
+  css: ['~/assets/css/main.css'],
+  experimental: {
+    renderJsonPayloads: true
+  }
 })
