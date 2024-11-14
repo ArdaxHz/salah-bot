@@ -2,6 +2,7 @@
 const props = defineProps({
   expandedMenu: Boolean,
   expandedMenuVal: Number,
+  is_mobile: Boolean,
 })
 const emits = defineEmits(['ToggleMenu'])
 const SideBarMenu = ref(true)
@@ -31,7 +32,10 @@ watch(
 <template>
   <aside
     ref="SideBarMenu"
-    :class="`${is_expanded ? 'is-expanded bg-white ' : ''}`"
+    :class="{
+      'is-expanded bg-white': is_expanded,
+      'mobile-expanded': is_mobile,
+    }"
     class="sidebar flex relative flex-col bg-whtie ring-2 ring-mulled-500 dark:bg-flax-950"
   >
     <!-- <div class="logo">
@@ -43,7 +47,7 @@ watch(
         class="menu-toggle-wrap flex flex-col mb-4 rounded-md justify-center items-center w-max"
       >
         <button class="menu-toggle" @click="ToggleMenu">
-          <Icon class="" name="mdi:menu" size="2rem" />
+          <Icon class="" name="material-symbols:menu-rounded" size="2rem" />
         </button>
       </div>
       <div class="flex flex-col justify-between h-full w-full">
@@ -61,7 +65,11 @@ watch(
             class="menu-item"
             to="/settings"
           >
-            <Icon class="" name="mdi:cog-outline" size="1.75rem" />
+            <Icon
+              class=""
+              name="material-symbols:settings-outline-rounded"
+              size="1.75rem"
+            />
             <span
               :class="`${is_expanded ? 'flex' : 'hidden'}`"
               class="menu-item-text"
@@ -130,11 +138,19 @@ watch(
 
 .sidebar.is-expanded {
   display: flex;
-  min-width: var(--sidebar-width);
-  max-width: var(--sidebar-width);
   height: 100%;
 
   transition: 0.2s ease-in-out;
+}
+
+.sidebar.is-expanded:not(.mobile-expanded) {
+  min-width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
+}
+
+.sidebar.is-expanded.mobile-expanded {
+  min-width: 100svw !important;
+  max-width: 100svw !important;
 }
 
 @media (max-width: 1023px) {
@@ -157,7 +173,7 @@ watch(
 }
 
 .dark .menu-toggle > * {
-  color: var(--dark-text-colour);
+  color: var(--dark-text-color);
 }
 
 .light .menu-toggle > * {
@@ -184,7 +200,7 @@ watch(
 }
 
 .dark .menu-item {
-  color: var(--dark-text-colour);
+  color: var(--dark-text-color);
 }
 
 .light .menu-item {
@@ -198,7 +214,7 @@ watch(
   align-items: center;
 
   padding: 0.5rem;
-  border-radius: theme(borderRadius.md);
+  border-radius: theme("borderRadius.md");
 }
 
 .menu-item-expanded {

@@ -53,11 +53,24 @@ function checkValidNearestMasjid() {
 </script>
 
 <template>
-  <div class="flex flex-col gap-10 sm:gap-20">
+  <div class="flex flex-col gap-10 sm:gap-10">
+    <p
+      v-if="nextPrayer.prayer"
+      class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
+    >
+      Next<span class="inline sm:hidden">: </span>
+      <span class="hidden sm:inline"> Prayer is </span>
+      <span class="daily-next-prayer">
+        {{ capitalizeFirstLetter(nextPrayer.prayer) }}</span>
+    </p>
     <HomeNearestPrayer
-      v-if="checkValidNearestPrayer"
+      v-if="checkValidNearestPrayer()"
       :data="nearestPrayerTimes"
+      :next-prayer="nextPrayer"
     />
-    <HomeNearestMasjid v-if="checkValidNearestMasjid" :data="nearestMasjids" />
+    <HomeNearestMasjid
+      v-if="checkValidNearestMasjid()"
+      :data="nearestMasjids"
+    />
   </div>
 </template>

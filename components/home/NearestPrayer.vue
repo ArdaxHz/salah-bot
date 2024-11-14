@@ -1,52 +1,19 @@
 <script setup>
 import { DateTime } from 'luxon'
-import { useLocationStore } from '@/composables/stores/location'
 
-const apiData = ref(null)
-const location = useLocationStore()
-const adhan = useAdhanStore()
+const props = defineProps({
+  data: Object,
+  nextPrayer: Object,
+})
+
 const activeRow = ref(null)
-const nextPrayer = ref(null)
-
-async function fetchData() {
-  nextPrayer.value = adhan.nextPrayer()
-  console.log(adhan.nextPrayer())
-  if (
-    location.location
-    && location.latitude !== 0
-    && location.longitude !== 0
-  ) {
-    try {
-      const [prayerTimesResponse] = await Promise.all([
-        $fetch('/api/prayertimes', {
-          headers: useRequestHeaders(['cookie']),
-          params: {
-            lat: location.latitude,
-            long: location.longitude,
-            datetime: '2024-11-08 23:50:00+0000',
-            adhan_passed: false,
-          },
-        }),
-      ])
-
-      if (prayerTimesResponse.data.count <= 0) {
-        apiData.value = null
-        return
-      }
-      apiData.value = prayerTimesResponse.data
-    }
-    catch (error) {
-      console.error('Error fetching data:', error)
-    }
-  }
-}
 
 function formatHTML(index) {
   let string = '<td colspan="4" class="content">'
-  let gmap_link = apiData.value.data[index].gmap_link
+  let gmap_link = props.data.value.data[index].gmap_link
 
-  if (!apiData.value.data[index].gmap_link) {
-    gmap_link = `https://www.google.com/maps/place/${apiData.value.data[index].lat},${apiData.value.data[index].long}`
+  if (!props.data.value.data[index].gmap_link) {
+    gmap_link = `https://www.google.com/maps/place/${props.data.value.data[index].lat},${props.data.value.data[index].long}`
   }
 
   string += `
@@ -119,30 +86,16 @@ function handleFocusOut(event) {
     activeRow.value = null
   }
 }
-
-watch(location, fetchData, { immediate: true })
 </script>
 
 <template>
   <div class="flex flex-col gap-3 lg:gap-6">
     <div class="flex flex-col sm:flex-row gap-2 w-full justify-between">
-      <p
-        v-if="apiData"
-        class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
-      >
+      <p class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl">
         Nearest Prayer
       </p>
-      <p
-        v-if="nextPrayer.prayer"
-        class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
-      >
-        Next<span class="inline sm:hidden">: </span>
-        <span class="hidden sm:inline"> Prayer is </span>
-        <span class="daily-next-prayer">
-          {{ capitalizeFirstLetter(nextPrayer.prayer) }}</span>
-      </p>
     </div>
-    <div v-if="apiData" class="accordion" @focusout="handleFocusOut">
+    <div class="accordion" @focusout="handleFocusOut">
       <table class="table hidden sm:table desktop-table" tabindex="0">
         <thead>
           <tr>
@@ -155,7 +108,7 @@ watch(location, fetchData, { immediate: true })
         </thead>
         <tbody>
           <tr
-            v-for="(nearestPrayer, index) in apiData.data"
+            v-for="(nearestPrayer, index) in data.data"
             :key="nearestPrayer.masjid_name"
             class="content-header cursor-pointer"
             @click="injectContent(index, $event)"
@@ -174,7 +127,7 @@ watch(location, fetchData, { immediate: true })
       </table>
       <div class="flex flex-col gap-1 sm:hidden mobile-table">
         <div
-          v-for="(nearestPrayer, index) in apiData.data"
+          v-for="(nearestPrayer, index) in data.data"
           :key="nearestPrayer.masjid_name"
           class="px-4 py-3 content-header"
           @click="injectContent(index, $event)"

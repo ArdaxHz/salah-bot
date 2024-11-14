@@ -1,46 +1,17 @@
 <script setup>
-import { useLocationStore } from '@/composables/stores/location'
+const props = defineProps({
+  data: Object,
+  nextPrayer: Object,
+})
 
-const apiData = ref(null)
-const location = useLocationStore()
-const adhan = useAdhanStore()
 const activeRow = ref(null)
-const nextPrayer = ref(null)
-
-async function fetchData() {
-  nextPrayer.value = adhan.nextPrayer()
-  console.log(adhan.nextPrayer())
-  console.log(location.location)
-  if (
-    location.location
-    && location.latitude !== 0
-    && location.longitude !== 0
-  ) {
-    try {
-      const [prayerTimesResponse] = await Promise.all([
-        $fetch('/api/masjids', {
-          headers: useRequestHeaders(['cookie']),
-          params: { lat: location.latitude, long: location.longitude },
-        }),
-      ])
-
-      if (prayerTimesResponse.count <= 0) {
-        return
-      }
-      apiData.value = prayerTimesResponse.data
-    }
-    catch (error) {
-      console.error('Error fetching data:', error)
-    }
-  }
-}
 
 function formatHTML(index) {
   let string = '<td colspan="4" class="content text-xs sm:text-base">'
-  let gmap_link = apiData.value.data[index].gmap_link
+  let gmap_link = props.data.data[index].gmap_link
 
-  if (!apiData.value.data[index].gmap_link) {
-    gmap_link = `https://www.google.com/maps/place/${apiData.value.data[index].lat},${apiData.value.data[index].long}`
+  if (!props.data.data[index].gmap_link) {
+    gmap_link = `https://www.google.com/maps/place/${props.data.data[index].lat},${props.data.data[index].long}`
   }
 
   string += `
@@ -113,8 +84,6 @@ function handleFocusOut(event) {
     activeRow.value = null
   }
 }
-
-watch(location, fetchData, { immediate: true })
 </script>
 
 <template>
@@ -124,7 +93,7 @@ watch(location, fetchData, { immediate: true })
         Nearest Masjid
       </p>
     </div>
-    <div v-if="apiData" class="accordion" @focusout="handleFocusOut">
+    <div class="accordion" @focusout="handleFocusOut">
       <table class="table hidden sm:table desktop-table" tabindex="0">
         <thead>
           <tr>
@@ -134,7 +103,7 @@ watch(location, fetchData, { immediate: true })
         </thead>
         <tbody>
           <tr
-            v-for="(nearestPrayer, index) in apiData.data"
+            v-for="(nearestPrayer, index) in data.data"
             :key="nearestPrayer.masjid_name"
             class="content-header cursor-pointer"
             @click="injectContent(index, $event)"
@@ -148,7 +117,7 @@ watch(location, fetchData, { immediate: true })
       </table>
       <div class="flex flex-col gap-1 sm:hidden mobile-table">
         <div
-          v-for="(nearestPrayer, index) in apiData.data"
+          v-for="(nearestPrayer, index) in data.data"
           :key="nearestPrayer.name"
           class="px-4 py-3 content-header"
           @click="injectContent(index, $event)"

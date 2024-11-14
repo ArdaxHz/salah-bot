@@ -30,7 +30,7 @@ onMounted(() => {
   <button class="menu-item menu-item-press" @click="getCurrentLocation">
     <Icon
       class="text-black dark:text-white"
-      name="mdi:map-marker-outline"
+      name="material-symbols:location-on-outline-rounded"
       size="2rem"
     />
   </button>

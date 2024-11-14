@@ -2,7 +2,7 @@
 import { useLocationStore } from '@/composables/stores/location'
 
 const props = defineProps({
-  is_mobile: Boolean,
+  isMobile: Boolean,
   expandedMenu: Boolean,
   expandedMenuVal: Number,
 })
@@ -38,13 +38,13 @@ watch(
   <div
     class="flex w-full h-full items-center justify-center bg-white dark:bg-flax-950 ring-2 ring-mulled-500 header"
   >
-    <div class="max-w-7xl flex w-full px-6 lg:px-8 py-4">
+    <div class="max-w-7xl flex w-full px-3 sm:px-6 lg:px-8 py-4">
       <div class="flex flex-row gap-3 sm:gap-6 items-center">
         <div class="flex lg:hidden menu-toggle-wrap rounded-md">
           <button class="menu-toggle flex lg:hidden" @click="ToggleMenu">
             <Icon
               class="text-black dark:text-white"
-              name="mdi:menu"
+              name="material-symbols:menu-rounded"
               size="2rem"
             />
           </button>

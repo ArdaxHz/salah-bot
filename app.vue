@@ -10,6 +10,7 @@ const PageContentRef = ref(null)
 const windowWidth = ref(0)
 const windowHeight = ref(0)
 const is_mobile = ref(true)
+const smaller_mobile = ref(true)
 const is_announcement = ref(false)
 
 useResizeObserver(rootContainer, (entries) => {
@@ -19,6 +20,7 @@ useResizeObserver(rootContainer, (entries) => {
   windowHeight.value = height
 
   is_mobile.value = windowWidth.value < 1023
+  smaller_mobile.value = windowWidth.value < 380
 })
 
 const expandedMenu = ref(!(windowWidth.value < 1023))
@@ -47,6 +49,7 @@ function handleMouseDown() {
       }`"
       :expanded-menu="expandedMenu"
       :expanded-menu-val="expandedMenuVal"
+      :is_mobile="smaller_mobile"
       class="hidden lg:flex !fixed lg:!sticky top-0 z-10 left-0"
       name="sidebar-logged-out"
       @focusout="handleMouseDown"
