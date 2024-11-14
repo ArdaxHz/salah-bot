@@ -16,43 +16,21 @@ function getSlideDirection(currentTab) {
 </script>
 
 <template>
-  <n-tabs
-    size="large" justify-content="space-evenly" class="card-tabs" animated
-  >
-    <n-tab-pane name="Adhan Calculator Settings" tab="Adhan">
-      <n-message-provider>
-        <SettingsAdhanSettings />
-      </n-message-provider>
-    </n-tab-pane>
-    <n-tab-pane name="signup" tab="Sign up">
-      <n-form>
-        <n-form-item-row label="Username">
-          <n-input />
-        </n-form-item-row>
-        <n-form-item-row label="Password">
-          <n-input />
-        </n-form-item-row>
-        <n-form-item-row label="Reenter Password">
-          <n-input />
-        </n-form-item-row>
-      </n-form>
-      <n-button type="primary" block secondary strong>
-        Sign up
-      </n-button>
-    </n-tab-pane>
-  </n-tabs>
-
-  <div role="tablist" class="tabs tabs-lifted -mb-[var(--tab-border)]">
+  <div class="tabs tabs-lifted -mb-[var(--tab-border)]" role="tablist">
     <input
       v-model="checked"
-      type="radio"
-      role="tab"
-      class="tab"
-      aria-label="Adhan Calculator Settings"
       :class="`${checked === 'tab-1' ? 'tab-active' : 'tab-inactive'}`"
+      aria-label="Adhan Calculator Settings"
+      class="tab"
+      role="tab"
+      type="radio"
       value="tab-1"
     >
-    <div role="tabpanel" class="tab-content p-6" :data-slide="getSlideDirection('tab-1')">
+    <div
+      :data-slide="getSlideDirection('tab-1')"
+      class="tab-content p-6"
+      role="tabpanel"
+    >
       <n-message-provider>
         <SettingsAdhanSettings />
       </n-message-provider>
@@ -60,27 +38,37 @@ function getSlideDirection(currentTab) {
 
     <input
       v-model="checked"
-      type="radio"
-      role="tab"
-      class="tab"
-      aria-label="Tab 2"
       :class="`${checked === 'tab-2' ? 'tab-active' : 'tab-inactive'}`"
+      aria-label="Tab 2"
+      class="tab"
+      role="tab"
+      type="radio"
       value="tab-2"
     >
-    <div role="tabpanel" class="tab-content p-6" :data-slide="getSlideDirection('tab-2')">
-      Tab content 2
+    <div
+      :data-slide="getSlideDirection('tab-2')"
+      class="tab-content p-6"
+      role="tabpanel"
+    >
+      <div class="tab-content-children">
+        Tab content 2
+      </div>
     </div>
 
     <input
       v-model="checked"
-      type="radio"
-      role="tab"
-      class="tab"
-      aria-label="Tab 3"
       :class="`${checked === 'tab-3' ? 'tab-active' : 'tab-inactive'}`"
+      aria-label="Tab 3"
+      class="tab"
+      role="tab"
+      type="radio"
       value="tab-3"
     >
-    <div role="tabpanel" class="tab-content p-6" :data-slide="getSlideDirection('tab-3')">
+    <div
+      :data-slide="getSlideDirection('tab-3')"
+      class="tab-content p-6"
+      role="tabpanel"
+    >
       <div class="tab-content-children">
         Tab content 3
       </div>
@@ -108,9 +96,9 @@ function getSlideDirection(currentTab) {
 }
 
 .tab-active {
-  --tab-bg: var(--fallback-n,oklch(var(--n)));
-  --tab-border-color: var(--fallback-n,oklch(var(--n)));
-  --tab-color: var(--fallback-nc,oklch(var(--nc)));
+  --tab-bg: var(--fallback-n, oklch(var(--n)));
+  --tab-border-color: var(--fallback-n, oklch(var(--n)));
+  --tab-color: var(--fallback-nc, oklch(var(--nc)));
 
   font-weight: theme(fontWeight.bold);
 }
@@ -120,46 +108,18 @@ function getSlideDirection(currentTab) {
 }
 
 .tab-content {
-  background-color: var(--fallback-n,oklch(var(--n)));
+  background-color: var(--fallback-n, oklch(var(--n)));
   border-radius: var(--tab-radius, 0.5rem /* 8px */);
-}
-.tab-content {
-  display: none;
-  opacity: 0;
-  transform: translateX(100%);
+
   transition: opacity 0.5s, transform 0.5s;
 }
 
-input[type="radio"]:checked + .tab-content-children {
-  display: block;
-  animation: fadeSlideIn 0.5s forwards;
+.tab-content > * + .tab-content[data-slide="left"] {
+  animation: fadeSlideInLeft 0.5s;
 }
 
-/* Indicator animation */
-.tabs::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  height: 4px;
-  width: 0;
-  background-color: #f00;
-  transition: transform 0.3s, width 0.3s;
-  z-index: 0;
-}
-
-input[type="radio"]:nth-child(1):checked ~ .tabs::after {
-  transform: translateX(0%);
-  width: calc(100% / 3);
-}
-
-input[type="radio"]:nth-child(3):checked ~ .tabs::after {
-  transform: translateX(100%);
-  width: calc(100% / 3);
-}
-
-input[type="radio"]:nth-child(5):checked ~ .tabs::after {
-  transform: translateX(200%);
-  width: calc(100% / 3);
+.tab-content > * + .tab-content[data-slide="right"] {
+  animation: fadeSlideInRight 0.5s;
 }
 
 /* Slide and fade animations */
@@ -168,7 +128,7 @@ input[type="radio"]:nth-child(5):checked ~ .tabs::after {
     opacity: 0;
     transform: translateX(100%);
   }
-  100% {
+  50% {
     opacity: 1;
     transform: translateX(0);
   }
@@ -185,21 +145,12 @@ input[type="radio"]:nth-child(5):checked ~ .tabs::after {
   }
 }
 
-/* Alternate animation for left-to-right and right-to-left */
-input[type="radio"]:checked + .tab-content[data-slide="left"] {
-  animation: fadeSlideInLeft 0.5s forwards;
-}
-
-input[type="radio"]:checked + .tab-content[data-slide="right"] {
-  animation: fadeSlideInRight 0.5s forwards;
-}
-
 @keyframes fadeSlideInLeft {
   0% {
     opacity: 0;
     transform: translateX(-100%);
   }
-  100% {
+  50% {
     opacity: 1;
     transform: translateX(0);
   }
@@ -210,7 +161,7 @@ input[type="radio"]:checked + .tab-content[data-slide="right"] {
     opacity: 0;
     transform: translateX(100%);
   }
-  100% {
+  50% {
     opacity: 1;
     transform: translateX(0);
   }

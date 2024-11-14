@@ -49,12 +49,10 @@ function handleMouseDown() {
       :expanded-menu-val="expandedMenuVal"
       class="hidden lg:flex !fixed lg:!sticky top-0 z-10 left-0"
       name="sidebar-logged-out"
+      @focusout="handleMouseDown"
       @toggle-menu="ToggleMenu"
     />
-    <div
-      class="flex flex-col items-center justify-start w-full h-full"
-      @mousedown="handleMouseDown"
-    >
+    <div class="flex flex-col items-center justify-start w-full h-full">
       <header
         class="!sticky top-0 leading-[0] z-[9] w-full h-[var(--header-height)]"
       >
@@ -68,7 +66,7 @@ function handleMouseDown() {
       </header>
       <main
         ref="PageContentRef"
-        class="w-full max-w-7xl px-6 lg:px-8 py-2 page z-0 mt-4 sm:mt-6"
+        class="w-full max-w-7xl px-3 sm:px-6 lg:px-8 py-2 page z-0 mt-4 sm:mt-6"
       >
         <NuxtLoadingIndicator color="#9081d3" />
         <NuxtPage />

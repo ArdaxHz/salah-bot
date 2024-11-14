@@ -5,12 +5,12 @@ import { useLocationStore } from '@/composables/stores/location'
 const apiData = ref(null)
 const location = useLocationStore()
 const adhan = useAdhanStore()
-const nextPrayer = ref(null)
 const activeRow = ref(null)
+const nextPrayer = ref(null)
 
 async function fetchData() {
   nextPrayer.value = adhan.nextPrayer()
-  console.log(nextPrayer.value)
+  console.log(adhan.nextPrayer())
   if (
     location.location
     && location.latitude !== 0
@@ -24,12 +24,14 @@ async function fetchData() {
             lat: location.latitude,
             long: location.longitude,
             datetime: '2024-11-08 23:50:00+0000',
-            next_prayer: nextPrayer.value ? nextPrayer.value.prayer : null,
+            adhan_passed: false,
           },
         }),
       ])
 
-      if (prayerTimesResponse.count <= 0) {
+      if (prayerTimesResponse.data.count <= 0) {
+        apiData.value = null
+        return
       }
       apiData.value = prayerTimesResponse.data
     }
@@ -37,6 +39,24 @@ async function fetchData() {
       console.error('Error fetching data:', error)
     }
   }
+}
+
+function formatHTML(index) {
+  let string = '<td colspan="4" class="content">'
+  let gmap_link = apiData.value.data[index].gmap_link
+
+  if (!apiData.value.data[index].gmap_link) {
+    gmap_link = `https://www.google.com/maps/place/${apiData.value.data[index].lat},${apiData.value.data[index].long}`
+  }
+
+  string += `
+  <a href=${gmap_link} target="_blank" rel="noopener noreferrer" class="flex items-center text-md hover:text-[var(--dark-text-secondary-color-hover)]">Open map for directions
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M6.4 18L5 16.6L14.6 7H6V5h12v12h-2V8.4z"/></svg>
+  </a>`
+
+  string += `</td>`
+
+  return string
 }
 
 function injectContent(index, event) {
@@ -70,7 +90,7 @@ function injectContent(index, event) {
     // Inject new expanded content
     expandedContent = document.createElement('tr')
     expandedContent.classList.add('expanded-content')
-    expandedContent.innerHTML = `<td colspan="4" class="content">More information about ${apiData.value.data[index].masjid_name} goes here...</td>`
+    expandedContent.innerHTML = formatHTML(index)
     expandableRow.parentNode.insertBefore(
       expandedContent,
       expandableRow.nextSibling
@@ -104,22 +124,26 @@ watch(location, fetchData, { immediate: true })
 </script>
 
 <template>
-  <a href="geo:124.028582,-29.201930" target="_blank">Click here for map</a>
-  <a
-    href="https://www.google.com/maps/place/51.542859,0.0881782"
-    target="_blank"
-  >Click here for map</a>
-
   <div class="flex flex-col gap-3 lg:gap-6">
-    <p class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl">
-      Next Prayer: {{ nextPrayer.prayer }}
-    </p>
-    <div v-if="apiData" class="accordion">
-      <table
-        class="table hidden sm:table"
-        tabindex="0"
-        @focusout="handleFocusOut"
+    <div class="flex flex-col sm:flex-row gap-2 w-full justify-between">
+      <p
+        v-if="apiData"
+        class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
       >
+        Nearest Prayer
+      </p>
+      <p
+        v-if="nextPrayer.prayer"
+        class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
+      >
+        Next<span class="inline sm:hidden">: </span>
+        <span class="hidden sm:inline"> Prayer is </span>
+        <span class="daily-next-prayer">
+          {{ capitalizeFirstLetter(nextPrayer.prayer) }}</span>
+      </p>
+    </div>
+    <div v-if="apiData" class="accordion" @focusout="handleFocusOut">
+      <table class="table hidden sm:table desktop-table" tabindex="0">
         <thead>
           <tr>
             <th>Masjid</th>
@@ -148,15 +172,20 @@ watch(location, fetchData, { immediate: true })
           </tr>
         </tbody>
       </table>
-      <div class="flex flex-col gap-2 sm:hidden mobile-table">
+      <div class="flex flex-col gap-1 sm:hidden mobile-table">
         <div
           v-for="(nearestPrayer, index) in apiData.data"
           :key="nearestPrayer.masjid_name"
-          class="px-4 py-3 rounded-md content-header"
+          class="px-4 py-3 content-header"
           @click="injectContent(index, $event)"
         >
           <p class="font-bold text-xl">
             {{ nearestPrayer.masjid_name }}
+          </p>
+          <br>
+          <p class="text-lg">
+            <strong>Distance:</strong>
+            {{ nearestPrayer.dist_meters.toFixed(0) }} metres
           </p>
           <p class="text-lg">
             <strong>Start:</strong>
@@ -196,6 +225,24 @@ watch(location, fetchData, { immediate: true })
   outline: none;
 }
 
+.mobile-table .expanded-content {
+  margin-top: -0.5rem;
+}
+
+.dark .daily-next-prayer {
+  padding: 0.5rem;
+  border-radius: theme("borderRadius.md");
+  background-color: var(--light-text-secondary-color-hover-light);
+  color: var(--dark-text-color);
+}
+
+.light .daily-next-prayer {
+  padding: 0.5rem;
+  border-radius: theme("borderRadius.md");
+  background-color: var(--light-text-secondary-color-hover-light);
+  color: var(--dark-text-color);
+}
+
 .dark .accordion :where(.content-header, .expanded-content) {
   color: var(--dark-text-color);
 }
@@ -212,14 +259,38 @@ watch(location, fetchData, { immediate: true })
   background-color: var(--light-text-accent-color-hover-light);
 }
 
-.accordion .content-header:not(.selected-row):hover td:first-child {
+.desktop-table .content-header:not(.selected-row):hover td:first-child {
   border-top-left-radius: 1rem;
   border-bottom-left-radius: 1rem;
 }
 
-.accordion .content-header:not(.selected-row):hover td:last-child {
+.desktop-table .content-header:not(.selected-row):hover td:last-child {
   border-top-right-radius: 1rem;
   border-bottom-right-radius: 1rem;
+}
+
+.mobile-table .content-header:not(.selected-row):hover {
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+}
+
+.mobile-table .content-header:not(.selected-row):hover {
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+.expanded-content {
+  padding: 1rem;
+}
+
+.mobile-table .expanded-content {
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+.mobile-table .content-header {
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
 }
 
 .dark .accordion :where(.selected-row, .expanded-content) {
@@ -230,16 +301,15 @@ watch(location, fetchData, { immediate: true })
   background-color: var(--dark-text-secondary-color-hover-light);
 }
 
-.selected-row td:first-child {
+.desktop-table .selected-row td:first-child {
   border-top-left-radius: 1rem;
 }
 
-.selected-row td:last-child {
+.desktop-table .selected-row td:last-child {
   border-top-right-radius: 1rem;
 }
 
-.expanded-content td {
-  padding-inline: 16px;
+.desktop-table .expanded-content td {
   border-bottom-left-radius: 1rem;
   border-bottom-right-radius: 1rem;
 }

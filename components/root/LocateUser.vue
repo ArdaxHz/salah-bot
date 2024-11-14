@@ -5,11 +5,19 @@ const location = useLocationStore()
 
 function getCurrentLocation() {
   if ('geolocation' in navigator) {
-    navigator.geolocation.getCurrentPosition((position) => {
-      location.$patch({ latitude: position.coords.latitude, longitude: position.coords.longitude })
-    }, (error) => {
-      console.log(error)
-    }, { enableHighAccuracy: true })
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        console.log(position.coords.latitude, position.coords.longitude)
+        location.$patch({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        })
+      },
+      (error) => {
+        console.log(error)
+      },
+      { enableHighAccuracy: true }
+    )
   }
 }
 
@@ -20,6 +28,10 @@ onMounted(() => {
 
 <template>
   <button class="menu-item menu-item-press" @click="getCurrentLocation">
-    <Icon name="mdi:map-marker-outline" size="2rem" class="text-black dark:text-white" />
+    <Icon
+      class="text-black dark:text-white"
+      name="mdi:map-marker-outline"
+      size="2rem"
+    />
   </button>
 </template>

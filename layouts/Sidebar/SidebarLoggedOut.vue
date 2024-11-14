@@ -38,7 +38,7 @@ watch(
              <img :src="logoURL" alt="Vue" />
         </div> -->
 
-    <div class="flex flex-col justify-b h-full w-full">
+    <div class="flex flex-col h-full w-full">
       <div
         class="menu-toggle-wrap flex flex-col mb-4 rounded-md justify-center items-center w-max"
       >
@@ -46,7 +46,6 @@ watch(
           <Icon class="" name="mdi:menu" size="2rem" />
         </button>
       </div>
-
       <div class="flex flex-col justify-between h-full w-full">
         <RootNavMenuItems :is_expanded="is_expanded" />
         <div

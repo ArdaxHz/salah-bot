@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { useLocationStore } from '@/composables/stores/location'
 import { useAdhanSettings } from '@/composables/stores/adhanSettings'
+import { calculateAdhanDay } from '@/composables/adhantimes'
 
 export const useTodayAdhanStore = defineStore('todayAdhan', () => {
   const fajr = ref(null)
@@ -35,11 +36,18 @@ export const useTodayAdhanStore = defineStore('todayAdhan', () => {
 
   function calculateToday() {
     const location = useLocationStore()
-    calculateAdhan(location)
+    calculateAdhan(new Date(), location)
   }
 
-  function calculateAdhan(location) {
-    const times = createAdhanObj(location)
+  function calculateTomorrow() {
+    const location = useLocationStore()
+    const date = new Date()
+    date.setDate(date.getDate() + 1)
+    return createAdhanObj(date, location)
+  }
+
+  function calculateAdhan(date, location) {
+    const times = createAdhanObj(date, location)
     fajr.value = times.fajr
     sunrise.value = times.sunrise
     dhuhr.value = times.dhuhr
@@ -50,15 +58,16 @@ export const useTodayAdhanStore = defineStore('todayAdhan', () => {
     date.value = times.date
   }
 
-  function createAdhanObj(location) {
+  function createAdhanObj(date, location) {
     const adhanSettings = useAdhanSettings()
     if (location.latitude == null || location.latitude === 0) {
       return
     }
 
-    const times = calculateAdhanToday(
+    const times = calculateAdhanDay(
       location.latitude,
       location.longitude,
+      date,
       adhanSettings.params()
     )
     return times.prayerTimes
@@ -75,6 +84,7 @@ export const useTodayAdhanStore = defineStore('todayAdhan', () => {
     daily,
     toJson,
     calculateToday,
+    calculateTomorrow,
     calculateAdhan,
     createAdhanObj,
   }

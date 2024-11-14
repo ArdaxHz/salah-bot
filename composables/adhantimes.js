@@ -1,5 +1,10 @@
 import { DateTime } from 'luxon'
-import { CalculationMethod, Coordinates, HighLatitudeRule, PrayerTimes } from 'adhan'
+import {
+  CalculationMethod,
+  Coordinates,
+  HighLatitudeRule,
+  PrayerTimes,
+} from 'adhan'
 import HijrahDate from 'hijrah-date'
 
 const HijriMonths = {
@@ -15,7 +20,7 @@ const HijriMonths = {
     'Ram',
     'Shaw',
     'Dhuʻl-Q',
-    'Dhuʻl-H'
+    'Dhuʻl-H',
   ],
   STANDALONEMONTH: [
     'Muharram',
@@ -29,27 +34,50 @@ const HijriMonths = {
     'Ramadan',
     'Shawwal',
     'Dhuʻl-Qiʻdah',
-    'Dhuʻl-Hijjah'
-  ]
+    'Dhuʻl-Hijjah',
+  ],
 }
 
 const salaahs = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha']
 
 export function convertToHijri(date) {
   const hijriDate = new HijrahDate(date)
-  return { date: hijriDate, month_long: HijriMonths.STANDALONEMONTH[hijriDate._monthOfYear - 1], month_short: HijriMonths.SHORTMONTH[hijriDate._monthOfYear - 1] }
+  return {
+    date: hijriDate,
+    month_long: HijriMonths.STANDALONEMONTH[hijriDate._monthOfYear - 1],
+    month_short: HijriMonths.SHORTMONTH[hijriDate._monthOfYear - 1],
+  }
 }
 
-export function calculateAdhanTimesDay(latitude, longitude, date, customParams) {
-  const prayerTimes = calculateAdhanTimesDayRaw(latitude, longitude, date, customParams)
+export function calculateAdhanTimesDay(
+  latitude,
+  longitude,
+  date,
+  customParams
+) {
+  const prayerTimes = calculateAdhanTimesDayRaw(
+    latitude,
+    longitude,
+    date,
+    customParams
+  )
 
   const formattedDate = DateTime.fromJSDate(date).toISODate()
   const day = {}
-  day[formattedDate] = { ...prayerTimes, prayerTimes, hijri: convertToHijri(formattedDate) }
+  day[formattedDate] = {
+    ...prayerTimes,
+    prayerTimes,
+    hijri: convertToHijri(formattedDate),
+  }
   return day
 }
 
-export function calculateAdhanTimesDayRaw(latitude, longitude, date, customParams) {
+export function calculateAdhanTimesDayRaw(
+  latitude,
+  longitude,
+  date,
+  customParams
+) {
   const coordinates = new Coordinates(latitude, longitude)
 
   const paramsToUse = CalculationMethod[customParams.method]()
@@ -58,7 +86,11 @@ export function calculateAdhanTimesDayRaw(latitude, longitude, date, customParam
 
   const prayerTimes = new PrayerTimes(coordinates, date, paramsToUse)
   paramsToUse.highLatitudeRule = HighLatitudeRule.recommended(coordinates)
-  const prayerTimesIshaChanged = new PrayerTimes(coordinates, date, paramsToUse)
+  const prayerTimesIshaChanged = new PrayerTimes(
+    coordinates,
+    date,
+    paramsToUse
+  )
 
   // if (checkTimeWithinRange(prayerTimes.fajr, prayerTimes.isha, 5)) {
   //     const newIshaTime = new Date(prayerTimes.maghrib.getTime() + 60 * 60 * 1000);
@@ -66,28 +98,48 @@ export function calculateAdhanTimesDayRaw(latitude, longitude, date, customParam
   // }
 
   prayerTimes.isha = prayerTimesIshaChanged.isha
-  console.log(prayerTimes)
   return prayerTimes
 }
 
-export function calculateAdhanToday(latitude, longitude, customParams) {
-  return Object.values(calculateAdhanTimesDay(latitude, longitude, new Date(), customParams))[0]
+export function calculateAdhanDay(latitude, longitude, date, customParams) {
+  return Object.values(
+    calculateAdhanTimesDay(latitude, longitude, date, customParams)
+  )[0]
 }
+
+export function calculateAdhanTomorrow() {}
 
 export function calculateAdhanMonth(latitude, longitude, date, customParams) {
   let month = {}
-  const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
+  const daysInMonth = new Date(
+    date.getFullYear(),
+    date.getMonth() + 1,
+    0
+  ).getDate()
 
   for (let i = 1; i <= daysInMonth; i++) {
     const dailyDate = new Date(date.getFullYear(), date.getMonth(), i, 12, 0)
-    month = Object.assign(month, calculateAdhanTimesDay(latitude, longitude, DateTime.fromJSDate(dailyDate), customParams))
+    month = Object.assign(
+      month,
+      calculateAdhanTimesDay(
+        latitude,
+        longitude,
+        DateTime.fromJSDate(dailyDate),
+        customParams
+      )
+    )
   }
   return month
 }
 
-export function nextPrayer(prayerTimes, date = new Date()) {
-  if (date >= prayerTimes.isha) {
-    return null
+export function nextPrayer(prayerTimes, date, tomorrow) {
+  const midnightTomorrow = new Date()
+  midnightTomorrow.setHours(24, 0, 0, 0)
+  const midnightToday = new Date(date.getTime())
+  midnightToday.setHours(0, 0, 0, 0)
+
+  if (date >= prayerTimes.isha && date < midnightTomorrow) {
+    return { prayer: 'fajr', time: tomorrow.fajr }
   }
   else if (date >= prayerTimes.maghrib) {
     return { prayer: 'isha', time: prayerTimes.isha }
@@ -104,12 +156,15 @@ export function nextPrayer(prayerTimes, date = new Date()) {
   else if (date >= prayerTimes.fajr) {
     return { prayer: 'sunrise', time: prayerTimes.sunrise }
   }
-  else {
+  else if (date >= midnightToday) {
     return { prayer: 'fajr', time: prayerTimes.fajr }
+  }
+  else {
+    return null
   }
 }
 
-export function currentPrayer(prayerTimes, date = new Date()) {
+export function currentPrayer(prayerTimes, date) {
   if (date >= prayerTimes.isha) {
     return { prayer: 'isha', time: prayerTimes.isha }
   }
