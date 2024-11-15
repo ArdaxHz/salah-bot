@@ -55,7 +55,10 @@ function handleMouseDown() {
       @focusout="handleMouseDown"
       @toggle-menu="ToggleMenu"
     />
-    <div class="flex flex-col items-center justify-start w-full h-full">
+    <div
+      class="flex flex-col items-center justify-start w-full h-full"
+      @focusin="handleMouseDown"
+    >
       <header
         class="!sticky top-0 leading-[0] z-[9] w-full h-[var(--header-height)]"
       >

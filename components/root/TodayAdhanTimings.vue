@@ -12,7 +12,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <table class="hidden xs:table table-auto w-full">
+  <table v-if="adhan" class="hidden xs:table table-auto w-full">
     <thead>
       <tr>
         <th class="px-2 py-1">
@@ -34,20 +34,13 @@ onMounted(() => {
     </thead>
     <tbody>
       <tr>
-        <td
-          v-for="adhanTime in adhan.today()"
-          v-if="adhan"
-          class="px-2 py-1 text-center"
-        >
+        <td v-for="adhanTime in adhan.today()" class="px-2 py-1 text-center">
           {{
             (
               DateTime.fromJSDate(adhanTime) || DateTime.fromISO(adhanTime)
             ).toLocaleString(DateTime.TIME_SIMPLE)
           }}
         </td>
-        <!-- <td v-for="adhanTime in adhan.today()" v-if="!adhan" class="px-2 py-1 text-center">
-{{ (DateTime.fromJSDate(adhanTime) || DateTime.fromISO(adhanTime)).toLocaleString(DateTime.TIME_SIMPLE) }}
-</td> -->
       </tr>
     </tbody>
   </table>
