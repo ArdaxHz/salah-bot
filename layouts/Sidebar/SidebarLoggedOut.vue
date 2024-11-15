@@ -38,10 +38,6 @@ watch(
     }"
     class="sidebar flex relative flex-col bg-whtie ring-2 ring-mulled-500 dark:bg-flax-950"
   >
-    <!-- <div class="logo">
-             <img :src="logoURL" alt="Vue" />
-        </div> -->
-
     <div class="flex flex-col h-full w-full">
       <div
         class="menu-toggle-wrap flex flex-col mb-4 rounded-md justify-center items-center w-max"
@@ -51,7 +47,7 @@ watch(
         </button>
       </div>
       <div class="flex flex-col justify-between h-full w-full">
-        <RootNavMenuItems :is_expanded="is_expanded" />
+        <RootNavMenuItems :is_expanded="is_expanded" @click="ToggleMenu" />
         <div
           :class="`${
             is_expanded
@@ -64,6 +60,7 @@ watch(
             :class="`${is_expanded ? 'menu-item-expanded ' : ''}`"
             class="menu-item"
             to="/settings"
+            @click="ToggleMenu"
           >
             <Icon
               class=""

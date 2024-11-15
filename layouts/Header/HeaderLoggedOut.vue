@@ -49,9 +49,7 @@ watch(
             />
           </button>
         </div>
-        <NuxtLink to="/">
-          <RootTodayAdhanTimings />
-        </NuxtLink>
+        <RootTodayAdhanTimings />
         <!-- <p class="text-2xl font-bold whitespace-normal">Assalamu Alaikum</p>
                 <NuxtLink class="text-2xl font-bold whitespace-normal" v-if="nextSalah" to="/">
                     Next Salah: {{ capitalizeFirstLetter(nextSalah) }}

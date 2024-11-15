@@ -10,10 +10,10 @@ const activeRow = ref(null)
 
 function formatHTML(index) {
   let string = '<td colspan="4" class="content">'
-  let gmap_link = props.data.value.data[index].gmap_link
+  let gmap_link = props.data.data[index].gmap_link
 
-  if (!props.data.value.data[index].gmap_link) {
-    gmap_link = `https://www.google.com/maps/place/${props.data.value.data[index].lat},${props.data.value.data[index].long}`
+  if (!props.data.data[index].gmap_link) {
+    gmap_link = `https://www.google.com/maps/place/${props.data.data[index].lat},${props.data.data[index].long}`
   }
 
   string += `
@@ -180,20 +180,6 @@ function handleFocusOut(event) {
 
 .mobile-table .expanded-content {
   margin-top: -0.5rem;
-}
-
-.dark .daily-next-prayer {
-  padding: 0.5rem;
-  border-radius: theme("borderRadius.md");
-  background-color: var(--light-text-secondary-color-hover-light);
-  color: var(--dark-text-color);
-}
-
-.light .daily-next-prayer {
-  padding: 0.5rem;
-  border-radius: theme("borderRadius.md");
-  background-color: var(--light-text-secondary-color-hover-light);
-  color: var(--dark-text-color);
 }
 
 .dark .accordion :where(.content-header, .expanded-content) {

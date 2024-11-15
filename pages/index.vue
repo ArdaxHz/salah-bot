@@ -1,15 +1,17 @@
 <script setup>
+import { DateTime } from 'luxon'
 import { useLocationStore } from '@/composables/stores/location'
 
 const adhan = useAdhanStore()
 const location = useLocationStore()
 const nearestPrayerTimes = ref(null)
 const nearestMasjids = ref(null)
+const currentPrayer = ref(null)
 const nextPrayer = ref(null)
 
 async function fetchData() {
+  currentPrayer.value = adhan.currentPrayer()
   nextPrayer.value = adhan.nextPrayer()
-  console.log(adhan.nextPrayer())
   if (
     location.location
     && location.latitude !== 0
@@ -54,19 +56,28 @@ function checkValidNearestMasjid() {
 
 <template>
   <div class="flex flex-col gap-10 sm:gap-10">
-    <p
-      v-if="nextPrayer"
-      class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
+    <div
+      class="flex flex-col-reverse sm:flex-row gap-4 sm:flex-0 justify-between"
     >
-      Next Prayer<span class="inline sm:hidden">: </span>
-      <span class="hidden sm:inline"> is </span>
-      <span class="daily-next-prayer">
-        {{ capitalizeFirstLetter(nextPrayer.prayer) }}</span>
-    </p>
+      <p
+        v-if="currentPrayer"
+        class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
+      >
+        <span class="daily-current-prayer">
+          {{ capitalizeFirstLetter(currentPrayer.prayer) }}</span>
+      </p>
+      <p
+        v-if="nextPrayer"
+        class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
+      >
+        {{ capitalizeFirstLetter(nextPrayer.prayer) }}
+        <span> {{ DateTime.fromJSDate(nextPrayer.time).toRelative() }}</span>
+      </p>
+    </div>
     <HomeNearestPrayer
       v-if="checkValidNearestPrayer()"
       :data="nearestPrayerTimes"
-      :next-prayer="nextPrayer"
+      :next-prayer="currentPrayer"
     />
     <HomeNearestMasjid
       v-if="checkValidNearestMasjid()"
@@ -74,3 +85,19 @@ function checkValidNearestMasjid() {
     />
   </div>
 </template>
+
+<style>
+.dark .daily-current-prayer {
+  padding: 0.5rem;
+  border-radius: theme("borderRadius.md");
+  background-color: var(--light-text-secondary-color-hover-light);
+  color: var(--dark-text-color);
+}
+
+.light .daily-current-prayer {
+  padding: 0.5rem;
+  border-radius: theme("borderRadius.md");
+  background-color: var(--light-text-secondary-color-hover-light);
+  color: var(--dark-text-color);
+}
+</style>
