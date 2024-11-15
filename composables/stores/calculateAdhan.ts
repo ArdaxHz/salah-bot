@@ -46,16 +46,18 @@ export const useTodayAdhanStore = defineStore('todayAdhan', () => {
     return createAdhanObj(date, location)
   }
 
-  function calculateAdhan(date, location) {
-    const times = createAdhanObj(date, location)
-    fajr.value = times.fajr
-    sunrise.value = times.sunrise
-    dhuhr.value = times.dhuhr
-    asr.value = times.asr
-    maghrib.value = times.maghrib
-    sunset.value = times.sunset
-    isha.value = times.isha
-    date.value = times.date
+  function calculateAdhan(dateObj, location) {
+    const times = createAdhanObj(dateObj, location)
+    if (times) {
+      fajr.value = times.fajr
+      sunrise.value = times.sunrise
+      dhuhr.value = times.dhuhr
+      asr.value = times.asr
+      maghrib.value = times.maghrib
+      sunset.value = times.sunset
+      isha.value = times.isha
+      date.value = times.date
+    }
   }
 
   function createAdhanObj(date, location) {
