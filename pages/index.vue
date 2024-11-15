@@ -55,7 +55,7 @@ function checkValidNearestMasjid() {
 <template>
   <div class="flex flex-col gap-10 sm:gap-10">
     <p
-      v-if="nextPrayer.prayer"
+      v-if="nextPrayer"
       class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
     >
       Next Prayer<span class="inline sm:hidden">: </span>
