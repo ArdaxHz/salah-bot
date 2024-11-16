@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: [
+    '@nuxt/ui',
     '@nuxtjs/tailwindcss',
     '@bg-dev/nuxt-naiveui',
     '@nuxtjs/i18n',
@@ -13,7 +14,6 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     'pinia-plugin-persistedstate/nuxt',
     '@nuxt/fonts',
-    '@nuxt/ui',
     '@nuxthub/core',
   ],
   i18n: {

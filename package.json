@@ -40,6 +40,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^2.26.0",
     "@bg-dev/nuxt-naiveui": "1.0.0-edge.2",
+    "@iconify-json/material-symbols": "^1.2.6",
     "@iconify-json/mdi": "^1.2.1",
     "@nuxtjs/i18n": "^8.4.0",
     "@nuxtjs/tailwindcss": "^6.11.4",
