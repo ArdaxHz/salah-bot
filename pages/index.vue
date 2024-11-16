@@ -70,8 +70,16 @@ function checkValidNearestMasjid() {
         v-if="nextPrayer"
         class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
       >
-        {{ capitalizeFirstLetter(nextPrayer.prayer) }}
-        <span> {{ DateTime.fromJSDate(nextPrayer.time).toRelative() }}</span>
+        <RootToolTip
+          :text="`${DateTime.fromJSDate(nextPrayer.time).toLocaleString(
+            DateTime.DATETIME_FULL,
+          )}`"
+        >
+          <template #content>
+            {{ capitalizeFirstLetter(nextPrayer.prayer) }}
+            {{ DateTime.fromJSDate(nextPrayer.time).toRelative() }}
+          </template>
+        </RootToolTip>
       </p>
     </div>
     <HomeNearestPrayer

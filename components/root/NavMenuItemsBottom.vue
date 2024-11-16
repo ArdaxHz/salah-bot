@@ -4,7 +4,16 @@ const props = defineProps({
 })
 
 const nav = ref([
-  { label: 'Home', icon: 'material-symbols:home-outline-rounded', to: '/' },
+  {
+    label: 'Account',
+    icon: 'material-symbols:account-circle-outline',
+    to: '/me',
+  },
+  {
+    label: 'Settings',
+    icon: 'material-symbols:settings-outline-rounded',
+    to: '/settings',
+  },
 ])
 </script>
 
@@ -13,7 +22,7 @@ const nav = ref([
     :class="`${
       is_expanded ? 'justify-start items-start' : 'items-center justify-center'
     }`"
-    class="flex menu-header flex-col gap-2"
+    class="flex menu-header flex-col gap-2 w-full"
   >
     <NuxtLink
       v-for="menu in nav"

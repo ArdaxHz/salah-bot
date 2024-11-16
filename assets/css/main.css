@@ -50,6 +50,9 @@
     --header-height: 4rem;
     --announcement-height: 2rem;
 
+    --light-bg-color: white;
+    --dark-bg-color: theme('colors.flax.950');
+
     --light-text-color: black;
     --light-text-accent-color: theme('colors.flax.800');
     --light-text-secondary-color: theme('colors.mulled.800');
@@ -72,14 +75,17 @@
 
     --dark-text-accent-color-hover-light: theme('colors.flax.600');
     --dark-text-secondary-color-hover-light: theme('colors.mulled.300');
+
+    --dark-accent-color-dark: theme('colors.flax.900');
+    --dark-secondary-color-dark: theme('colors.mulled.900');
 }
 
 html.dark {
-    background-color: theme('colors.flax.950');
+    background-color: var(--dark-bg-color);
 }
 
 html.light {
-    background-color: white;
+    background-color: var(--light-bg-color);
 }
 
 

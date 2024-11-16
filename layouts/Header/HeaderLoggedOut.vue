@@ -32,14 +32,14 @@ watch(
 
 <template>
   <div
-    class="flex w-full h-full items-center justify-center bg-white dark:bg-flax-950 ring-2 ring-mulled-500 header"
+    class="flex w-full h-full items-center justify-center bg-[var(--light-bg-color)] dark:bg-[var(--dark-bg-color)] ring-2 ring-[var(--neutral-secondary-color)] header"
   >
     <div class="max-w-7xl flex w-full px-3 sm:px-6 lg:px-8 py-4">
       <div class="flex flex-row gap-3 sm:gap-6 items-center">
         <div class="flex lg:hidden menu-toggle-wrap rounded-md">
           <button class="menu-toggle flex lg:hidden" @click="ToggleMenu">
             <Icon
-              class="text-black dark:text-white"
+              class="[var(--light-text-color)] dark:[var(--dark-text-color)]"
               name="material-symbols:menu-rounded"
               size="2rem"
             />

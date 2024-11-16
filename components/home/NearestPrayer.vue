@@ -120,7 +120,15 @@ function handleFocusOut(event) {
               {{ nearestPrayer.dist_meters.toFixed(0) }} metres
             </td>
             <td>
-              {{ DateTime.fromISO(nearestPrayer.prayer_time).toRelative() }}
+              <RootToolTip
+                :text="`${DateTime.fromISO(
+                  nearestPrayer.prayer_time,
+                ).toLocaleString(DateTime.DATETIME_FULL)}`"
+              >
+                <template #content>
+                  {{ DateTime.fromISO(nearestPrayer.prayer_time).toRelative() }}
+                </template>
+              </RootToolTip>
             </td>
           </tr>
         </tbody>
@@ -140,10 +148,19 @@ function handleFocusOut(event) {
             <strong>Distance:</strong>
             {{ nearestPrayer.dist_meters.toFixed(0) }} metres
           </p>
-          <p class="text-lg">
-            <strong>Start:</strong>
-            {{ DateTime.fromISO(nearestPrayer.prayer_time).toRelative() }}
-          </p>
+
+          <RootToolTip
+            :text="`${DateTime.fromISO(
+              nearestPrayer.prayer_time,
+            ).toLocaleString(DateTime.DATETIME_FULL)}`"
+          >
+            <template #content>
+              <p class="text-lg">
+                <strong>Start:</strong>
+                {{ DateTime.fromISO(nearestPrayer.prayer_time).toRelative() }}
+              </p>
+            </template>
+          </RootToolTip>
         </div>
       </div>
     </div>

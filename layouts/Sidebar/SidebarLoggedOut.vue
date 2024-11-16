@@ -41,10 +41,10 @@ watch(
   <aside
     ref="SideBarMenu"
     :class="{
-      'is-expanded bg-white': is_expanded,
+      'is-expanded bg-[var(--light-bg-color)]': is_expanded,
       'mobile-expanded': is_smaller_mobile,
     }"
-    class="sidebar flex relative flex-col bg-whtie ring-2 ring-mulled-500 dark:bg-flax-950"
+    class="sidebar flex relative flex-col bg-[var(--light-bg-color)] dark:bg-[var(--dark-bg-color)] ring-2 ring-[var(--neutral-secondary-color)]"
   >
     <div class="flex flex-col h-full w-full">
       <div
@@ -54,8 +54,16 @@ watch(
           <Icon name="material-symbols:menu-rounded" size="2rem" />
         </button>
       </div>
-      <div class="flex flex-col justify-between h-full w-full">
-        <RootNavMenuItems :is_expanded="is_expanded" @click="ToggleMenuOff" />
+      <div
+        :class="{
+          'overflow-y-auto': is_expanded,
+        }"
+        class="flex flex-col justify-between h-full w-full"
+      >
+        <RootNavMenuItemsTop
+          :is_expanded="is_expanded"
+          @click="ToggleMenuOff"
+        />
         <div
           :class="`${
             is_expanded
@@ -64,22 +72,10 @@ watch(
           }`"
           class="menu-footer flex gap-4"
         >
-          <NuxtLink
-            :class="`${is_expanded ? 'menu-item-expanded ' : ''}`"
-            class="menu-item"
-            to="/settings"
+          <RootNavMenuItemsBottom
+            :is_expanded="is_expanded"
             @click="ToggleMenuOff"
-          >
-            <Icon
-              class=""
-              name="material-symbols:settings-outline-rounded"
-              size="1.75rem"
-            />
-            <span
-              :class="`${is_expanded ? 'flex' : 'hidden'}`"
-              class="menu-item-text"
-            >Settings</span>
-          </NuxtLink>
+          />
           <RootThemeSelector
             :class="`${is_expanded ? 'rotate-0' : '-rotate-90'}`"
             :is_expanded="is_expanded"
@@ -128,6 +124,7 @@ watch(
 .sidebar {
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 
   box-shadow: 4px 0 2px -2px;
 
