@@ -1,6 +1,7 @@
 <script setup>
 import { DateTime } from 'luxon'
 import { useLocationStore } from '@/composables/stores/location'
+import { useAdhanStore } from '@/composables/stores/adhan'
 
 const adhan = useAdhanStore()
 const location = useLocationStore()
@@ -8,8 +9,12 @@ const nearestPrayerTimes = ref(null)
 const nearestMasjids = ref(null)
 const currentPrayer = ref(null)
 const nextPrayer = ref(null)
+const isLoading = ref(true)
+const isError = ref(false)
 
 async function fetchData() {
+  isLoading.value = true
+  isError.value = false
   currentPrayer.value = adhan.currentPrayer()
   nextPrayer.value = adhan.nextPrayer()
   if (
@@ -39,6 +44,10 @@ async function fetchData() {
     }
     catch (error) {
       console.error('Error fetching data:', error)
+      isError.value = true
+    }
+    finally {
+      isLoading.value = false
     }
   }
 }
@@ -55,46 +64,120 @@ function checkValidNearestMasjid() {
 </script>
 
 <template>
-  <div class="flex flex-col gap-10 sm:gap-10">
-    <div
-      class="flex flex-col-reverse sm:flex-row gap-4 sm:flex-0 justify-between"
-    >
-      <p
-        v-if="currentPrayer"
-        class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
-      >
-        <span class="daily-current-prayer">
-          {{ capitalizeFirstLetter(currentPrayer.prayer) }}</span>
-      </p>
-      <p
-        v-if="nextPrayer"
-        class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
-      >
-        <RootToolTip
-          :text="`${DateTime.fromJSDate(nextPrayer.time).toLocaleString(
-            DateTime.DATETIME_FULL,
-          )}`"
-        >
-          <template #content>
-            {{ capitalizeFirstLetter(nextPrayer.prayer) }}
-            {{ DateTime.fromJSDate(nextPrayer.time).toRelative() }}
-          </template>
-        </RootToolTip>
-      </p>
+  <div>
+    <div class="flex flex-col gap-10 sm:gap-10">
+      <div class="flex flex-col sm:flex-row gap-4 sm:flex-0 justify-between">
+        <div class="skeleton h-10 w-24 rounded-md" />
+        <div class="skeleton h-10 w-48 rounded-md" />
+      </div>
+      <HomeNearestPrayer
+        v-if="checkValidNearestPrayer()"
+        :data="nearestPrayerTimes"
+        :next-prayer="currentPrayer"
+      />
+      <HomeNearestMasjid
+        v-if="checkValidNearestMasjid()"
+        :data="nearestMasjids"
+      />
     </div>
-    <HomeNearestPrayer
-      v-if="checkValidNearestPrayer()"
-      :data="nearestPrayerTimes"
-      :next-prayer="currentPrayer"
-    />
-    <HomeNearestMasjid
-      v-if="checkValidNearestMasjid()"
-      :data="nearestMasjids"
-    />
+    <!--    <div v-else-if="isError" class="error-message"> -->
+    <!--      Failed to load data. Please try again later. -->
+    <!--    </div> -->
+    <div class="flex flex-col gap-10 sm:gap-10">
+      <div class="flex flex-col sm:flex-row gap-4 sm:flex-0 justify-between">
+        <p
+          v-if="currentPrayer"
+          class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
+        >
+          <span class="daily-current-prayer">
+            {{ capitalizeFirstLetter(currentPrayer.prayer) }}</span>
+        </p>
+        <p
+          v-if="nextPrayer"
+          class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
+        >
+          <RootToolTip
+            :text="`${DateTime.fromJSDate(nextPrayer.time).toLocaleString(
+              DateTime.DATETIME_FULL,
+            )}`"
+          >
+            <template #content>
+              {{ capitalizeFirstLetter(nextPrayer.prayer) }}
+              {{ DateTime.fromJSDate(nextPrayer.time).toRelative() }}
+            </template>
+          </RootToolTip>
+        </p>
+      </div>
+      <HomeNearestPrayer
+        v-if="checkValidNearestPrayer()"
+        :data="nearestPrayerTimes"
+        :next-prayer="currentPrayer"
+      />
+      <div class="flex flex-col gap-5">
+        <HomeNearestMasjid
+          v-if="checkValidNearestMasjid()"
+          :data="nearestMasjids"
+        />
+        <div
+          class="text-center text-base underline underline-offset-2"
+          colspan="4"
+        >
+          <NuxtLink
+            class="inline-flex items-center text-[var(--light-text-color)] dark:text-[var(--dark-text-color)] hover:text-[var(--dark-text-accent-color-hover-light)] dark:hover:text-[var(--light-text-accent-color-hover-light)]"
+            to="/masjids"
+          >
+            More Masaajid
+            <Icon
+              name="material-symbols:arrow-outward-rounded"
+              size="1.25rem"
+            />
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <style>
+.skeleton-item {
+  //background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+  height: 20px;
+  animation: skeleton-loading 1.5s infinite ease-in-out;
+}
+
+.skeleton-prayer {
+  width: 60%;
+  height: 30px;
+}
+
+.skeleton-next-prayer {
+  width: 80%;
+  height: 30px;
+}
+
+.skeleton-nearest-masjid {
+  width: 100%;
+  height: 50px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 20px;
+}
+
 .dark .daily-current-prayer {
   padding: 0.5rem;
   border-radius: theme("borderRadius.md");

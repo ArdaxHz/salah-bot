@@ -7,7 +7,7 @@ const props = defineProps({ text: String })
     :popper="{ arrow: true }"
     :text="text"
     :ui="{
-      base: 'sm:text-sm',
+      base: 'sm:text-sm [@media(pointer:coarse)]:!block',
       background: 'bg-[var(--light-bg-color)] dark:bg-[var(--dark-bg-color)]',
       ring: 'ring-[var(--neutral-secondary-color)] dark:ring-[var(--neutral-secondary-color)]',
       arrow: {

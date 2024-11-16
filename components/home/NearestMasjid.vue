@@ -28,7 +28,6 @@ function injectContent(index, event) {
   const expandableRow = event.currentTarget
   let expandedContent = expandableRow.nextElementSibling
 
-  // Remove any existing expanded content if it's not the current row
   if (activeRow.value && activeRow.value !== expandableRow) {
     const previousExpandedContent = activeRow.value.nextElementSibling
     if (
@@ -90,7 +89,7 @@ function handleFocusOut(event) {
   <div class="flex flex-col gap-3 lg:gap-6">
     <div class="flex w-full justify-between">
       <p class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl">
-        Nearest Masjid
+        Nearest Masaajid
       </p>
     </div>
     <div class="accordion" @focusout="handleFocusOut">

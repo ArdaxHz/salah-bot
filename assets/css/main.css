@@ -80,6 +80,20 @@
     --dark-secondary-color-dark: theme('colors.mulled.900');
 }
 
+.skeleton {
+    --rounded-box: theme('borderRadius.md');
+}
+
+.dark .skeleton {
+    --fallback-b3: #4e4e4e;
+    --fallback-b1: #5a5a5a;
+}
+
+.light .skeleton {
+    --fallback-b3: #ECECEC;
+    --fallback-b1: #white;
+}
+
 html.dark {
     background-color: var(--dark-bg-color);
 }

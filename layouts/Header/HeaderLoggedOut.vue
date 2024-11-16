@@ -50,7 +50,7 @@ watch(
           <div class="flex xs:hidden items-center w-full">
             <NuxtLink class="menu-item menu-item-text" to="/today">
               <Icon
-                name="material-symbols:prayer-times-outline-rounded"
+                name="material-symbols:alarm-outline-rounded"
                 size="1.75rem"
               />
               Today

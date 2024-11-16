@@ -73,7 +73,7 @@ function handleMouseDown() {
       </header>
       <main
         ref="PageContentRef"
-        class="w-full max-w-7xl px-3 sm:px-6 lg:px-8 py-2 page z-0 mt-4 sm:mt-6"
+        class="w-full max-w-7xl px-3 sm:px-6 lg:px-8 py-2 page z-0 mt-4 sm:mt-6 mb-8 sm:mb-12"
       >
         <NuxtLoadingIndicator color="#9081d3" />
         <NuxtPage />

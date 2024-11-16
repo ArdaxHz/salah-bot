@@ -7,11 +7,16 @@ const nav = ref([
   { label: 'Home', icon: 'material-symbols:home-outline-rounded', to: '/' },
   {
     label: 'Prayer Times',
-    icon: 'material-symbols:prayer-times-outline-rounded',
+    icon: 'material-symbols:alarm-outline-rounded',
     to: '/today',
   },
   {
-    label: 'Masjids',
+    label: 'Prayers',
+    icon: 'material-symbols:prayer-times-outline-rounded',
+    to: '/prayers',
+  },
+  {
+    label: 'Masaajid',
     icon: 'material-symbols:mosque-outline-rounded',
     to: '/masjids',
   },

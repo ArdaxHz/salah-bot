@@ -92,7 +92,7 @@ function handleFocusOut(event) {
   <div class="flex flex-col gap-3 lg:gap-6">
     <div class="flex flex-col sm:flex-row gap-2 w-full justify-between">
       <p class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl">
-        Nearest Prayer
+        Nearest Prayers
       </p>
     </div>
     <div class="accordion" @focusout="handleFocusOut">
