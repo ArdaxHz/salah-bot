@@ -1,6 +1,4 @@
 <script setup>
-import { useLocationStore } from '@/composables/stores/location'
-
 const props = defineProps({
   isMobile: Boolean,
   expandedMenu: Boolean,
@@ -8,8 +6,6 @@ const props = defineProps({
 })
 
 const emits = defineEmits(['ToggleMenu'])
-
-const location = useLocationStore()
 
 const is_expanded = ref(props.expandedMenu)
 
@@ -54,7 +50,7 @@ watch(
           <div class="flex xs:hidden items-center w-full">
             <NuxtLink class="menu-item menu-item-text" to="/today">
               <Icon
-                name="material-symbols:calendar-view-month-outline"
+                name="material-symbols:prayer-times-outline-rounded"
                 size="1.75rem"
               />
               Today
@@ -63,15 +59,6 @@ watch(
         </div>
       </div>
       <div class="flex flex-end ml-auto flex-row gap-2 items-center">
-        <!-- <div class="flex flex-grow rounded-lg bg-primary-200/65 px-2 py-1 leading-[0] w-24 bg-flax-700 h-[1.5rem] items-center">
-                    <p class="">a</p>
-                </div> -->
-        <!--        <div -->
-        <!--          :class="`${location.latitude ? '[.tooltip:opacity-0]' : ''}`" -->
-        <!--          class="flex gap-2 tooltip tooltip-left" -->
-        <!--          data-tip="Enable location access for this site to work." -->
-        <!--        > -->
-        <!--        </div> -->
         <RootLocateUser />
       </div>
     </div>

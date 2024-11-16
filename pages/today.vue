@@ -13,7 +13,7 @@ onMounted(() => {
 <template>
   <div
     v-if="todayAdhanTimes"
-    class="flex max-w-[12rem] w-full items-center justify-center mx-auto rounded-md shadow-md shadow-mulled-500/50 ring-1 ring-mulled-500/40 sm:scale-[2] sm:mt-20"
+    class="flex max-w-[12rem] w-full items-center justify-center mx-auto rounded-md shadow-md shadow-mulled-500/50 ring-1 ring-mulled-500/40 sm:scale-[3] sm:mt-40"
   >
     <div class="w-full py-2 px-3">
       <div
@@ -21,14 +21,16 @@ onMounted(() => {
         :key="index"
         class="flex justify-between"
       >
-        <span class="font-semibold"> {{ capitalizeFirstLetter(index) }} </span>
-        <span>
+        <p class="font-bold">
+          {{ capitalizeFirstLetter(index) }}
+        </p>
+        <p>
           {{
             (
               DateTime.fromJSDate(adhanTime) || DateTime.fromISO(adhanTime)
             ).toLocaleString(DateTime.TIME_SIMPLE)
           }}
-        </span>
+        </p>
       </div>
     </div>
   </div>

@@ -11,7 +11,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <table v-if="todayAdhanTimes.length" class="table table-auto w-full">
+  <table v-if="todayAdhanTimes" class="table table-auto w-full">
     <thead>
       <tr>
         <th class="px-2 py-1">

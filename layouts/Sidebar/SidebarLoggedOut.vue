@@ -3,6 +3,7 @@ const props = defineProps({
   expandedMenu: Boolean,
   expandedMenuVal: Number,
   is_mobile: Boolean,
+  is_smaller_mobile: Boolean,
 })
 const emits = defineEmits(['ToggleMenu'])
 const SideBarMenu = ref(true)
@@ -11,6 +12,13 @@ const is_expanded = ref(props.expandedMenu)
 function ToggleMenu() {
   is_expanded.value = !is_expanded.value
   emits('ToggleMenu', is_expanded.value)
+}
+
+function ToggleMenuOff() {
+  if (is_expanded.value && props.is_mobile) {
+    is_expanded.value = false
+    emits('ToggleMenu', is_expanded.value)
+  }
 }
 
 watch(
@@ -34,7 +42,7 @@ watch(
     ref="SideBarMenu"
     :class="{
       'is-expanded bg-white': is_expanded,
-      'mobile-expanded': is_mobile,
+      'mobile-expanded': is_smaller_mobile,
     }"
     class="sidebar flex relative flex-col bg-whtie ring-2 ring-mulled-500 dark:bg-flax-950"
   >
@@ -43,11 +51,11 @@ watch(
         class="menu-toggle-wrap flex flex-col mb-4 rounded-md justify-center items-center w-max"
       >
         <button class="menu-toggle" @click="ToggleMenu">
-          <Icon class="" name="material-symbols:menu-rounded" size="2rem" />
+          <Icon name="material-symbols:menu-rounded" size="2rem" />
         </button>
       </div>
       <div class="flex flex-col justify-between h-full w-full">
-        <RootNavMenuItems :is_expanded="is_expanded" @click="ToggleMenu" />
+        <RootNavMenuItems :is_expanded="is_expanded" @click="ToggleMenuOff" />
         <div
           :class="`${
             is_expanded
@@ -60,7 +68,7 @@ watch(
             :class="`${is_expanded ? 'menu-item-expanded ' : ''}`"
             class="menu-item"
             to="/settings"
-            @click="ToggleMenu"
+            @click="ToggleMenuOff"
           >
             <Icon
               class=""

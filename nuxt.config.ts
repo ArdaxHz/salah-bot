@@ -12,7 +12,9 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxt/icon',
     'pinia-plugin-persistedstate/nuxt',
-    '@nuxt/fonts'
+    '@nuxt/fonts',
+    '@nuxt/ui',
+    '@nuxthub/core',
   ],
   i18n: {
     strategy: 'prefix_except_default',
@@ -23,33 +25,33 @@ export default defineNuxtConfig({
       {
         name: 'English',
         code: 'en',
-        file: 'en.json'
-      }
+        file: 'en.json',
+      },
     ],
     experimental: {
-      localeDetector: './localeDetector.ts'
-    }
+      localeDetector: './localeDetector.ts',
+    },
   },
   compatibilityDate: '2024-08-19',
   typescript: {
-    shim: false
+    shim: false,
   },
   colorMode: {
     preference: 'dark', // default value of $colorMode.preference
-    fallback: 'system', // fallback value if not system preference found
+    fallback: 'dark', // fallback value if not system preference found
     hid: 'nuxt-color-mode-script',
     globalName: '__NUXT_COLOR_MODE__',
     componentName: 'ColorScheme',
     classPrefix: '',
     classSuffix: '',
     storage: 'localStorage', // or 'sessionStorage' or 'cookie'
-    storageKey: 'nuxt-color-mode'
+    storageKey: 'nuxt-color-mode',
   },
   runtimeConfig: {
     public: {
       SUPABASE_URL: process.env.SUPABASE_URL,
-      SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY
-    }
+      SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
+    },
   },
   supabase: {
     url: process.env.SUPABASE_URL,
@@ -60,13 +62,13 @@ export default defineNuxtConfig({
       include: undefined,
       exclude: ['/*'],
       cookieRedirect: false,
-    }
+    },
   },
   imports: {
-    dirs: ['composables', 'composables/stores']
+    dirs: ['composables', 'composables/stores'],
   },
   css: ['~/assets/css/main.css'],
   experimental: {
-    renderJsonPayloads: true
-  }
+    renderJsonPayloads: true,
+  },
 })
