@@ -49,11 +49,18 @@ watch(
             />
           </button>
         </div>
-        <RootTodayAdhanTimings />
-        <!-- <p class="text-2xl font-bold whitespace-normal">Assalamu Alaikum</p>
-                <NuxtLink class="text-2xl font-bold whitespace-normal" v-if="nextSalah" to="/">
-                    Next Salah: {{ capitalizeFirstLetter(nextSalah) }}
-                </NuxtLink> -->
+        <div>
+          <RootTodayAdhanTimings class="hidden xs:table" />
+          <div class="flex xs:hidden items-center w-full">
+            <NuxtLink class="menu-item menu-item-text" to="/today">
+              <Icon
+                name="material-symbols:calendar-view-month-outline"
+                size="1.75rem"
+              />
+              Today
+            </NuxtLink>
+          </div>
+        </div>
       </div>
       <div class="flex flex-end ml-auto flex-row gap-2 items-center">
         <!-- <div class="flex flex-grow rounded-lg bg-primary-200/65 px-2 py-1 leading-[0] w-24 bg-flax-700 h-[1.5rem] items-center">
