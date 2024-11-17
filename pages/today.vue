@@ -3,11 +3,7 @@ import { DateTime } from 'luxon'
 import { useAdhanStore } from '@/composables/stores/adhan'
 
 const adhanStore = useAdhanStore()
-const todayAdhanTimes = ref(null)
-
-onMounted(() => {
-  todayAdhanTimes.value = adhanStore.today() // Assuming `today()` is a method that fetches today's Adhan times
-})
+const { today: todayAdhanTimes } = storeToRefs(adhanStore)
 </script>
 
 <template>

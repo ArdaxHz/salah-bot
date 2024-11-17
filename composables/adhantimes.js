@@ -80,9 +80,9 @@ export function calculateAdhanTimesDayRaw(
 ) {
   const coordinates = new Coordinates(latitude, longitude)
 
-  const paramsToUse = CalculationMethod[customParams.method]()
-  paramsToUse.fajrAngle = customParams.fajrAngle
-  paramsToUse.madhab = customParams.madhab
+  const paramsToUse = CalculationMethod[customParams.method.value]()
+  paramsToUse.fajrAngle = customParams.fajrAngle.value
+  paramsToUse.madhab = customParams.madhab.value
 
   const prayerTimes = new PrayerTimes(coordinates, date, paramsToUse)
   paramsToUse.highLatitudeRule = HighLatitudeRule.recommended(coordinates)

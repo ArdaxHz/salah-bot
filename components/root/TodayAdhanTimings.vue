@@ -1,17 +1,25 @@
 <script setup>
 import { DateTime } from 'luxon'
+import { computed } from 'vue'
 import { useAdhanStore } from '@/composables/stores/adhan'
 
 const adhanStore = useAdhanStore()
-const todayAdhanTimes = ref([])
+const { today: todayAdhanTimes } = storeToRefs(adhanStore)
 
-onMounted(() => {
-  todayAdhanTimes.value = adhanStore.today()
+const validAdhanTimes = computed(() => {
+  if (!todayAdhanTimes.value || typeof todayAdhanTimes.value !== 'object') {
+    return false
+  }
+
+  return Object.values(todayAdhanTimes.value).every((time) => {
+    const dateTime = DateTime.fromJSDate(time) || DateTime.fromISO(time)
+    return dateTime.isValid
+  })
 })
 </script>
 
 <template>
-  <table v-if="todayAdhanTimes" class="table table-auto w-full">
+  <table v-if="validAdhanTimes" class="table table-auto w-full">
     <thead>
       <tr>
         <th class="px-2 py-1">
@@ -34,7 +42,7 @@ onMounted(() => {
     <tbody>
       <tr>
         <td
-          v-for="(adhanTime, index) in todayAdhanTimes"
+          v-for="(adhanTime, index) in Object.values(todayAdhanTimes)"
           :key="index"
           class="px-2 py-1 text-center"
         >

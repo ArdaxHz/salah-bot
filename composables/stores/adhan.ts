@@ -10,25 +10,23 @@ export const useAdhanStore = defineStore('adhan', () => {
   const settingsStore = useAdhanSettings()
   const todayStore = useTodayAdhanStore()
 
-  function nextPrayer() {
-    todayStore.calculateToday()
+  const nextPrayer = computed((state) => {
     const tomorrow = todayStore.calculateTomorrow()
     return nextPrayerCalc(todayStore.toJson(), new Date(), tomorrow)
-  }
+  })
 
-  function currentPrayer() {
-    todayStore.calculateToday()
+  const currentPrayer = computed((state) => {
     return currentPrayerCalc(todayStore.toJson(), new Date())
-  }
+  })
 
   const settings = computed((state) => {
     return settingsStore
   })
 
-  function today() {
+  const today = computed((state) => {
     todayStore.calculateToday()
     return todayStore.daily()
-  }
+  })
 
   return { nextPrayer, currentPrayer, settings, today }
 })

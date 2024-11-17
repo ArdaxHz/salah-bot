@@ -1,19 +1,29 @@
-import { defineStore } from 'pinia'
-import { useLocationStore } from '@/composables/stores/location'
+import { defineStore, storeToRefs } from 'pinia'
 import { useAdhanSettings } from '@/composables/stores/adhanSettings'
 import { calculateAdhanDay } from '@/composables/adhantimes'
 
-export const useTodayAdhanStore = defineStore('todayAdhan', () => {
-  const fajr = ref(null)
-  const sunrise = ref(null)
-  const dhuhr = ref(null)
-  const asr = ref(null)
-  const maghrib = ref(null)
-  const sunset = ref(null)
-  const isha = ref(null)
-  const date = ref(new Date())
+interface AdhanTimes {
+  fajr: Date
+  sunrise: Date
+  dhuhr: Date
+  asr: Date
+  maghrib: Date
+  sunset: Date
+  isha: Date
+  date: Date
+}
 
-  function daily() {
+export const useTodayAdhanStore = defineStore('todayAdhan', () => {
+  const fajr = ref<Date | null>(null)
+  const sunrise = ref<Date | null>(null)
+  const dhuhr = ref<Date | null>(null)
+  const asr = ref<Date | null>(null)
+  const maghrib = ref<Date | null>(null)
+  const sunset = ref<Date | null>(null)
+  const isha = ref<Date | null>(null)
+  const date = ref<Date>(new Date())
+
+  function daily(): Omit<AdhanTimes, 'sunrise' | 'sunset' | 'date'> {
     return {
       fajr: fajr.value,
       dhuhr: dhuhr.value,
@@ -23,7 +33,7 @@ export const useTodayAdhanStore = defineStore('todayAdhan', () => {
     }
   }
 
-  function toJson() {
+  function toJson(): Omit<AdhanTimes, 'date'> {
     return {
       fajr: fajr.value,
       sunrise: sunrise.value,
@@ -35,19 +45,22 @@ export const useTodayAdhanStore = defineStore('todayAdhan', () => {
   }
 
   function calculateToday() {
-    const location = useLocationStore()
+    const locationStore = useLocationStore()
+    const { location } = storeToRefs(locationStore)
     calculateAdhan(new Date(), location)
   }
 
-  function calculateTomorrow() {
-    const location = useLocationStore()
+  function calculateTomorrow(): Partial<AdhanTimes> | undefined {
+    const locationStore = useLocationStore()
+    const { location } = storeToRefs(locationStore)
+
     const date = new Date()
     date.setDate(date.getDate() + 1)
     return createAdhanObj(date, location)
   }
 
-  function calculateAdhan(dateObj, location) {
-    const times = createAdhanObj(dateObj, location)
+  function calculateAdhan(dateObj: Date, locationData) {
+    const times = createAdhanObj(dateObj, locationData)
     if (times) {
       fajr.value = times.fajr
       sunrise.value = times.sunrise
@@ -60,17 +73,25 @@ export const useTodayAdhanStore = defineStore('todayAdhan', () => {
     }
   }
 
-  function createAdhanObj(date, location) {
+  function createAdhanObj(
+    date: Date,
+    locationData
+  ): Partial<AdhanTimes> | undefined {
     const adhanSettings = useAdhanSettings()
-    if (location.latitude == null || location.latitude === 0) {
+    const { params } = storeToRefs(adhanSettings)
+
+    if (
+      locationData.value.latitude.value == null
+      || locationData.value.latitude.value === 0
+    ) {
       return
     }
 
     const times = calculateAdhanDay(
-      location.latitude,
-      location.longitude,
+      locationData.value.latitude.value,
+      locationData.value.longitude.value,
       date,
-      adhanSettings.params()
+      params.value
     )
     return times.prayerTimes
   }

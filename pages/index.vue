@@ -6,18 +6,15 @@ import { useAdhanStore } from '@/composables/stores/adhan'
 const props = defineProps({ mobile_break: Boolean })
 const adhan = useAdhanStore()
 const location = useLocationStore()
+const { currentPrayer, nextPrayer } = storeToRefs(adhan)
 const nearestPrayerTimes = ref(null)
 const nearestMasjids = ref(null)
-const currentPrayer = ref(null)
-const nextPrayer = ref(null)
 const isLoading = ref(true)
 const isError = ref(false)
 
 async function fetchData() {
   isLoading.value = true
   isError.value = false
-  currentPrayer.value = adhan.currentPrayer()
-  nextPrayer.value = adhan.nextPrayer()
   if (
     location.location
     && location.latitude !== 0
