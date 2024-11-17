@@ -3,6 +3,7 @@ import { DateTime } from 'luxon'
 import { useLocationStore } from '@/composables/stores/location'
 import { useAdhanStore } from '@/composables/stores/adhan'
 
+const props = defineProps({ mobile_break: Boolean })
 const adhan = useAdhanStore()
 const location = useLocationStore()
 const nearestPrayerTimes = ref(null)
@@ -70,15 +71,15 @@ function checkValidNearestMasjid() {
         <div class="skeleton h-10 w-24 rounded-md" />
         <div class="skeleton h-10 w-48 rounded-md" />
       </div>
-      <HomeNearestPrayer
-        v-if="checkValidNearestPrayer()"
-        :data="nearestPrayerTimes"
-        :next-prayer="currentPrayer"
-      />
-      <HomeNearestMasjid
-        v-if="checkValidNearestMasjid()"
-        :data="nearestMasjids"
-      />
+      <!--      <HomeNearestPrayer -->
+      <!--        v-if="checkValidNearestPrayer()" -->
+      <!--        :data="nearestPrayerTimes" -->
+      <!--        :next-prayer="currentPrayer" -->
+      <!--      /> -->
+      <!--      <HomeNearestMasjid -->
+      <!--        v-if="checkValidNearestMasjid()" -->
+      <!--        :data="nearestMasjids" -->
+      <!--      /> -->
     </div>
     <!--    <div v-else-if="isError" class="error-message"> -->
     <!--      Failed to load data. Please try again later. -->
@@ -108,15 +109,32 @@ function checkValidNearestMasjid() {
           </RootToolTip>
         </p>
       </div>
-      <HomeNearestPrayer
-        v-if="checkValidNearestPrayer()"
-        :data="nearestPrayerTimes"
-        :next-prayer="currentPrayer"
-      />
-      <div class="flex flex-col gap-5">
+      <div v-if="checkValidNearestPrayer()" class="flex flex-col gap-5">
+        <HomeNearestPrayer
+          :data="nearestPrayerTimes.data"
+          :mobile_break="mobile_break"
+          :next-prayer="currentPrayer"
+        />
+        <div
+          class="text-center text-base underline underline-offset-2"
+          colspan="4"
+        >
+          <NuxtLink
+            class="inline-flex items-center text-[var(--light-text-color)] dark:text-[var(--dark-text-color)] hover:text-[var(--dark-text-accent-color-hover-light)] dark:hover:text-[var(--light-text-accent-color-hover-light)]"
+            to="/prayers"
+          >
+            More Prayers Near Me
+            <Icon
+              name="material-symbols:arrow-outward-rounded"
+              size="1.25rem"
+            />
+          </NuxtLink>
+        </div>
+      </div>
+      <div v-if="checkValidNearestMasjid()" class="flex flex-col gap-5">
         <HomeNearestMasjid
-          v-if="checkValidNearestMasjid()"
-          :data="nearestMasjids"
+          :data="nearestMasjids.data"
+          :mobile_break="mobile_break"
         />
         <div
           class="text-center text-base underline underline-offset-2"
@@ -126,7 +144,7 @@ function checkValidNearestMasjid() {
             class="inline-flex items-center text-[var(--light-text-color)] dark:text-[var(--dark-text-color)] hover:text-[var(--dark-text-accent-color-hover-light)] dark:hover:text-[var(--light-text-accent-color-hover-light)]"
             to="/masjids"
           >
-            More Masaajid
+            More Masaajid Near Me
             <Icon
               name="material-symbols:arrow-outward-rounded"
               size="1.25rem"
@@ -140,7 +158,6 @@ function checkValidNearestMasjid() {
 
 <style>
 .skeleton-item {
-  //background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
   background-size: 200% 100%;
   border-radius: 8px;
   height: 20px;

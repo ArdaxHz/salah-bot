@@ -10,6 +10,7 @@ const PageContentRef = ref(null)
 const windowWidth = ref(0)
 const windowHeight = ref(0)
 const is_mobile = ref(true)
+const mobile_break = ref(true)
 const smaller_mobile = ref(true)
 const is_announcement = ref(false)
 
@@ -20,6 +21,7 @@ useResizeObserver(rootContainer, (entries) => {
   windowHeight.value = height
 
   is_mobile.value = windowWidth.value < 1023
+  mobile_break.value = windowWidth.value >= 640
   smaller_mobile.value = windowWidth.value < 380
 })
 
@@ -76,7 +78,7 @@ function handleMouseDown() {
         class="w-full max-w-7xl px-3 sm:px-6 lg:px-8 py-2 page z-0 mt-4 sm:mt-6 mb-8 sm:mb-12"
       >
         <NuxtLoadingIndicator color="#9081d3" />
-        <NuxtPage />
+        <NuxtPage :mobile_break="mobile_break" />
       </main>
     </div>
   </div>

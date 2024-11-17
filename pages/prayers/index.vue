@@ -2,10 +2,10 @@
 import { useLocationStore } from '@/composables/stores/location'
 import { useAdhanStore } from '@/composables/stores/adhan'
 
+const props = defineProps({ mobile_break: Boolean })
 const adhan = useAdhanStore()
 const location = useLocationStore()
-
-const nearestPrayerTimes = ref(null)
+const nearestPrayerTimes = ref([])
 const currentPrayer = ref(null)
 const nextPrayer = ref(null)
 const isLoading = ref(true)
@@ -13,10 +13,12 @@ const isError = ref(false)
 const limit = ref(20)
 const offset = ref(0)
 const distance = ref(1600)
+const scrollListenerAdded = ref(true)
 
 async function fetchData() {
   isLoading.value = true
   isError.value = false
+
   currentPrayer.value = adhan.currentPrayer()
   nextPrayer.value = adhan.nextPrayer()
   if (
@@ -25,7 +27,7 @@ async function fetchData() {
     && location.longitude !== 0
   ) {
     try {
-      const [prayerTimesResponse] = await Promise.all([
+      const [nearestPrayerTimesResponse] = await Promise.all([
         $fetch('/api/prayertimes', {
           headers: useRequestHeaders(['cookie']),
           params: {
@@ -40,11 +42,31 @@ async function fetchData() {
         }),
       ])
 
-      nearestPrayerTimes.value = prayerTimesResponse.data
+      if (
+        nearestPrayerTimesResponse.data
+        && Array.isArray(nearestPrayerTimesResponse.data.data)
+      ) {
+        nearestPrayerTimes.value.push(...nearestPrayerTimesResponse.data.data)
+        if (
+          nearestPrayerTimesResponse.data.count === 0
+          || nearestPrayerTimesResponse.data.count
+          === nearestPrayerTimes.value.length
+        ) {
+          removeScrollListener()
+        }
+      }
+      else {
+        console.error(
+          'Data fetched is not in expected format:',
+          nearestPrayerTimesResponse.data
+        )
+        removeScrollListener()
+      }
     }
     catch (error) {
       console.error('Error fetching data:', error)
       isError.value = true
+      removeScrollListener()
     }
     finally {
       isLoading.value = false
@@ -54,19 +76,87 @@ async function fetchData() {
 
 watch(location, fetchData, { immediate: true })
 
-function checkValidNearestPrayer() {
-  return nearestPrayerTimes.value && nearestPrayerTimes.value.count > 0
+function checkValidNearestMasjid() {
+  return nearestPrayerTimes.value && nearestPrayerTimes.value.length > 0
 }
+
+function handleScroll() {
+  const bottomOfWindow
+    = window.innerHeight + window.scrollY >= document.body.offsetHeight - 10
+  if (bottomOfWindow && !isLoading.value && !isError.value) {
+    offset.value += limit.value
+    fetchData()
+  }
+}
+
+function removeScrollListener() {
+  if (scrollListenerAdded.value) {
+    window.removeEventListener('scroll', handleScroll)
+    scrollListenerAdded.value = false
+  }
+}
+
+function addScrollListener() {
+  if (!scrollListenerAdded.value) {
+    window.addEventListener('scroll', handleScroll)
+    scrollListenerAdded.value = true
+  }
+  offset.value += limit.value
+  fetchData()
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
+onBeforeUnmount(() => {
+  removeScrollListener()
+})
 </script>
 
 <template>
   <div>
     <HomeNearestPrayer
-      v-if="checkValidNearestPrayer()"
+      v-if="checkValidNearestMasjid()"
       :data="nearestPrayerTimes"
+      :mobile_break="mobile_break"
       :next-prayer="currentPrayer"
     />
+    <div v-if="isLoading" class="loading-bar">
+      Loading...
+    </div>
+    <div v-if="isError" class="error-message">
+      Error loading data. Please try again.
+    </div>
+    <button
+      v-if="scrollListenerAdded && !isLoading"
+      class="load-more-button"
+      @click="addScrollListener"
+    >
+      Load More
+    </button>
   </div>
 </template>
 
-<style></style>
+<style>
+.loading-bar {
+  text-align: center;
+  padding: 1em;
+  font-weight: bold;
+}
+
+.error-message {
+  text-align: center;
+  padding: 1em;
+  color: red;
+  font-weight: bold;
+}
+
+.load-more-button {
+  display: block;
+  margin: 1em auto;
+  padding: 1em;
+  font-weight: bold;
+  cursor: pointer;
+}
+</style>
