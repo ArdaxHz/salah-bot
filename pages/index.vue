@@ -63,7 +63,7 @@ function checkValidNearestMasjid() {
 
 <template>
   <div>
-    <div class="flex flex-col gap-10 sm:gap-10">
+    <div v-if="isLoading" class="flex flex-col gap-10 sm:gap-10">
       <div class="flex flex-col sm:flex-row gap-4 sm:flex-0 justify-between">
         <div class="skeleton h-10 w-24 rounded-md" />
         <div class="skeleton h-10 w-48 rounded-md" />
@@ -78,10 +78,10 @@ function checkValidNearestMasjid() {
       <!--        :data="nearestMasjids" -->
       <!--      /> -->
     </div>
-    <!--    <div v-else-if="isError" class="error-message"> -->
-    <!--      Failed to load data. Please try again later. -->
-    <!--    </div> -->
-    <div class="flex flex-col gap-10 sm:gap-10">
+    <div v-else-if="isError" class="error-message">
+      Failed to load data. Please try again later.
+    </div>
+    <div v-else class="flex flex-col gap-10 sm:gap-10">
       <div class="flex flex-col sm:flex-row gap-4 sm:flex-0 justify-between">
         <p
           v-if="currentPrayer"

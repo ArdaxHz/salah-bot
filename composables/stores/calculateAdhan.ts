@@ -39,6 +39,7 @@ export const useTodayAdhanStore = defineStore('todayAdhan', () => {
       sunrise: sunrise.value,
       dhuhr: dhuhr.value,
       asr: asr.value,
+      sunset: sunset.value,
       maghrib: maghrib.value,
       isha: isha.value,
     }

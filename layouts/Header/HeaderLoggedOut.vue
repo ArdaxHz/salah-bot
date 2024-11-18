@@ -34,8 +34,8 @@ watch(
   <div
     class="flex w-full h-full items-center justify-center bg-[var(--light-bg-color)] dark:bg-[var(--dark-bg-color)] ring-2 ring-[var(--neutral-secondary-color)] header"
   >
-    <div class="max-w-7xl flex w-full px-3 sm:px-6 lg:px-8 py-4">
-      <div class="flex flex-row gap-3 sm:gap-6 items-center">
+    <div class="max-w-7xl flex w-full px-3 sm:px-6 lg:px-8 py-4 h-full">
+      <div class="flex flex-row gap-3 sm:gap-6 items-center h-full">
         <div class="flex lg:hidden menu-toggle-wrap rounded-md">
           <button class="menu-toggle flex lg:hidden" @click="ToggleMenu">
             <Icon
@@ -46,7 +46,7 @@ watch(
           </button>
         </div>
         <div>
-          <RootTodayAdhanTimings class="hidden xs:table" />
+          <RootTodayAdhanTimings class="hidden xs:flex" />
           <div class="flex xs:hidden items-center w-full">
             <NuxtLink class="menu-item menu-item-text" to="/today">
               <Icon
@@ -76,9 +76,5 @@ svg {
 
 .header {
   box-shadow: 0 4px 2px -2px theme("colors.mulled.500");
-}
-
-.tooltip {
-  /* opacity: 0; */
 }
 </style>

@@ -35,6 +35,38 @@ watch(
     }
   }
 )
+
+const navItemsTop = ref([
+  { label: 'Home', icon: 'material-symbols:home-outline-rounded', to: '/' },
+  {
+    label: 'Prayer Times',
+    icon: 'material-symbols:alarm-outline-rounded',
+    to: '/today',
+  },
+  {
+    label: 'Prayers',
+    icon: 'material-symbols:prayer-times-outline-rounded',
+    to: '/prayers',
+  },
+  {
+    label: 'Masaajid',
+    icon: 'material-symbols:mosque-outline-rounded',
+    to: '/masjids',
+  },
+])
+
+const navItemsBottom = ref([
+  {
+    label: 'Account',
+    icon: 'material-symbols:account-circle-outline',
+    to: '/me',
+  },
+  {
+    label: 'Settings',
+    icon: 'material-symbols:settings-outline-rounded',
+    to: '/settings',
+  },
+])
 </script>
 
 <template>
@@ -60,8 +92,9 @@ watch(
         }"
         class="flex flex-col justify-between h-full w-full"
       >
-        <RootNavMenuItemsTop
+        <RootNavMenuItems
           :is_expanded="is_expanded"
+          :nav-items="navItemsTop"
           @click="ToggleMenuOff"
         />
         <div
@@ -72,8 +105,10 @@ watch(
           }`"
           class="menu-footer flex gap-4"
         >
-          <RootNavMenuItemsBottom
+          <RootNavMenuItems
             :is_expanded="is_expanded"
+            :nav-items="navItemsBottom"
+            class="w-full"
             @click="ToggleMenuOff"
           />
           <RootThemeSelector
@@ -197,7 +232,7 @@ watch(
 
 .menu-item-text {
   font-size: 1.25rem;
-  line-height: 1.75rem;
+  line-height: 1.5rem;
   font-weight: 600;
 }
 

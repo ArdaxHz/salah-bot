@@ -113,7 +113,7 @@ onBeforeUnmount(() => {
       :mobile_break="mobile_break"
     />
     <div v-if="isLoading" class="loading-bar">
-      Loading...
+      <span class="loading loading-dots loading-md" />
     </div>
     <div v-if="isError" class="error-message">
       Error loading data. Please try again.
