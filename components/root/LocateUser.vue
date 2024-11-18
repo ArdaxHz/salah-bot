@@ -8,10 +8,10 @@ function getCurrentLocation() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         console.log(position.coords.latitude, position.coords.longitude)
-        location.$patch({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        })
+        // location.$patch({
+        //   latitude: position.coords.latitude,
+        //   longitude: position.coords.longitude,
+        // })
       },
       (error) => {
         console.log(error)
