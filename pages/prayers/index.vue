@@ -24,7 +24,7 @@ async function fetchData() {
   ) {
     try {
       const [nearestPrayerTimesResponse] = await Promise.all([
-        $fetch('/api/prayertimes', {
+        $fetch('/api/nearby-prayers', {
           headers: useRequestHeaders(['cookie']),
           params: {
             lat: location.latitude,
@@ -118,11 +118,15 @@ onBeforeUnmount(() => {
       :mobile_break="mobile_break"
       :next-prayer="currentPrayer"
     />
+
     <div v-if="isLoading" class="loading-bar">
-      Loading...
+      <span class="loading loading-dots loading-md" />
     </div>
-    <div v-if="isError" class="error-message">
-      Error loading data. Please try again.
+    <div class="error-message">
+      Error loading prayer times data.
+    </div>
+    <div v-if="!isLoading && !checkValidNearestMasjid()">
+      test
     </div>
     <button
       v-if="scrollListenerAdded && !isLoading"
@@ -138,13 +142,6 @@ onBeforeUnmount(() => {
 .loading-bar {
   text-align: center;
   padding: 1em;
-  font-weight: bold;
-}
-
-.error-message {
-  text-align: center;
-  padding: 1em;
-  color: red;
   font-weight: bold;
 }
 

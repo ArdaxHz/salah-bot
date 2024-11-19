@@ -62,7 +62,7 @@ async function fetchData() {
   ) {
     try {
       const [prayerTimesResponse, nearestMasjidsResponse] = await Promise.all([
-        $fetch('/api/prayertimes', {
+        $fetch('/api/nearby-prayers', {
           headers: useRequestHeaders(['cookie']),
           params: {
             lat: location.latitude,
@@ -71,7 +71,7 @@ async function fetchData() {
             adhan_passed: false,
           },
         }),
-        $fetch('/api/masjids', {
+        $fetch('/api/nearby-masjids', {
           headers: useRequestHeaders(['cookie']),
           params: { lat: location.latitude, long: location.longitude },
         }),
@@ -99,6 +99,10 @@ function checkValidNearestPrayer() {
 function checkValidNearestMasjid() {
   return nearestMasjids.value && nearestMasjids.value.count > 0
 }
+
+onMounted(async () => {
+  // setInterval(currentPrayer, 100)
+})
 </script>
 
 <template>
@@ -223,13 +227,6 @@ function checkValidNearestMasjid() {
   100% {
     background-position: -200% 0;
   }
-}
-
-.error-message {
-  color: red;
-  text-align: center;
-  font-size: 1.2rem;
-  padding: 20px;
 }
 
 .dark .daily-current-prayer {

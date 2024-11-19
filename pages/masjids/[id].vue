@@ -1,8 +1,9 @@
 <script setup>
+const props = defineProps({ data: Object })
+
 definePageMeta({
-  middleware: 'uuid'
+  middleware: 'uuid',
 })
 </script>
 
-<template>
-</template>
+<template></template>

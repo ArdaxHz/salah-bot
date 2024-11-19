@@ -17,12 +17,13 @@ function localHandleFocusOut(event) {
 </script>
 
 <template>
-  <div class="flex flex-col gap-3 lg:gap-6">
+  <div class="flex flex-col gap-6 lg:gap-6 w-full">
     <div class="flex w-full justify-between">
       <p class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl">
         Nearest Masaajid
       </p>
     </div>
+
     <div class="accordion" @focusout="localHandleFocusOut">
       <table v-if="mobile_break" class="table desktop-table" tabindex="0">
         <thead>
@@ -58,9 +59,7 @@ function localHandleFocusOut(event) {
             <p class="font-bold text-xl">
               {{ nearestPrayer.name }}
             </p>
-            <br>
-            <p class="text-lg">
-              <strong>Distance:</strong>
+            <p class="text-md">
               {{ nearestPrayer.dist_meters.toFixed(0) }} metres
             </p>
           </div>

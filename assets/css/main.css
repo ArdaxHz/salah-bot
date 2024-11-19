@@ -78,6 +78,8 @@
 
     --dark-accent-color-dark: theme('colors.flax.900');
     --dark-secondary-color-dark: theme('colors.mulled.900');
+
+    --error-color-text: theme('colors.red.500');
 }
 
 .skeleton {
@@ -130,4 +132,12 @@ figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
     font-size: 100%;
+}
+
+.error-message {
+    text-align: center;
+    padding: 1em;
+    color: var(--error-color-text);
+    font-weight: bold;
+    font-size: theme('fontSize.xl');
 }

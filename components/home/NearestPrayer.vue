@@ -72,9 +72,7 @@ function localHandleFocusOut(event) {
             <p class="font-bold text-xl">
               {{ nearestPrayer.masjid_name }}
             </p>
-            <br>
-            <p class="text-lg">
-              <strong>Distance:</strong>
+            <p class="text-md">
               {{ nearestPrayer.dist_meters.toFixed(0) }} metres
             </p>
 
@@ -84,8 +82,7 @@ function localHandleFocusOut(event) {
               ).toLocaleString(DateTime.DATETIME_FULL)}`"
             >
               <template #content>
-                <p class="text-lg">
-                  <strong>Start:</strong>
+                <p class="text-md">
                   {{ DateTime.fromISO(nearestPrayer.prayer_time).toRelative() }}
                 </p>
               </template>
