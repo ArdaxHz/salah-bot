@@ -1,12 +1,12 @@
 <script setup>
 const props = defineProps({
-  isMobile: Boolean,
   expandedMenu: Boolean,
   expandedMenuVal: Number,
+  is_mobile: Boolean,
+  is_smaller_mobile: Boolean,
 })
 
 const emits = defineEmits(['ToggleMenu'])
-
 const is_expanded = ref(props.expandedMenu)
 
 function ToggleMenu() {
@@ -32,12 +32,12 @@ watch(
 
 <template>
   <div
-    class="flex w-full h-full items-center justify-center bg-[var(--light-bg-color)] dark:bg-[var(--dark-bg-color)] ring-2 ring-[var(--neutral-secondary-color)] header"
+    class="flex w-full !sticky top-0 leading-[0] z-[9] h-[var(--header-height)] items-center justify-center bg-[var(--light-bg-color)] dark:bg-[var(--dark-bg-color)] ring-2 ring-[var(--neutral-secondary-color)] header"
   >
     <div class="max-w-7xl flex w-full px-3 sm:px-6 lg:px-8 py-4 h-full">
       <div class="flex flex-row gap-3 sm:gap-6 items-center h-full">
-        <div class="flex lg:hidden menu-toggle-wrap rounded-md">
-          <button class="menu-toggle flex lg:hidden" @click="ToggleMenu">
+        <div class="flex lg:hidden menu-toggle-wrap rounded-lg">
+          <button class="menu-toggle flex lg:hidden" @mousedown="ToggleMenu">
             <Icon
               class="[var(--light-text-color)] dark:[var(--dark-text-color)]"
               name="material-symbols:menu-rounded"

@@ -37,34 +37,44 @@ watch(
 )
 
 const navItemsTop = ref([
-  { label: 'Home', icon: 'material-symbols:home-outline-rounded', to: '/' },
+  {
+    label: 'Home',
+    icon: 'material-symbols:home-outline-rounded',
+    to: '/',
+    active: 'material-symbols:home-rounded',
+  },
   {
     label: 'Prayer Times',
     icon: 'material-symbols:alarm-outline-rounded',
     to: '/today',
+    active: 'material-symbols:alarm-rounded',
   },
   {
     label: 'Prayers',
     icon: 'material-symbols:prayer-times-outline-rounded',
     to: '/prayers',
+    active: 'material-symbols:prayer-times-rounded',
   },
   {
     label: 'Masaajid',
     icon: 'material-symbols:mosque-outline-rounded',
     to: '/masjids',
+    active: 'material-symbols:mosque-rounded',
   },
 ])
 
 const navItemsBottom = ref([
-  {
-    label: 'Account',
-    icon: 'material-symbols:account-circle-outline',
-    to: '/me',
-  },
+  // {
+  //   label: 'Account',
+  //   icon: 'material-symbols:account-circle-outline',
+  //   to: '/me',
+  //   active: 'material-symbols:account-circle',
+  // },
   {
     label: 'Settings',
     icon: 'material-symbols:settings-outline-rounded',
     to: '/settings',
+    active: 'material-symbols:settings-rounded',
   },
 ])
 </script>
@@ -76,11 +86,11 @@ const navItemsBottom = ref([
       'is-expanded bg-[var(--light-bg-color)]': is_expanded,
       'mobile-expanded': is_smaller_mobile,
     }"
-    class="sidebar flex relative flex-col bg-[var(--light-bg-color)] dark:bg-[var(--dark-bg-color)] ring-2 ring-[var(--neutral-secondary-color)]"
+    class="sidebar flex h-[100dvh] !fixed lg:!sticky top-0 z-10 left-0 flex-col bg-[var(--light-bg-color)] dark:bg-[var(--dark-bg-color)] ring-2 ring-[var(--neutral-secondary-color)]"
   >
     <div class="flex flex-col h-full w-full">
       <div
-        class="menu-toggle-wrap flex flex-col mb-4 rounded-md justify-center items-center w-max"
+        class="menu-toggle-wrap flex flex-col mb-4 rounded-lg justify-center items-center w-max"
       >
         <button class="menu-toggle" @click="ToggleMenu">
           <Icon name="material-symbols:menu-rounded" size="2rem" />
@@ -161,11 +171,9 @@ const navItemsBottom = ref([
   flex-direction: column;
   overflow-y: auto;
 
-  box-shadow: 4px 0 2px -2px;
-
-  min-width: var(--sidebar-width-collapse);
-  max-width: var(--sidebar-width-collapse);
-  overflow: hidden;
+  --sidebar-width: var(--sidebar-width-collapse);
+  min-width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
   padding-block: 1.3rem;
   padding-inline: 1rem;
 
@@ -175,14 +183,13 @@ const navItemsBottom = ref([
 
 .sidebar.is-expanded {
   display: flex;
-  height: 100%;
 
   transition: 0.2s ease-in-out;
 }
 
 .sidebar.is-expanded:not(.mobile-expanded) {
-  min-width: var(--sidebar-width);
-  max-width: var(--sidebar-width);
+  min-width: var(--sidebar-width-expanded);
+  max-width: var(--sidebar-width-expanded);
 }
 
 .sidebar.is-expanded.mobile-expanded {
@@ -251,7 +258,7 @@ const navItemsBottom = ref([
   align-items: center;
 
   padding: 0.5rem;
-  border-radius: theme("borderRadius.md");
+  border-radius: theme("borderRadius.lg");
 }
 
 .menu-item-expanded {

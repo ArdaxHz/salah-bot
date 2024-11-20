@@ -7,6 +7,7 @@ const props = defineProps({ mobile_break: Boolean })
 const adhan = useAdhanStore()
 const location = useLocationStore()
 const { currentPrayer, nextPrayer } = storeToRefs(adhan)
+const updatePrayerKey = ref(0)
 const nearestPrayerTimes = ref({
   data: [
     {
@@ -101,26 +102,23 @@ function checkValidNearestMasjid() {
 }
 
 onMounted(async () => {
-  // setInterval(currentPrayer, 100)
+  // const interval = setInterval(() => {
+  //   updatePrayerKey.value += 1
+  // }, 60000)
+  //
+  // onUnmounted(() => {
+  //   clearInterval(interval)
+  // })
 })
 </script>
 
 <template>
-  <div>
+  <div class="w-full h-full">
     <div v-if="isLoading" class="flex flex-col gap-10 sm:gap-10">
       <div class="flex flex-col sm:flex-row gap-4 sm:flex-0 justify-between">
-        <div class="skeleton h-10 w-24 rounded-md" />
-        <div class="skeleton h-10 w-48 rounded-md" />
+        <div class="skeleton h-8 w-24 rounded-lg" />
+        <div class="skeleton h-8 w-48 rounded-lg" />
       </div>
-      <!--      <HomeNearestPrayer -->
-      <!--        v-if="checkValidNearestPrayer()" -->
-      <!--        :data="nearestPrayerTimes" -->
-      <!--        :next-prayer="currentPrayer" -->
-      <!--      /> -->
-      <!--      <HomeNearestMasjid -->
-      <!--        v-if="checkValidNearestMasjid()" -->
-      <!--        :data="nearestMasjids" -->
-      <!--      /> -->
     </div>
     <div v-else-if="isError" class="error-message">
       Failed to load data. Please try again later.
@@ -129,6 +127,7 @@ onMounted(async () => {
       <div class="flex flex-col sm:flex-row gap-4 sm:flex-0 justify-between">
         <p
           v-if="currentPrayer"
+          :key="updatePrayerKey"
           class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
         >
           <span class="daily-current-prayer">
@@ -136,6 +135,7 @@ onMounted(async () => {
         </p>
         <p
           v-if="nextPrayer"
+          :key="updatePrayerKey"
           class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
         >
           <RootToolTip
@@ -231,14 +231,14 @@ onMounted(async () => {
 
 .dark .daily-current-prayer {
   padding: 0.5rem;
-  border-radius: theme("borderRadius.md");
+  border-radius: theme("borderRadius.lg");
   background-color: var(--light-text-secondary-color-hover-light);
   color: var(--dark-text-color);
 }
 
 .light .daily-current-prayer {
   padding: 0.5rem;
-  border-radius: theme("borderRadius.md");
+  border-radius: theme("borderRadius.lg");
   background-color: var(--light-text-secondary-color-hover-light);
   color: var(--dark-text-color);
 }

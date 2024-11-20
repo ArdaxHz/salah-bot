@@ -9,18 +9,26 @@ function handleError() {
 </script>
 
 <template>
-  <div class="relative font-sans">
-    <div class="container max-w-200 mx-auto py-10 px-4">
-      <h1>{{ error?.message }}</h1>
-      There was an error 😱
-
-      <br>
-      <button @click="handleError">
-        Clear error
-      </button>
-      <NuxtLink class="text-primary" to="/">
-        Navigate home
-      </NuxtLink>
+  <NuxtLayout>
+    <div class="flex w-full justify-center">
+      <div class="flex flex-col gap-4 items-center">
+        <p
+          class="text-8xl lg:text-[12rem] font-extrabold !text-[var(--error-color-text)]"
+        >
+          {{ error?.statusCode }}
+        </p>
+        <p class="font-base text-xl lg:text-3xl text-center">
+          {{ error?.message }}
+        </p>
+        <NuxtLink
+          class="inline-flex items-end underline underline-offset-2 text-[var(--save-color-text)] font-base text-xl lg:text-3xl text-center"
+          to="/"
+          @click.prevent="handleError"
+        >
+          Back home
+          <Icon name="material-symbols:arrow-outward-rounded" />
+        </NuxtLink>
+      </div>
     </div>
-  </div>
+  </NuxtLayout>
 </template>

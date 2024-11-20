@@ -9,7 +9,6 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxt/icon',
     '@nuxt/fonts',
-    '@bg-dev/nuxt-naiveui',
     '@nuxtjs/i18n',
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',

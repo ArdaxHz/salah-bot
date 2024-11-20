@@ -4,9 +4,13 @@ const props = defineProps({
 })
 const colorMode = useColorMode()
 
-function checkDark() {
-  return colorMode.preference === 'dark'
-}
+const preference = ref('dark')
+
+onMounted(() => {
+  if (colorMode.preference) {
+    preference.value = colorMode.preference
+  }
+})
 </script>
 
 <template>
@@ -15,7 +19,7 @@ function checkDark() {
     class="grid cursor-pointer place-items-center"
   >
     <input
-      :checked="checkDark()"
+      :checked="preference === 'dark'"
       class="toggle theme-controller col-span-2 col-start-1 row-start-1"
       type="checkbox"
       @change="colorMode.preference = $event.target.checked ? 'dark' : 'light'"

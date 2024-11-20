@@ -17,6 +17,21 @@ watch(() => searchText.value, emitSearchText)
     <UInput
       v-model="searchText"
       :trailing="false"
+      :ui="{
+        rounded: 'rounded-lg',
+        color: {
+          white: {
+            outline: `bg-[var(--light-bg-color)] dark:bg-[var(--dark-bg-color)]
+                focus:ring-2
+                ring-[var(--neutral-accent-color)]
+                focus:ring-[var(--neutral-secondary-color)]
+
+                dark:ring-[var(--neutral-accent-color)]
+                dark:focus:ring-[var(--neutral-secondary-color)]
+                `,
+          },
+        },
+      }"
       color="white"
       icon="material-symbols:search-rounded"
       placeholder="Search..."
