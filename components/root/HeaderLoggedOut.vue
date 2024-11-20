@@ -1,33 +1,10 @@
 <script setup>
-const props = defineProps({
-  expandedMenu: Boolean,
-  expandedMenuVal: Number,
-  is_mobile: Boolean,
-  is_smaller_mobile: Boolean,
-})
-
-const emits = defineEmits(['ToggleMenu'])
-const is_expanded = ref(props.expandedMenu)
+const optionsStore = useOptionsStore()
+const { sidebarExpanded } = storeToRefs(optionsStore)
 
 function ToggleMenu() {
-  is_expanded.value = !is_expanded.value
-  emits('ToggleMenu', is_expanded.value)
+  sidebarExpanded.value = !sidebarExpanded.value
 }
-
-watch(
-  () => props.expandedMenuVal,
-  (newValue, _) => {
-    if (newValue) {
-      if (newValue % 2 == 0) {
-        is_expanded.value = true
-      }
-
-      if (Math.abs(newValue % 2) == 1) {
-        is_expanded.value = false
-      }
-    }
-  }
-)
 </script>
 
 <template>

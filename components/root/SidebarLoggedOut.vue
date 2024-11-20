@@ -1,40 +1,16 @@
 <script setup>
-const props = defineProps({
-  expandedMenu: Boolean,
-  expandedMenuVal: Number,
-  is_mobile: Boolean,
-  is_smaller_mobile: Boolean,
-})
-const emits = defineEmits(['ToggleMenu'])
-const SideBarMenu = ref(true)
-const is_expanded = ref(props.expandedMenu)
+const optionsStore = useOptionsStore()
+const { sidebarExpanded, mobile } = storeToRefs(optionsStore)
 
 function ToggleMenu() {
-  is_expanded.value = !is_expanded.value
-  emits('ToggleMenu', is_expanded.value)
+  sidebarExpanded.value = !sidebarExpanded.value
 }
 
 function ToggleMenuOff() {
-  if (is_expanded.value && props.is_mobile) {
-    is_expanded.value = false
-    emits('ToggleMenu', is_expanded.value)
+  if (sidebarExpanded.value && mobile.value) {
+    sidebarExpanded.value = false
   }
 }
-
-watch(
-  () => props.expandedMenuVal,
-  (newValue, _) => {
-    if (newValue) {
-      if (newValue % 2 == 0) {
-        is_expanded.value = true
-      }
-
-      if (Math.abs(newValue % 2) == 1) {
-        is_expanded.value = false
-      }
-    }
-  }
-)
 
 const navItemsTop = ref([
   {
@@ -81,10 +57,8 @@ const navItemsBottom = ref([
 
 <template>
   <aside
-    ref="SideBarMenu"
     :class="{
-      'is-expanded bg-[var(--light-bg-color)]': is_expanded,
-      'mobile-expanded': is_smaller_mobile,
+      'is-expanded bg-[var(--light-bg-color)]': sidebarExpanded,
     }"
     class="sidebar flex h-[100dvh] !fixed lg:!sticky top-0 z-10 left-0 flex-col bg-[var(--light-bg-color)] dark:bg-[var(--dark-bg-color)] ring-2 ring-[var(--neutral-secondary-color)]"
   >
@@ -98,32 +72,32 @@ const navItemsBottom = ref([
       </div>
       <div
         :class="{
-          'overflow-y-auto': is_expanded,
+          'overflow-y-auto': sidebarExpanded,
         }"
         class="flex flex-col justify-between h-full w-full"
       >
         <RootNavMenuItems
-          :is_expanded="is_expanded"
+          :is_expanded="sidebarExpanded"
           :nav-items="navItemsTop"
           @click="ToggleMenuOff"
         />
         <div
           :class="`${
-            is_expanded
+            sidebarExpanded
               ? 'flex-col w-full justify-start items-start'
               : 'justify-center items-center flex-col-reverse gap-7'
           }`"
           class="menu-footer flex gap-4"
         >
           <RootNavMenuItems
-            :is_expanded="is_expanded"
+            :is_expanded="sidebarExpanded"
             :nav-items="navItemsBottom"
             class="w-full"
             @click="ToggleMenuOff"
           />
           <RootThemeSelector
-            :class="`${is_expanded ? 'rotate-0' : '-rotate-90'}`"
-            :is_expanded="is_expanded"
+            :class="`${sidebarExpanded ? 'rotate-0' : '-rotate-90'}`"
+            :is_expanded="sidebarExpanded"
             class="grow w-100"
           />
         </div>
@@ -160,12 +134,6 @@ const navItemsBottom = ref([
   }
 }
 
-@media (max-width: 1023px) {
-  .animateOut {
-    animation: translateOut 500ms forwards;
-  }
-}
-
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -179,34 +147,39 @@ const navItemsBottom = ref([
 
   transition: 0.2s ease-in-out;
   box-shadow: 4px 0 2px -2px theme("colors.mulled.500");
+  animation: translateOut 500ms forwards;
 }
 
 .sidebar.is-expanded {
   display: flex;
 
+  position: absolute;
+  animation: translateIn 500ms forwards;
   transition: 0.2s ease-in-out;
 }
 
-.sidebar.is-expanded:not(.mobile-expanded) {
-  min-width: var(--sidebar-width-expanded);
-  max-width: var(--sidebar-width-expanded);
+.sidebar.is-expanded {
+  min-width: 100svw;
+  max-width: 100svw;
 }
 
-.sidebar.is-expanded.mobile-expanded {
-  min-width: 100svw !important;
-  max-width: 100svw !important;
-}
-
-@media (max-width: 1023px) {
+@media (min-width: 320px) {
   .sidebar.is-expanded {
-    animation: translateIn 500ms forwards;
-    position: absolute;
+    min-width: var(--sidebar-width-expanded);
+    max-width: var(--sidebar-width-expanded);
   }
 }
 
-@media (max-width: 1023px) {
+@media (min-width: 1024px) {
+  .sidebar.is-expanded {
+    position: relative;
+    animation: initial;
+  }
+}
+
+@media (min-width: 1024px) {
   .sidebar {
-    animation: translateOut 500ms forwards;
+    animation: initial;
   }
 }
 

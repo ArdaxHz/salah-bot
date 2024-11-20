@@ -1,13 +1,13 @@
 <script setup>
 import { DateTime } from 'luxon'
-import { useLocationStore } from '@/composables/stores/location'
-import { useAdhanStore } from '@/composables/stores/adhan'
 
-const props = defineProps({ mobile_break: Boolean })
-const adhan = useAdhanStore()
+const adhanStore = useAdhanStore()
 const location = useLocationStore()
-const { currentPrayer, nextPrayer } = storeToRefs(adhan)
+const currentPrayer = ref(null)
+const nextPrayer = ref(null)
 const updatePrayerKey = ref(0)
+const limit = ref(5)
+const offset = ref(0)
 const nearestPrayerTimes = ref({
   data: [
     {
@@ -56,11 +56,9 @@ const isError = ref(false)
 async function fetchData() {
   isLoading.value = true
   isError.value = false
-  if (
-    location.location
-    && location.latitude !== 0
-    && location.longitude !== 0
-  ) {
+  updatePrayers()
+
+  if (location.location && location.latitude && location.longitude) {
     try {
       const [prayerTimesResponse, nearestMasjidsResponse] = await Promise.all([
         $fetch('/api/nearby-prayers', {
@@ -70,11 +68,18 @@ async function fetchData() {
             long: location.longitude,
             datetime: '2024-11-08 23:50:00+0000',
             adhan_passed: false,
+            limit: limit.value,
+            offset: offset.value,
           },
         }),
         $fetch('/api/nearby-masjids', {
           headers: useRequestHeaders(['cookie']),
-          params: { lat: location.latitude, long: location.longitude },
+          params: {
+            lat: location.latitude,
+            long: location.longitude,
+            limit: limit.value,
+            offset: offset.value,
+          },
         }),
       ])
 
@@ -101,14 +106,19 @@ function checkValidNearestMasjid() {
   return nearestMasjids.value && nearestMasjids.value.count > 0
 }
 
+function updatePrayers() {
+  nextPrayer.value = adhanStore.nextPrayer()
+  currentPrayer.value = adhanStore.currentPrayer()
+}
+
 onMounted(async () => {
-  // const interval = setInterval(() => {
-  //   updatePrayerKey.value += 1
-  // }, 60000)
-  //
-  // onUnmounted(() => {
-  //   clearInterval(interval)
-  // })
+  const interval = setInterval(() => {
+    updatePrayers()
+  }, 60000)
+
+  onUnmounted(() => {
+    clearInterval(interval)
+  })
 })
 </script>
 
@@ -153,7 +163,6 @@ onMounted(async () => {
       <div v-if="checkValidNearestPrayer()" class="flex flex-col gap-5">
         <HomeNearestPrayer
           :data="nearestPrayerTimes.data"
-          :mobile_break="mobile_break"
           :next-prayer="currentPrayer"
         />
         <div
@@ -173,10 +182,7 @@ onMounted(async () => {
         </div>
       </div>
       <div v-if="checkValidNearestMasjid()" class="flex flex-col gap-5">
-        <HomeNearestMasjid
-          :data="nearestMasjids.data"
-          :mobile_break="mobile_break"
-        />
+        <HomeNearestMasjid :data="nearestMasjids.data" />
         <div
           class="text-center text-base underline underline-offset-2"
           colspan="4"

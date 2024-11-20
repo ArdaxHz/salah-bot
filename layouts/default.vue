@@ -1,21 +1,26 @@
 <script setup>
-const props = defineProps({
-  expandedMenu: Boolean,
-  expandedMenuVal: Number,
-  is_mobile: Boolean,
-  is_smaller_mobile: Boolean,
-  mobile_break: Boolean,
-})
+const viewport = useViewport()
+const optionsStore = useOptionsStore()
+const { sidebarExpanded, mobile, tablet, desktop } = storeToRefs(optionsStore)
 
-const emits = defineEmits(['ToggleMenu'])
-
-function ToggleMenu(val) {
-  emits('ToggleMenu', val)
+function ToggleMenuOff() {
+  if (sidebarExpanded.value && viewport.isLessThan('lg')) {
+    sidebarExpanded.value = false
+  }
 }
 
-function handleMouseDown() {
-  if (props.expandedMenu && props.is_mobile) {
-    ToggleMenu(false)
+updateBreakpoints()
+
+watch(viewport.breakpoint, () => {
+  updateBreakpoints()
+})
+
+function updateBreakpoints() {
+  if (viewport.isLessThan('sm')) {
+    mobile.value = true
+  }
+  else {
+    mobile.value = false
   }
 }
 </script>
@@ -25,28 +30,16 @@ function handleMouseDown() {
     <NuxtLoadingIndicator color="#9081d3" />
     <!--    <div class="top-announcement-container" /> -->
     <div class="sidebar-container">
-      <RootSidebarLoggedOut
-        :expanded-menu="expandedMenu"
-        :expanded-menu-val="expandedMenuVal"
-        :is_mobile="is_mobile"
-        :is_smaller_mobile="is_smaller_mobile"
-        @toggle-menu="ToggleMenu"
-      />
+      <RootSidebarLoggedOut />
     </div>
     <div class="top-content-container">
       <div class="header-container">
-        <RootHeaderLoggedOut
-          :expanded-menu="expandedMenu"
-          :expanded-menu-val="expandedMenuVal"
-          :is_mobile="is_mobile"
-          :is_smaller_mobile="is_smaller_mobile"
-          @toggle-menu="ToggleMenu"
-        />
+        <RootHeaderLoggedOut />
       </div>
       <div class="main-content-container">
         <div class="content-announcement-container" />
-        <div class="content-container" @mousedown="handleMouseDown">
-          <slot :mobile_break="mobile_break" />
+        <div class="content-container" @mousedown="ToggleMenuOff">
+          <slot />
         </div>
       </div>
     </div>
@@ -57,7 +50,8 @@ function handleMouseDown() {
 .root-container {
   display: grid;
   grid-template-columns: [sidebar-container] min-content [top-content-container] auto;
-  grid-template-areas: "sidebar-container top-content-container";
+  grid-template-areas:
+    /*"top-announcement-container top-announcement-container"*/ "sidebar-container top-content-container";
   justify-items: stretch;
 }
 

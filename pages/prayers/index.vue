@@ -2,7 +2,6 @@
 import { useLocationStore } from '@/composables/stores/location'
 import { useAdhanStore } from '@/composables/stores/adhan'
 
-const props = defineProps({ mobile_break: Boolean })
 const adhan = useAdhanStore()
 const location = useLocationStore()
 const { currentPrayer, nextPrayer } = storeToRefs(adhan)
@@ -17,11 +16,7 @@ const scrollListenerAdded = ref(true)
 async function fetchData() {
   isLoading.value = true
   isError.value = false
-  if (
-    location.location
-    && location.latitude !== 0
-    && location.longitude !== 0
-  ) {
+  if (location.location && location.latitude && location.longitude) {
     try {
       const [nearestPrayerTimesResponse] = await Promise.all([
         $fetch('/api/nearby-prayers', {
@@ -115,7 +110,6 @@ onBeforeUnmount(() => {
     <HomeNearestPrayer
       v-if="checkValidNearestMasjid()"
       :data="nearestPrayerTimes"
-      :mobile_break="mobile_break"
       :next-prayer="currentPrayer"
     />
 

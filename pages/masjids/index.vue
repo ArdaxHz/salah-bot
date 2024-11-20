@@ -2,84 +2,80 @@
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useLocationStore } from '@/composables/stores/location'
 
-const props = defineProps({ mobile_break: Boolean })
+const route = useRoute()
+const router = useRouter()
 const location = useLocationStore()
 const nearestMasjids = ref([])
-const masjidsData = ref([])
 const isLoading = ref(true)
 const isError = ref(false)
-const limit = ref(20)
-const offset = ref(0)
-const distance = ref(1600)
 const scrollListenerAdded = ref(true)
 
-const searchNameFilter = ref(null)
+const filters = ref({
+  limit: 20,
+  offset: 0,
+  distance: 5000,
+  name: null,
+})
+
+if (route.query.limit) {
+  checkQueries()
+}
+else {
+  updateQueries()
+}
+
+function checkQueries() {
+  updateObj(filters.value, route.query)
+
+  // if (filters.value.offset > 0) {
+  //   filters.value.limit += filters.value.offset
+  // }
+}
+
+function updateQueries() {
+  router.replace({ path: '/masjids', query: filters.value })
+}
+
+watch(filters.value, () => {
+  updateQueries()
+})
 
 async function fetchData() {
   isLoading.value = true
   isError.value = false
-  if (
-    location.location
-    && location.latitude !== 0
-    && location.longitude !== 0
-  ) {
+  if (location.location && location.latitude && location.longitude) {
     try {
       const [nearestMasjidsResponse] = await Promise.all([
-        $fetch('/api/nearby-masjids', {
+        $fetch('/api/masjids', {
           headers: useRequestHeaders(['cookie']),
           params: {
             lat: location.latitude,
             long: location.longitude,
-            limit: limit.value,
-            offset: offset.value,
-            distance: distance.value,
+            limit: filters.value.limit,
+            offset: filters.value.offset,
+            distance: filters.value.distance,
+            name: filters.value.name,
           },
         }),
       ])
 
       if (
-        nearestMasjidsResponse.data
-        && Array.isArray(nearestMasjidsResponse.data.data)
+        nearestMasjidsResponse
+        && Array.isArray(nearestMasjidsResponse.data)
       ) {
-        const masjidIds = nearestMasjidsResponse.data.data.map(
-          masjid => masjid.id
-        )
+        nearestMasjids.value.push(...nearestMasjidsResponse.data)
 
-        if (masjidIds.length > 0) {
-          nearestMasjids.value.push(...nearestMasjidsResponse.data.data)
-
-          const detailedMasjidsResponse = await $fetch('/api/masjids', {
-            headers: useRequestHeaders(['cookie']),
-            params: {
-              'ids[]': masjidIds,
-            },
-          })
-
-          if (
-            detailedMasjidsResponse.data
-            && Array.isArray(detailedMasjidsResponse.data)
-          ) {
-            masjidsData.value.push(...detailedMasjidsResponse.data)
-          }
-          else {
-            console.error(
-              'Detailed data fetched is not in expected format:',
-              detailedMasjidsResponse.data
-            )
-          }
-        }
-
-        if (
-          nearestMasjidsResponse.data.count === 0
-          || nearestMasjidsResponse.data.count === nearestMasjids.value.length
-        ) {
-          removeScrollListener()
-        }
+        // if (
+        //   nearestMasjidsResponse.count === 0
+        //   || nearestMasjidsResponse.count === nearestMasjids.value.length
+        // ) {
+        //   removeScrollListener()
+        // }
       }
       else {
         console.error(
           'Data fetched is not in expected format:',
-          nearestMasjidsResponse.data
+          nearestMasjidsResponse
         )
         removeScrollListener()
       }
@@ -95,7 +91,14 @@ async function fetchData() {
   }
 }
 
-watch(location, fetchData, { immediate: true })
+watch(
+  location,
+  () => {
+    nearestMasjids.value = []
+    fetchData()
+  },
+  { immediate: true }
+)
 
 function checkValidNearestMasjid() {
   return nearestMasjids.value && nearestMasjids.value.length > 0
@@ -103,9 +106,9 @@ function checkValidNearestMasjid() {
 
 function handleScroll() {
   const bottomOfWindow
-    = window.innerHeight + window.scrollY >= document.body.offsetHeight - 10
+    = window.innerHeight + window.scrollY >= document.body.offsetHeight - 50
   if (bottomOfWindow && !isLoading.value && !isError.value) {
-    offset.value += limit.value
+    filters.value.offset += filters.value.limit
     fetchData()
   }
 }
@@ -122,7 +125,7 @@ function addScrollListener() {
     window.addEventListener('scroll', handleScroll)
     scrollListenerAdded.value = true
   }
-  offset.value += limit.value
+  filters.value.offset += filters.value.limit
   fetchData()
 }
 
@@ -135,7 +138,7 @@ onBeforeUnmount(() => {
 })
 
 function updateSearchFilter(text) {
-  searchNameFilter.value = text
+  filters.value.name = text
 }
 </script>
 
@@ -143,9 +146,9 @@ function updateSearchFilter(text) {
   <div>
     <div class="flex flex-col w-full h-full gap-6">
       <div class="flex flex-col sm:flex-row gap-2">
-        {{ searchNameFilter }}
+        {{ filters.name }}
         <FiltersSearchBar
-          :name="searchNameFilter"
+          :name="filters.name"
           class="w-full sm:w-9/12"
           @search-filter="updateSearchFilter"
         />
@@ -154,7 +157,6 @@ function updateSearchFilter(text) {
       <HomeNearestMasjid
         v-if="checkValidNearestMasjid()"
         :data="nearestMasjids"
-        :mobile_break="mobile_break"
       />
     </div>
     <div v-if="isLoading" class="loading-bar">

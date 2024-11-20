@@ -4,8 +4,10 @@ import { DateTime } from 'luxon'
 const props = defineProps({
   data: Object,
   nextPrayer: Object,
-  mobile_break: Boolean,
 })
+
+const optionsStore = useOptionsStore()
+const { mobile } = storeToRefs(optionsStore)
 
 const activeRow = ref(null)
 
@@ -26,7 +28,7 @@ function localHandleFocusOut(event) {
       </p>
     </div>
     <div class="accordion" @focusout="localHandleFocusOut">
-      <table v-if="mobile_break" class="table desktop-table" tabindex="0">
+      <table v-if="!mobile" class="table desktop-table" tabindex="0">
         <thead>
           <tr>
             <th>Masjid</th>
