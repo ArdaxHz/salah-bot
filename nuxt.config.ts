@@ -2,13 +2,12 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: [
+    '@nuxt/fonts',
+    '@pinia/nuxt',
     '@nuxt/ui',
     '@nuxthub/core',
     '@nuxtjs/tailwindcss',
-    '@pinia/nuxt',
-    '@pinia/nuxt',
     '@nuxt/icon',
-    '@nuxt/fonts',
     '@nuxtjs/i18n',
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
@@ -133,12 +132,6 @@ export default defineNuxtConfig({
           src: 'pwa-256x256.png',
           sizes: '256x256',
           type: 'image/png',
-        },
-        {
-          src: 'pwa-256x256.png',
-          sizes: '256x256',
-          type: 'image/png',
-          purpose: 'any maskable',
         },
       ],
     },
