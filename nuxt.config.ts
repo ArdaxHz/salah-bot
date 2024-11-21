@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     'pinia-plugin-persistedstate/nuxt',
     'nuxt-viewport',
+    '@vite-pwa/nuxt',
   ],
   i18n: {
     strategy: 'prefix_except_default',
@@ -112,5 +113,65 @@ export default defineNuxtConfig({
     },
 
     fallbackBreakpoint: 'lg',
+  },
+  pwa: {
+    strategies: 'generateSW',
+    srcDir: 'service-worker',
+    filename: 'sw.ts',
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'Salah.bot',
+      short_name: 'salah.bot',
+      theme_color: '#1b1d16',
+      icons: [
+        {
+          src: 'pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: 'pwa-256x256.png',
+          sizes: '256x256',
+          type: 'image/png',
+        },
+        {
+          src: 'pwa-256x256.png',
+          sizes: '256x256',
+          type: 'image/png',
+          purpose: 'any maskable',
+        },
+      ],
+    },
+    workbox: {
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+    },
+    injectManifest: {
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+    },
+    client: {
+      installPrompt: true,
+      // you don't need to include this: only for testing purposes
+      // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
+      periodicSyncForUpdates: 20,
+    },
+    devOptions: {
+      enabled: true,
+      suppressWarnings: true,
+      navigateFallback: '/',
+      navigateFallbackAllowlist: [/^\/$/],
+      type: 'module',
+    },
+  },
+  app: {
+    head: {
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '256x256',
+          href: '/favicon.png',
+        },
+      ],
+    },
   },
 })

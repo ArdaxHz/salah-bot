@@ -1,15 +1,7 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
-export const useOptionsStore = defineStore(
-  'options',
-  () => {
-    const sidebarExpanded = ref(true)
-    const mobile = ref(false)
-    return { sidebarExpanded, mobile }
-  },
-  {
-    persist: {
-      storage: piniaPluginPersistedstate.cookies(),
-    },
-  }
-)
+export const useOptionsStore = defineStore("options", () => {
+  const sidebarExpanded = ref(false);
+  const mobile = ref(false);
+  return { sidebarExpanded, mobile };
+});

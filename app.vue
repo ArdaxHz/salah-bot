@@ -12,6 +12,7 @@ const longitude = locationStore.longitude
 
 <template>
   <NuxtLayout>
+    <VitePwaManifest />
     <NuxtPage />
   </NuxtLayout>
 </template>
