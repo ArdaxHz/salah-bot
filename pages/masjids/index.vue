@@ -9,11 +9,6 @@ const nearestMasjids = ref([])
 const isLoading = ref(true)
 const isError = ref(false)
 const scrollListenerAdded = ref(true)
-const filtersUri = ref({
-  page: 1,
-  distance: 5000,
-  name: null,
-})
 
 const filtersInternal = ref({
   limit: 20,
@@ -21,8 +16,18 @@ const filtersInternal = ref({
   distance: 5000,
   name: null,
 })
+const filtersUri = computed(() => {
+  const obj = {}
+  if (filtersInternal.value.distance) {
+    obj.distance = filtersInternal.value.distance
+  }
+  if (filtersInternal.value.name) {
+    obj.name = filtersInternal.value.name
+  }
+  return obj
+})
 
-if (route.query.limit) {
+if (route.query.distance) {
   checkQueries()
 }
 else {
@@ -30,18 +35,14 @@ else {
 }
 
 function checkQueries() {
-  updateObj(filters.value, route.query)
-
-  // if (filters.value.offset > 0) {
-  //   filters.value.limit += filters.value.offset
-  // }
+  updateObj(filtersInternal.value, route.query)
 }
 
 function updateQueries() {
-  router.replace({ path: '/masjids', query: filters.value })
+  router.replace({ path: '/masjids', query: filtersUri.value })
 }
 
-watch(filters.value, () => {
+watch(filtersInternal.value, () => {
   updateQueries()
 })
 
@@ -56,10 +57,10 @@ async function fetchData() {
           params: {
             lat: location.latitude,
             long: location.longitude,
-            limit: filters.value.limit,
-            offset: filters.value.offset,
-            distance: filters.value.distance,
-            name: filters.value.name,
+            limit: filtersInternal.value.limit,
+            offset: filtersInternal.value.offset,
+            distance: filtersInternal.value.distance,
+            name: filtersInternal.value.name,
           },
         }),
       ])
@@ -113,7 +114,7 @@ function handleScroll() {
   const bottomOfWindow
     = window.innerHeight + window.scrollY >= document.body.offsetHeight - 50
   if (bottomOfWindow && !isLoading.value && !isError.value) {
-    filters.value.offset += filters.value.limit
+    filtersInternal.value.offset += filtersInternal.value.limit
     fetchData()
   }
 }
@@ -130,7 +131,7 @@ function addScrollListener() {
     window.addEventListener('scroll', handleScroll)
     scrollListenerAdded.value = true
   }
-  filters.value.offset += filters.value.limit
+  filtersInternal.value.offset += filtersInternal.value.limit
   fetchData()
 }
 
@@ -143,7 +144,7 @@ onBeforeUnmount(() => {
 })
 
 function updateSearchFilter(text) {
-  filters.value.name = text
+  filtersInternal.value.name = text
 }
 </script>
 
@@ -151,9 +152,9 @@ function updateSearchFilter(text) {
   <div>
     <div class="flex flex-col w-full h-full gap-6">
       <div class="flex flex-col sm:flex-row gap-2">
-        {{ filters.name }}
+        {{ filtersInternal.name }}
         <FiltersSearchBar
-          :name="filters.name"
+          :name="filtersInternal.name"
           class="w-full sm:w-9/12"
           @search-filter="updateSearchFilter"
         />

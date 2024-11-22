@@ -13,7 +13,7 @@ function handleError() {
     <div class="flex w-full justify-center">
       <div class="flex flex-col gap-4 items-center">
         <p
-          class="text-8xl lg:text-[12rem] font-extrabold !text-[var(--error-color-text)]"
+          class="text-8xl lg:text-[12rem] font-extrabold !text-[--error-color-text]"
         >
           {{ error?.statusCode }}
         </p>
@@ -21,7 +21,7 @@ function handleError() {
           {{ error?.message }}
         </p>
         <NuxtLink
-          class="inline-flex items-end underline underline-offset-2 text-[var(--save-color-text)] font-base text-xl lg:text-3xl text-center"
+          class="inline-flex items-end underline underline-offset-2 text-[--save-color-text] font-base text-xl lg:text-3xl text-center"
           to="/"
           @click.prevent="handleError"
         >

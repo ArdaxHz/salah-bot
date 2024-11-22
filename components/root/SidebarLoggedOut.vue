@@ -58,9 +58,9 @@ const navItemsBottom = ref([
 <template>
   <aside
     :class="{
-      'is-expanded bg-[var(--light-bg-color)]': sidebarExpanded,
+      'is-expanded bg-[--light-bg-color]': sidebarExpanded,
     }"
-    class="sidebar flex h-[100dvh] !fixed lg:!sticky top-0 z-10 left-0 flex-col bg-[var(--light-bg-color)] dark:bg-[var(--dark-bg-color)] ring-2 ring-[var(--neutral-secondary-color)]"
+    class="sidebar flex h-[100dvh] !fixed lg:!sticky top-0 z-10 left-0 flex-col bg-[--light-bg-color] dark:bg-[--dark-bg-color] ring-2 ring-[--neutral-secondary-color]"
   >
     <div class="flex flex-col h-full w-full">
       <div

@@ -51,32 +51,32 @@
     --announcement-height: 2rem;
 
     --light-bg-color: white;
-    --dark-bg-color: theme('colors.flax.950');
+    --dark-bg-color: #1b1d16;
 
     --light-text-color: black;
-    --light-text-accent-color: theme('colors.flax.800');
+    --light-text-accent-color: theme('colors.silver.800');
     --light-text-secondary-color: theme('colors.mulled.800');
 
     --dark-text-color: white;
-    --dark-text-accent-color: theme('colors.flax.200');
+    --dark-text-accent-color: theme('colors.silver.200');
     --dark-text-secondary-color: theme('colors.mulled.200');
 
-    --neutral-accent-color: theme('colors.flax.500');
+    --neutral-accent-color: theme('colors.silver.500');
     --neutral-secondary-color: theme('colors.mulled.500');
 
-    --light-text-accent-color-hover: theme('colors.flax.200');
+    --light-text-accent-color-hover: theme('colors.silver.200');
     --light-text-secondary-color-hover: theme('colors.mulled.700');
 
-    --light-text-accent-color-hover-light: theme('colors.flax.300');
+    --light-text-accent-color-hover-light: theme('colors.silver.300');
     --light-text-secondary-color-hover-light: theme('colors.mulled.600');
 
-    --dark-text-accent-color-hover: theme('colors.flax.700');
+    --dark-text-accent-color-hover: theme('colors.silver.700');
     --dark-text-secondary-color-hover: theme('colors.mulled.200');
 
-    --dark-text-accent-color-hover-light: theme('colors.flax.600');
+    --dark-text-accent-color-hover-light: theme('colors.silver.600');
     --dark-text-secondary-color-hover-light: theme('colors.mulled.300');
 
-    --dark-accent-color-dark: theme('colors.flax.900');
+    --dark-accent-color-dark: theme('colors.silver.900');
     --dark-secondary-color-dark: theme('colors.mulled.900');
 
     --error-color-text: theme('colors.red.500');

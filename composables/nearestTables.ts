@@ -7,7 +7,7 @@ export function formatHTML(index: number, data: object) {
   }
 
   string += `
-  <a href=${gmap_link} target="_blank" rel="noopener noreferrer" class="flex items-center underline underline-offset-2 text-sm sm:text-md hover:text-[var(--dark-text-secondary-color-hover)]">Open map for directions
+  <a href=${gmap_link} target="_blank" rel="noopener noreferrer" class="flex items-center underline underline-offset-2 text-sm sm:text-md hover:text-[--dark-text-secondary-color-hover]">Open map for directions
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M6.4 18L5 16.6L14.6 7H6V5h12v12h-2V8.4z"/></svg>
   </a>`
 

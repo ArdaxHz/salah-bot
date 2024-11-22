@@ -170,7 +170,7 @@ onMounted(async () => {
           colspan="4"
         >
           <NuxtLink
-            class="inline-flex items-center text-[var(--light-text-color)] dark:text-[var(--dark-text-color)] hover:text-[var(--dark-text-accent-color-hover-light)] dark:hover:text-[var(--light-text-accent-color-hover-light)]"
+            class="inline-flex items-center text-[--light-text-color] dark:text-[--dark-text-color] hover:text-[--dark-text-accent-color-hover-light] dark:hover:text-[--light-text-accent-color-hover-light]"
             to="/prayers"
           >
             More Prayers Near Me
@@ -188,7 +188,7 @@ onMounted(async () => {
           colspan="4"
         >
           <NuxtLink
-            class="inline-flex items-center text-[var(--light-text-color)] dark:text-[var(--dark-text-color)] hover:text-[var(--dark-text-accent-color-hover-light)] dark:hover:text-[var(--light-text-accent-color-hover-light)]"
+            class="inline-flex items-center text-[--light-text-color] dark:text-[--dark-text-color] hover:text-[--dark-text-accent-color-hover-light] dark:hover:text-[--light-text-accent-color-hover-light]"
             to="/masjids"
           >
             More Masaajid Near Me

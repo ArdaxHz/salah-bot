@@ -21,13 +21,13 @@ watch(() => searchText.value, emitSearchText)
         rounded: 'rounded-lg',
         color: {
           white: {
-            outline: `bg-[var(--light-bg-color)] dark:bg-[var(--dark-bg-color)]
+            outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
                 focus:ring-2
-                ring-[var(--neutral-accent-color)]
-                focus:ring-[var(--neutral-secondary-color)]
+                ring-[--neutral-accent-color]
+                focus:ring-[--neutral-secondary-color]
 
-                dark:ring-[var(--neutral-accent-color)]
-                dark:focus:ring-[var(--neutral-secondary-color)]
+                dark:ring-[--neutral-accent-color]
+                dark:focus:ring-[--neutral-secondary-color]
                 `,
           },
         },

@@ -29,7 +29,7 @@ onMounted(() => {
 <template>
   <button class="menu-item menu-item-press" @click="getCurrentLocation">
     <Icon
-      class="[var(--light-text-color)] dark:[var(--dark-text-color)]"
+      class="[--light-text-color] dark:[--dark-text-color]"
       name="material-symbols:location-on-outline-rounded"
       size="2rem"
     />

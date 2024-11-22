@@ -133,6 +133,17 @@ export default defineNuxtConfig({
           sizes: '256x256',
           type: 'image/png',
         },
+        {
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+        {
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'maskable',
+        },
       ],
     },
     workbox: {
@@ -158,8 +169,26 @@ export default defineNuxtConfig({
         {
           rel: 'icon',
           type: 'image/png',
+          sizes: '32x32',
+          href: '/favicon-32x32.png',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '192x192',
+          href: '/favicon-192x192.png',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
           sizes: '256x256',
-          href: '/favicon.png',
+          href: '/favicon-256x256.png',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '512x512',
+          href: '/favicon-512x512.png',
         },
       ],
     },

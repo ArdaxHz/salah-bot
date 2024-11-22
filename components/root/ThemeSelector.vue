@@ -25,11 +25,11 @@ onMounted(() => {
       @change="colorMode.preference = $event.target.checked ? 'dark' : 'light'"
     >
     <Icon
-      class="[var(--light-text-color)] dark:[var(--dark-text-color)] stroke-base-100 fill-base-100 col-start-1 row-start-1"
+      class="[--light-text-color] dark:[--dark-text-color] stroke-base-100 fill-base-100 col-start-1 row-start-1"
       name="material-symbols:wb-sunny"
     />
     <Icon
-      class="[var(--light-text-color)] dark:[var(--dark-text-color)] stroke-base-100 fill-base-100 col-start-2 row-start-1"
+      class="[--light-text-color] dark:[--dark-text-color] stroke-base-100 fill-base-100 col-start-2 row-start-1"
       name="material-symbols:mode-night"
     />
   </label>
