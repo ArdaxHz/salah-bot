@@ -23,14 +23,14 @@ function ToggleMenu() {
           </button>
         </div>
         <div>
-          <RootTodayAdhanTimings class="hidden xs:flex" />
+          <RootTodayAdhanTimings :header="true" class="hidden xs:flex" />
           <div class="flex xs:hidden items-center w-full">
             <NuxtLink class="menu-item menu-item-text" to="/today">
               <Icon
                 name="material-symbols:alarm-outline-rounded"
                 size="1.75rem"
               />
-              Today
+              <span class="hidden min-[250px]:block">Today</span>
             </NuxtLink>
           </div>
         </div>

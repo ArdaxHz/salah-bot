@@ -9,8 +9,13 @@ const nearestMasjids = ref([])
 const isLoading = ref(true)
 const isError = ref(false)
 const scrollListenerAdded = ref(true)
+const filtersUri = ref({
+  page: 1,
+  distance: 5000,
+  name: null,
+})
 
-const filters = ref({
+const filtersInternal = ref({
   limit: 20,
   offset: 0,
   distance: 5000,

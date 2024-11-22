@@ -38,8 +38,6 @@ const HijriMonths = {
   ],
 }
 
-const salaahs = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha']
-
 export function convertToHijri(date) {
   const hijriDate = new HijrahDate(date)
   return {
@@ -53,13 +51,13 @@ export function calculateAdhanTimesDay(
   latitude,
   longitude,
   date,
-  customParams
+  userParameters
 ) {
   const prayerTimes = calculateAdhanTimesDayRaw(
     latitude,
     longitude,
     date,
-    customParams
+    userParameters
   )
 
   const formattedDate = DateTime.fromJSDate(date).toISODate()
@@ -76,40 +74,42 @@ export function calculateAdhanTimesDayRaw(
   latitude,
   longitude,
   date,
-  customParams
+  userParameters
 ) {
   const coordinates = new Coordinates(latitude, longitude)
+  const calculationParameters
+    = CalculationMethod[userParameters.calculationMethod]()
 
-  const paramsToUse = CalculationMethod[customParams.method.value]()
-  paramsToUse.fajrAngle = customParams.fajrAngle.value
-  paramsToUse.madhab = customParams.madhab.value
+  calculationParameters.fajrAngle = userParameters.fajrAngle
+  calculationParameters.ishaAngle = userParameters.ishaAngle
+  calculationParameters.madhab = userParameters.madhab
+  if (userParameters.ishaInterval) {
+    calculationParameters.ishaInterval = userParameters.ishaInterval
+  }
 
-  const prayerTimes = new PrayerTimes(coordinates, date, paramsToUse)
-  paramsToUse.highLatitudeRule = HighLatitudeRule.recommended(coordinates)
-  const prayerTimesIshaChanged = new PrayerTimes(
-    coordinates,
-    date,
-    paramsToUse
-  )
+  if (userParameters.highLatitudeRule === 'recommended') {
+    calculationParameters.highLatitudeRule
+      = HighLatitudeRule.recommended(coordinates)
+  }
+  else {
+    calculationParameters.highLatitudeRule = userParameters.highLatitudeRule
+  }
+  calculationParameters.adjustments = userParameters.adjustments
+  calculationParameters.polarCircleResolution
+    = userParameters.polarCircleResolution
+  calculationParameters.rounding = userParameters.rounding
+  calculationParameters.shafaq = userParameters.shafaq
 
-  // if (checkTimeWithinRange(prayerTimes.fajr, prayerTimes.isha, 5)) {
-  //     const newIshaTime = new Date(prayerTimes.maghrib.getTime() + 60 * 60 * 1000);
-  //     prayerTimes.isha = newIshaTime;
-  // }
-
-  prayerTimes.isha = prayerTimesIshaChanged.isha
-  return prayerTimes
+  return new PrayerTimes(coordinates, date, calculationParameters)
 }
 
-export function calculateAdhanDay(latitude, longitude, date, customParams) {
+export function calculateAdhanDay(latitude, longitude, date, userParameters) {
   return Object.values(
-    calculateAdhanTimesDay(latitude, longitude, date, customParams)
+    calculateAdhanTimesDay(latitude, longitude, date, userParameters)
   )[0]
 }
 
-export function calculateAdhanTomorrow() {}
-
-export function calculateAdhanMonth(latitude, longitude, date, customParams) {
+export function calculateAdhanMonth(latitude, longitude, date, userParameters) {
   let month = {}
   const daysInMonth = new Date(
     date.getFullYear(),
@@ -125,7 +125,7 @@ export function calculateAdhanMonth(latitude, longitude, date, customParams) {
         latitude,
         longitude,
         DateTime.fromJSDate(dailyDate),
-        customParams
+        userParameters
       )
     )
   }

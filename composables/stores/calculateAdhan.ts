@@ -22,6 +22,7 @@ export const useTodayAdhanStore = defineStore('todayAdhan', () => {
   const sunset = ref<Date | null>(null)
   const isha = ref<Date | null>(null)
   const date = ref<Date>(new Date())
+  const adhanObj = ref(null)
 
   function daily(): Omit<AdhanTimes, 'sunrise' | 'sunset' | 'date'> {
     return {
@@ -39,7 +40,6 @@ export const useTodayAdhanStore = defineStore('todayAdhan', () => {
       sunrise: sunrise.value,
       dhuhr: dhuhr.value,
       asr: asr.value,
-      sunset: sunset.value,
       maghrib: maghrib.value,
       isha: isha.value,
     }
@@ -79,7 +79,6 @@ export const useTodayAdhanStore = defineStore('todayAdhan', () => {
     locationData
   ): Partial<AdhanTimes> | undefined {
     const adhanSettings = useAdhanSettings()
-    const { params } = storeToRefs(adhanSettings)
 
     if (
       locationData.value.latitude.value == null
@@ -92,7 +91,7 @@ export const useTodayAdhanStore = defineStore('todayAdhan', () => {
       locationData.value.latitude.value,
       locationData.value.longitude.value,
       date,
-      params.value
+      adhanSettings.params()
     )
     return times.prayerTimes
   }
