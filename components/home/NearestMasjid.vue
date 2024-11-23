@@ -71,7 +71,7 @@ function localHandleFocusOut(event) {
           </div>
           <hr
             v-if="index < data.length - 1"
-            class="my-2 border-silver-300/30 w-[95%] mx-auto"
+            class="my-2 border-silver-500/50 w-[95%] mx-auto"
           >
         </div>
       </div>

@@ -16,7 +16,7 @@ watch(() => searchText.value, emitSearchText)
 <template>
   <div>
     <UInput
-      v-model="searchText"
+      v-model.trim="searchText"
       :trailing="false"
       :ui="{
         rounded: 'rounded-lg',

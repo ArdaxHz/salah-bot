@@ -4,7 +4,7 @@ const model = defineModel()
 </script>
 
 <template>
-  <div class="form-radio-group flex-col sm:flex-row">
+  <div class="form-radio-group flex-wrap">
     <URadio
       v-for="madhab of list"
       :key="madhab.value"

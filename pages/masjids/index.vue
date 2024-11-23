@@ -10,6 +10,7 @@ const isLoading = ref(true)
 const isError = ref(false)
 const scrollListenerAdded = ref(true)
 
+const filtersExpanded = ref(false)
 const dataKey = ref(0)
 const nameSearch = ref(false)
 const filtersInternal = ref({
@@ -78,7 +79,6 @@ async function fetchData(extendArr = false) {
         }))
 
         if (extendArr) {
-          // Avoid duplicates based on unique id (or another identifier)
           const existingIds = new Set(nearestMasjids.value.map(m => m.id))
           nearestMasjids.value.push(
             ...newMasjids.filter(m => !existingIds.has(m.id))
@@ -90,9 +90,11 @@ async function fetchData(extendArr = false) {
 
         dataKey.value += 1
 
-        // Check if fewer results than the limit, remove scroll listener
         if (nearestMasjidsResponse.count < filtersInternal.value.limit) {
           removeScrollListener()
+        }
+        else {
+          addScrollListener()
         }
       }
       else {
@@ -129,7 +131,7 @@ function checkValidNearestMasjid() {
 
 function handleScroll() {
   const bottomOfWindow
-    = window.innerHeight + window.scrollY >= document.body.offsetHeight - 50
+    = window.innerHeight + window.scrollY >= document.body.offsetHeight - 100
   if (bottomOfWindow && !isLoading.value && !isError.value) {
     filtersInternal.value.offset += filtersInternal.value.limit
     fetchData(true)
@@ -148,12 +150,16 @@ function addScrollListener() {
     window.addEventListener('scroll', handleScroll)
     scrollListenerAdded.value = true
   }
+}
+
+function fetchNextPage() {
   filtersInternal.value.offset += filtersInternal.value.limit
   fetchData(true)
 }
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
+  scrollListenerAdded.value = true
 })
 
 onBeforeUnmount(() => {
@@ -165,18 +171,40 @@ function updateSearchFilter(text) {
   filtersInternal.value.offset = 0 // Reset offset on search filter change
   fetchData()
 }
+
+function expandFiltersButton() {
+  filtersExpanded.value = !filtersExpanded.value
+}
 </script>
 
 <template>
-  <div>
-    <div class="flex flex-col w-full h-full gap-6">
-      <div class="flex flex-col sm:flex-row gap-2">
+  <div class="flex flex-col">
+    <div class="flex flex-col gap-4 sm:gap-6">
+      <div class="filters-row flex flex-col sm:flex-row gap-2 w-full">
         <FiltersSearchBar
           :name="filtersInternal.name"
           class="w-full sm:w-9/12"
           @search-filter="updateSearchFilter"
         />
-        <FiltersDistanceFilter class="w-full sm:w-3/12" />
+        <UButton
+          :ui="{
+            rounded: 'rounded-lg',
+          }"
+          class="w-full sm:w-3/12"
+          label="Show search filters"
+          @click="expandFiltersButton"
+        >
+          <template #trailing>
+            <Icon
+              v-if="filtersExpanded"
+              name="material-symbols:check-indeterminate-small-rounded"
+            />
+            <Icon v-else name="material-symbols:add-2-rounded" />
+          </template>
+        </UButton>
+      </div>
+      <div :class="`${filtersExpanded ? 'block' : 'hidden'}`">
+        afd
       </div>
       <HomeNearestMasjid
         v-if="checkValidNearestMasjid()"
@@ -196,8 +224,8 @@ function updateSearchFilter(text) {
     </div>
     <button
       v-if="scrollListenerAdded && !isLoading"
-      class="load-more-button"
-      @click="addScrollListener"
+      class="block w-full cursor-pointer p-4 items-center font-bold text-[--light-text-color] dark:text-[--dark-text-color]"
+      @click="fetchNextPage"
     >
       Load More
     </button>
@@ -205,17 +233,12 @@ function updateSearchFilter(text) {
 </template>
 
 <style>
-.loading-bar {
-  text-align: center;
-  padding: 1em;
-  font-weight: bold;
+/* Initially hide the filters-content */
+.filters-content {
+  display: none;
 }
 
-.load-more-button {
-  display: block;
-  margin: 1em auto;
-  padding: 1em;
-  font-weight: bold;
-  cursor: pointer;
+#filters-checkbox:checked ~ .filters-content {
+  visibility: visible;
 }
 </style>

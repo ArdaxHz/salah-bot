@@ -4,9 +4,9 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/fonts',
     '@pinia/nuxt',
+    '@nuxtjs/tailwindcss',
     '@nuxt/ui',
     '@nuxthub/core',
-    '@nuxtjs/tailwindcss',
     '@nuxt/icon',
     '@nuxtjs/i18n',
     '@nuxtjs/color-mode',
@@ -122,6 +122,7 @@ export default defineNuxtConfig({
       name: 'Salah.bot',
       short_name: 'salah.bot',
       background_color: '#1b1d16',
+      theme_color: '#1b1d16',
       icons: [
         {
           src: 'pwa-192x192.png',
