@@ -2,6 +2,7 @@
 const props = defineProps({
   data: Object,
   nextPrayer: Object,
+  dist: String,
 })
 
 const optionsStore = useOptionsStore()
@@ -30,7 +31,9 @@ function localHandleFocusOut(event) {
         <thead>
           <tr>
             <th>Masjid</th>
-            <th>Distance</th>
+            <th v-if="!dist">
+              Distance
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -43,7 +46,9 @@ function localHandleFocusOut(event) {
             <td class="max-w-[60ch] text-ellipsis">
               {{ nearestPrayer.name }}
             </td>
-            <td>{{ nearestPrayer.dist_meters.toFixed(0) }} metres</td>
+            <td v-if="!dist">
+              {{ nearestPrayer.dist_meters.toFixed(0) }} metres
+            </td>
           </tr>
         </tbody>
       </table>
@@ -60,7 +65,7 @@ function localHandleFocusOut(event) {
             <p class="font-bold text-xl">
               {{ nearestPrayer.name }}
             </p>
-            <p class="text-md">
+            <p v-if="!dist" class="text-md">
               {{ nearestPrayer.dist_meters.toFixed(0) }} metres
             </p>
           </div>

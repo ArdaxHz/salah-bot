@@ -10,6 +10,8 @@ const isLoading = ref(true)
 const isError = ref(false)
 const scrollListenerAdded = ref(true)
 
+const dataKey = ref(0)
+const nameSearch = ref(false)
 const filtersInternal = ref({
   limit: 20,
   offset: 0,
@@ -46,37 +48,52 @@ watch(filtersInternal.value, () => {
   updateQueries()
 })
 
-async function fetchData() {
+async function fetchData(extendArr = false) {
   isLoading.value = true
   isError.value = false
+
+  nameSearch.value = !!filtersInternal.value.name
+
   if (location.location && location.latitude && location.longitude) {
     try {
-      const [nearestMasjidsResponse] = await Promise.all([
-        $fetch('/api/masjids', {
-          headers: useRequestHeaders(['cookie']),
-          params: {
-            lat: location.latitude,
-            long: location.longitude,
-            limit: filtersInternal.value.limit,
-            offset: filtersInternal.value.offset,
-            distance: filtersInternal.value.distance,
-            name: filtersInternal.value.name,
-          },
-        }),
-      ])
+      const nearestMasjidsResponse = await $fetch('/api/masjids', {
+        headers: useRequestHeaders(['cookie']),
+        params: {
+          lat: location.latitude,
+          long: location.longitude,
+          limit: filtersInternal.value.limit,
+          offset: filtersInternal.value.offset,
+          distance: filtersInternal.value.distance,
+          name: filtersInternal.value.name,
+        },
+      })
 
       if (
         nearestMasjidsResponse
         && Array.isArray(nearestMasjidsResponse.data)
       ) {
-        nearestMasjids.value.push(...nearestMasjidsResponse.data)
+        const newMasjids = nearestMasjidsResponse.data.map(masjid => ({
+          ...masjid,
+          dist_metres: masjid.dist_metres || null,
+        }))
 
-        // if (
-        //   nearestMasjidsResponse.count === 0
-        //   || nearestMasjidsResponse.count === nearestMasjids.value.length
-        // ) {
-        //   removeScrollListener()
-        // }
+        if (extendArr) {
+          // Avoid duplicates based on unique id (or another identifier)
+          const existingIds = new Set(nearestMasjids.value.map(m => m.id))
+          nearestMasjids.value.push(
+            ...newMasjids.filter(m => !existingIds.has(m.id))
+          )
+        }
+        else {
+          nearestMasjids.value = newMasjids
+        }
+
+        dataKey.value += 1
+
+        // Check if fewer results than the limit, remove scroll listener
+        if (nearestMasjidsResponse.count < filtersInternal.value.limit) {
+          removeScrollListener()
+        }
       }
       else {
         console.error(
@@ -115,7 +132,7 @@ function handleScroll() {
     = window.innerHeight + window.scrollY >= document.body.offsetHeight - 50
   if (bottomOfWindow && !isLoading.value && !isError.value) {
     filtersInternal.value.offset += filtersInternal.value.limit
-    fetchData()
+    fetchData(true)
   }
 }
 
@@ -132,7 +149,7 @@ function addScrollListener() {
     scrollListenerAdded.value = true
   }
   filtersInternal.value.offset += filtersInternal.value.limit
-  fetchData()
+  fetchData(true)
 }
 
 onMounted(() => {
@@ -144,7 +161,9 @@ onBeforeUnmount(() => {
 })
 
 function updateSearchFilter(text) {
-  filtersInternal.value.name = text
+  filtersInternal.value.name = text || null
+  filtersInternal.value.offset = 0 // Reset offset on search filter change
+  fetchData()
 }
 </script>
 
@@ -152,7 +171,6 @@ function updateSearchFilter(text) {
   <div>
     <div class="flex flex-col w-full h-full gap-6">
       <div class="flex flex-col sm:flex-row gap-2">
-        {{ filtersInternal.name }}
         <FiltersSearchBar
           :name="filtersInternal.name"
           class="w-full sm:w-9/12"
@@ -162,7 +180,9 @@ function updateSearchFilter(text) {
       </div>
       <HomeNearestMasjid
         v-if="checkValidNearestMasjid()"
+        :key="dataKey"
         :data="nearestMasjids"
+        :dist="filtersInternal.name"
       />
     </div>
     <div v-if="isLoading" class="loading-bar">

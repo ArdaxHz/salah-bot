@@ -6,6 +6,7 @@ const emits = defineEmits(['search-filter'])
 const searchText = ref(props.name)
 
 function emitSearchText() {
+  searchText.value = searchText.value
   emits('search-filter', searchText.value)
 }
 
