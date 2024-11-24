@@ -1,21 +1,40 @@
 <script setup>
-const props = defineProps({ distance: Number })
-
-const distance = computed(() => {
-  return props.distance
-})
+const distance = defineModel()
 </script>
 
 <template>
   <div class="w-full">
-    <div class="collapse collapse-plus bg-base-200 w-full">
-      <input type="checkbox">
-      <div class="collapse-title text-xl font-medium">
-        Click me to show/hide content
-      </div>
-      <div class="collapse-content">
-        <p>hello</p>
-      </div>
-    </div>
+    <UFormGroup
+      :ui="{
+        label: {
+          base: 'text-[--light-text-color] dark:text-[--dark-text-color]',
+        },
+      }"
+      label="Max distance (metres)"
+      name="distance"
+    >
+      <UInput
+        v-model="distance"
+        :ui="{
+          rounded: 'rounded-lg',
+          color: {
+            white: {
+              outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
+                focus:ring-2
+                ring-[--light-text-accent-color-hover]
+                focus:ring-[--dark-text-secondary-color-hover-light]
+
+                dark:ring-[--dark-accent-color-dark]
+                dark:focus:ring-[--light-text-secondary-color-hover-light]
+                `,
+            },
+          },
+        }"
+        max="7000"
+        min="500"
+        step="100"
+        type="number"
+      />
+    </UFormGroup>
   </div>
 </template>

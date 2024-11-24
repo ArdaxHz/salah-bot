@@ -35,7 +35,7 @@ watch(() => searchText.value, emitSearchText)
       }"
       color="white"
       icon="material-symbols:search-rounded"
-      placeholder="Search..."
+      placeholder="Search masjid..."
       size="lg"
     />
   </div>

@@ -4,13 +4,10 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
-
-const locationStore = useLocationStore()
-const latitude = locationStore.latitude
-const longitude = locationStore.longitude
 </script>
 
 <template>
+  <NuxtRouteAnnouncer />
   <NuxtLayout>
     <VitePwaManifest />
     <NuxtPage />
