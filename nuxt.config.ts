@@ -62,7 +62,7 @@ export default defineNuxtConfig({
     },
   },
   imports: {
-    dirs: ['composables', 'composables/stores'],
+    dirs: ['composables/**'],
   },
   css: ['~/assets/css/main.css', '~/assets/css/nearestTable.css'],
   experimental: {

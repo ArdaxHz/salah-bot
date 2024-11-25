@@ -60,13 +60,18 @@ async function fetchData() {
 
   if (location.location && location.latitude && location.longitude) {
     try {
-      const [prayerTimesResponse, nearestMasjidsResponse] = await Promise.all([
+      const [
+        prayerTimesResponse,
+        nearestMasjidsResponse,
+        getMasjidsResponse,
+        getPrayersResponse,
+      ] = await Promise.all([
         $fetch('/api/nearby-prayers', {
           headers: useRequestHeaders(['cookie']),
           params: {
             lat: location.latitude,
             long: location.longitude,
-            datetime: '2024-11-08 23:50:00+0000',
+            datetime: new Date(),
             adhan_passed: false,
             limit: limit.value,
             offset: offset.value,
@@ -81,7 +86,30 @@ async function fetchData() {
             offset: offset.value,
           },
         }),
+        $fetch('/api/get-masjids', {
+          headers: useRequestHeaders(['cookie']),
+          params: {
+            latitude: location.latitude,
+            longitude: location.longitude,
+            limit: limit.value,
+            offset: offset.value,
+          },
+        }),
+        $fetch('/api/get-prayers', {
+          headers: useRequestHeaders(['cookie']),
+          params: {
+            latitude: location.latitude,
+            longitude: location.longitude,
+            limit: limit.value,
+            offset: offset.value,
+            input_time: new Date(),
+            adhan_passed: false,
+          },
+        }),
       ])
+
+      console.log(getMasjidsResponse)
+      console.log(getPrayersResponse)
 
       // nearestPrayerTimes.value = prayerTimesResponse.data
       nearestMasjids.value = nearestMasjidsResponse.data
