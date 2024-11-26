@@ -5,37 +5,37 @@
 
 @font-face {
     font-family: 'Gilroy';
-    src: url('/fonts/Gilroy Regular.ttf') format("truetype");
+    src: url('/fonts/Gilroy-Regular.ttf') format("truetype");
     font-weight: 400;
 }
 
 @font-face {
     font-family: 'Gilroy';
-    src: url('/fonts/Gilroy Medium.ttf') format("truetype");
+    src: url('/fonts/Gilroy-Medium.ttf') format("truetype");
     font-weight: 500;
 }
 
 @font-face {
     font-family: 'Gilroy';
-    src: url('/fonts/Gilroy SemiBold.ttf') format("truetype");
+    src: url('/fonts/Gilroy-SemiBold.ttf') format("truetype");
     font-weight: 600;
 }
 
 @font-face {
     font-family: 'Gilroy';
-    src: url('/fonts/Gilroy Bold.ttf') format("truetype");
+    src: url('/fonts/Gilroy-Bold.ttf') format("truetype");
     font-weight: 700;
 }
 
 @font-face {
     font-family: 'Gilroy';
-    src: url('/fonts/Gilroy ExtraBold.ttf') format("truetype");
+    src: url('/fonts/Gilroy-ExtraBold.ttf') format("truetype");
     font-weight: 800;
 }
 
 @font-face {
     font-family: 'Gilroy';
-    src: url('/fonts/Gilroy Heavy.ttf') format("truetype");
+    src: url('/fonts/Gilroy-Heavy.ttf') format("truetype");
     font-weight: 900;
 }
 
