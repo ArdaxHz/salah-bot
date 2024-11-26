@@ -3,7 +3,7 @@ export function formatHTML(index: number, data: object) {
   let gmap_link = data[index].gmap_link
 
   if (!data[index].gmap_link) {
-    gmap_link = `https://www.google.com/maps/place/${data[index].lat},${data[index].long}`
+    gmap_link = `https://www.google.com/maps/place/${data[index].location.lat},${data[index].location.long}`
   }
 
   string += `

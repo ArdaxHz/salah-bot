@@ -2,7 +2,6 @@
 const props = defineProps({
   data: Object,
   nextPrayer: Object,
-  dist: String,
 })
 
 const optionsStore = useOptionsStore()
@@ -16,6 +15,13 @@ function localInjectContent(index, event) {
 function localHandleFocusOut(event) {
   handleFocusOut(activeRow, event)
 }
+
+function getMapLink(data) {
+  return (
+    data.gmap_link
+    || `https://www.google.com/maps/place/${data.location.lat},${data.location.long}`
+  )
+}
 </script>
 
 <template>
@@ -26,53 +32,40 @@ function localHandleFocusOut(event) {
       </p>
     </div>
 
-    <div class="accordion" @focusout="localHandleFocusOut">
-      <table v-if="!mobile" class="table desktop-table" tabindex="0">
-        <thead>
-          <tr>
-            <th>Masjid</th>
-            <th v-if="!dist">
-              Distance
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(nearestPrayer, index) in data"
-            :key="nearestPrayer.masjid_name"
-            class="content-header cursor-pointer"
-            @click="localInjectContent(index, $event)"
-          >
-            <td class="max-w-[60ch] text-ellipsis">
-              {{ nearestPrayer.name }}
-            </td>
-            <td v-if="!dist">
-              {{ nearestPrayer.dist_meters.toFixed(0) }} metres
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div v-else class="flex flex-col gap-1 mobile-table">
+    <div class="" @focusout="localHandleFocusOut">
+      <div class="grid sm:grid-cols-2 flex-col gap-x-6">
         <div
           v-for="(nearestPrayer, index) in data"
           :key="nearestPrayer.name"
-          class="flex flex-col w-full"
+          class="grid grid-rows-3 items-center px-4 py-3 h-28 justify-start dark:bg-silver-600/70 bg-silver-300/70"
         >
-          <div
-            class="px-4 py-3 content-header"
-            @click="localInjectContent(index, $event)"
+          <NuxtLink
+            :to="`/masjids/${nearestPrayer.id}`"
+            class="font-bold text-xl sm:text-2xl text-ellipsis whitespace-nowrap overflow-hidden hover:dark:text-[--light-text-accent-color-hover-light] hover:text-[--light-text-accent-color] text-[--light-text-color] dark:text-[--dark-text-color]"
           >
-            <p class="font-bold text-xl">
-              {{ nearestPrayer.name }}
-            </p>
-            <p v-if="!dist" class="text-md">
-              {{ nearestPrayer.dist_meters.toFixed(0) }} metres
-            </p>
-          </div>
-          <hr
-            v-if="index < data.length - 1"
-            class="my-2 border-silver-500/50 w-[95%] mx-auto"
+            {{ nearestPrayer.name }}
+          </NuxtLink>
+          <p class="text-md">
+            {{ nearestPrayer.distance.toFixed(0) }} metres
+          </p>
+          <NuxtLink
+            :to="getMapLink(nearestPrayer)"
+            class="flex items-center underline underline-offset-2 text-sm sm:text-md hover:dark:text-[--light-text-accent-color-hover-light] hover:text-[--light-text-accent-color] text-[--light-text-color] dark:text-[--dark-text-color]"
+            target="_blank"
           >
+            Open Map
+            <svg
+              height="16"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6.4 18L5 16.6L14.6 7H6V5h12v12h-2V8.4z"
+                fill="currentColor"
+              />
+            </svg>
+          </NuxtLink>
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ const location = useLocationStore()
 const currentPrayer = ref(null)
 const nextPrayer = ref(null)
 const updatePrayerKey = ref(0)
-const limit = ref(5)
+const limit = ref(6)
 const offset = ref(0)
 const nearestPrayerTimes = ref({
   data: [
@@ -60,42 +60,8 @@ async function fetchData() {
 
   if (location.location && location.latitude && location.longitude) {
     try {
-      const [
-        prayerTimesResponse,
-        nearestMasjidsResponse,
-        getMasjidsResponse,
-        getPrayersResponse,
-      ] = await Promise.all([
-        $fetch('/api/nearby-prayers', {
-          headers: useRequestHeaders(['cookie']),
-          params: {
-            lat: location.latitude,
-            long: location.longitude,
-            datetime: new Date(),
-            adhan_passed: false,
-            limit: limit.value,
-            offset: offset.value,
-          },
-        }),
-        $fetch('/api/nearby-masjids', {
-          headers: useRequestHeaders(['cookie']),
-          params: {
-            lat: location.latitude,
-            long: location.longitude,
-            limit: limit.value,
-            offset: offset.value,
-          },
-        }),
-        $fetch('/api/get-masjids', {
-          headers: useRequestHeaders(['cookie']),
-          params: {
-            latitude: location.latitude,
-            longitude: location.longitude,
-            limit: limit.value,
-            offset: offset.value,
-          },
-        }),
-        $fetch('/api/get-prayers', {
+      const [getPrayersResponse, getMasjidsResponse] = await Promise.all([
+        $fetch('/api/prayers', {
           headers: useRequestHeaders(['cookie']),
           params: {
             latitude: location.latitude,
@@ -106,13 +72,19 @@ async function fetchData() {
             adhan_passed: false,
           },
         }),
+        $fetch('/api/masjids', {
+          headers: useRequestHeaders(['cookie']),
+          params: {
+            latitude: location.latitude,
+            longitude: location.longitude,
+            limit: limit.value,
+            offset: offset.value,
+          },
+        }),
       ])
 
-      console.log(getMasjidsResponse)
-      console.log(getPrayersResponse)
-
-      // nearestPrayerTimes.value = prayerTimesResponse.data
-      nearestMasjids.value = nearestMasjidsResponse.data
+      // nearestPrayerTimes.value = getPrayersResponse
+      nearestMasjids.value = getMasjidsResponse
     }
     catch (error) {
       console.error('Error fetching data:', error)
@@ -193,10 +165,7 @@ onMounted(async () => {
           :data="nearestPrayerTimes.data"
           :next-prayer="currentPrayer"
         />
-        <div
-          class="text-center text-base underline underline-offset-2"
-          colspan="4"
-        >
+        <div class="text-center text-base underline underline-offset-2">
           <NuxtLink
             class="inline-flex items-center text-[--light-text-color] dark:text-[--dark-text-color] hover:text-[--dark-text-accent-color-hover-light] dark:hover:text-[--light-text-accent-color-hover-light]"
             to="/prayers"
@@ -211,10 +180,7 @@ onMounted(async () => {
       </div>
       <div v-if="checkValidNearestMasjid()" class="flex flex-col gap-5">
         <HomeNearestMasjid :data="nearestMasjids.data" />
-        <div
-          class="text-center text-base underline underline-offset-2"
-          colspan="4"
-        >
+        <div class="text-center text-base underline underline-offset-2">
           <NuxtLink
             class="inline-flex items-center text-[--light-text-color] dark:text-[--dark-text-color] hover:text-[--dark-text-accent-color-hover-light] dark:hover:text-[--light-text-accent-color-hover-light]"
             to="/masjids"

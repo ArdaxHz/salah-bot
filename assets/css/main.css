@@ -70,6 +70,9 @@
     --light-text-accent-color-hover-light: theme('colors.silver.300');
     --light-text-secondary-color-hover-light: theme('colors.mulled.600');
 
+    --light-text-accent-color-hover-lighter: theme('colors.silver.400');
+    --dark-text-secondary-color-hover-lighter: theme('colors.mulled.400');
+
     --dark-text-accent-color-hover: theme('colors.silver.700');
     --dark-text-secondary-color-hover: theme('colors.mulled.200');
 

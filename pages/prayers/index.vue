@@ -53,16 +53,16 @@ async function fetchData(extendArr = false) {
   if (location.location && location.latitude && location.longitude) {
     try {
       const [nearestPrayerTimesResponse] = await Promise.all([
-        $fetch('/api/nearby-prayers', {
+        $fetch('/api/prayers', {
           headers: useRequestHeaders(['cookie']),
           params: {
-            lat: location.latitude,
-            long: location.longitude,
-            datetime: '2024-11-08 23:50:00+0000',
+            latitude: location.latitude,
+            longitude: location.longitude,
+            input_time: '2024-11-08 23:50:00+0000',
             adhan_passed: false,
             limit: filtersInternal.value.limit,
             offset: filtersInternal.value.offset,
-            distance: filtersInternal.value.distance,
+            max_distance: filtersInternal.value.distance,
           },
         }),
       ])

@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt',
     'nuxt-viewport',
     '@vite-pwa/nuxt',
+    'nuxt-authorization',
   ],
   i18n: {
     strategy: 'prefix_except_default',
@@ -189,6 +190,12 @@ export default defineNuxtConfig({
           href: '/favicon-512x512.png',
         },
       ],
+    },
+  },
+  icon: {
+    clientBundle: {
+      scan: true,
+      sizeLimitKb: 256,
     },
   },
 })

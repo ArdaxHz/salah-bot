@@ -6,8 +6,8 @@ interface QueryParams {
   longitude: string | number | null
   input_time: string | null
   max_distance?: string | number | null
-  result_limit?: string | number | null
-  result_offset?: string | number | null
+  limit?: string | number | null
+  offset?: string | number | null
   adhan_passed?: boolean | null
   next_prayer?: string | null
   sects?: string[] | null
@@ -15,7 +15,7 @@ interface QueryParams {
   min_capacity?: string | number | null
   usage_types?: string[] | null
   management_types?: string[] | null
-  search_name?: string | null
+  name?: string | null
   order_by_capacity?: 'asc' | 'dsc' | null
   distance_order?: 'asc' | 'dsc' | null
   prayer_order?: 'asc' | 'dsc' | null
@@ -31,10 +31,8 @@ export default eventHandler(async (event: H3Event) => {
   const inputTime = query.input_time ?? null
   const maxDistance
     = query.max_distance !== undefined ? Number(query.max_distance) : 2000
-  const resultLimit
-    = query.result_limit !== undefined ? Number(query.result_limit) : 10
-  const resultOffset
-    = query.result_offset !== undefined ? Number(query.result_offset) : 0
+  const limit = query.limit !== undefined ? Number(query.limit) : 10
+  const offset = query.offset !== undefined ? Number(query.offset) : 0
 
   // Validation logic
   const isNumber = (value: any): boolean =>
@@ -47,11 +45,15 @@ export default eventHandler(async (event: H3Event) => {
     return {
       error:
         'Latitude, longitude, and input_time must not be null or undefined',
+      status: 400,
     }
   }
 
   if (!isNumber(latitude) || !isNumber(longitude)) {
-    return { error: 'Latitude and longitude must be valid numbers' }
+    return {
+      error: 'Latitude and longitude must be valid numbers',
+      status: 400,
+    }
   }
 
   // Trim text values
@@ -60,7 +62,7 @@ export default eventHandler(async (event: H3Event) => {
   const sects = query.sects?.map(trimText) ?? null
   const usageTypes = query.usage_types?.map(trimText) ?? null
   const managementTypes = query.management_types?.map(trimText) ?? null
-  const searchName = trimText(query.search_name ?? null)
+  const name = trimText(query.name ?? null)
   const nextPrayer = trimText(query.next_prayer ?? null)
   const orderByCapacity = trimText(query.order_by_capacity ?? null)
   const distanceOrder = trimText(query.distance_order ?? null)
@@ -72,8 +74,8 @@ export default eventHandler(async (event: H3Event) => {
       longitude,
       input_time: inputTime,
       max_distance: maxDistance,
-      result_limit: resultLimit,
-      result_offset: resultOffset,
+      result_limit: limit,
+      result_offset: offset,
       adhan_passed: query.adhan_passed ?? true,
       next_prayer: nextPrayer,
       sects,
@@ -81,7 +83,7 @@ export default eventHandler(async (event: H3Event) => {
       min_capacity: query.min_capacity ? Number(query.min_capacity) : null,
       usage_types: usageTypes,
       management_types: managementTypes,
-      search_name: searchName,
+      search_name: name,
       order_by_capacity: orderByCapacity,
       distance_order: distanceOrder,
       prayer_order: prayerOrder,

@@ -1,7 +1,4 @@
 <script setup>
-import { onBeforeUnmount, onMounted } from 'vue'
-import { useLocationStore } from '@/composables/stores/location'
-
 const route = useRoute()
 const router = useRouter()
 const location = useLocationStore()
@@ -12,7 +9,6 @@ const scrollListenerAdded = ref(true)
 
 const filtersExpanded = ref(false)
 const dataKey = ref(0)
-const nameSearch = ref(false)
 const filtersInternal = ref({
   limit: 20,
   offset: 0,
@@ -28,6 +24,19 @@ const filtersUri = computed(() => {
     obj.name = filtersInternal.value.name
   }
   return obj
+})
+
+const filtersFetch = computed(() => {
+  return Object.keys(filtersInternal.value)
+    .filter(key => !['limit', 'offset'].includes(key))
+    .reduce((obj, key) => {
+      obj[key] = filtersInternal.value[key]
+      return obj
+    }, {})
+})
+
+const searchName = computed(() => {
+  return filtersInternal.value.name
 })
 
 if (route.query.distance) {
@@ -47,6 +56,9 @@ function updateQueries() {
 
 watch(filtersInternal.value, () => {
   updateQueries()
+})
+
+watch(filtersFetch, () => {
   fetchData()
 })
 
@@ -54,18 +66,16 @@ async function fetchData(extendArr = false) {
   isLoading.value = true
   isError.value = false
 
-  nameSearch.value = !!filtersInternal.value.name
-
   if (location.location && location.latitude && location.longitude) {
     try {
       const nearestMasjidsResponse = await $fetch('/api/masjids', {
         headers: useRequestHeaders(['cookie']),
         params: {
-          lat: location.latitude,
-          long: location.longitude,
+          latitude: location.latitude,
+          longitude: location.longitude,
           limit: filtersInternal.value.limit,
           offset: filtersInternal.value.offset,
-          distance: filtersInternal.value.distance,
+          max_distance: filtersInternal.value.distance,
           name: filtersInternal.value.name,
         },
       })
@@ -74,24 +84,16 @@ async function fetchData(extendArr = false) {
         nearestMasjidsResponse
         && Array.isArray(nearestMasjidsResponse.data)
       ) {
-        const newMasjids = nearestMasjidsResponse.data.map(masjid => ({
-          ...masjid,
-          dist_metres: masjid.dist_metres || null,
-        }))
-
         if (extendArr) {
-          const existingIds = new Set(nearestMasjids.value.map(m => m.id))
-          nearestMasjids.value.push(
-            ...newMasjids.filter(m => !existingIds.has(m.id))
-          )
+          nearestMasjids.value.push(...nearestMasjidsResponse.data)
         }
         else {
-          nearestMasjids.value = newMasjids
+          nearestMasjids.value = nearestMasjidsResponse.data
         }
 
         dataKey.value += 1
 
-        if (nearestMasjidsResponse.count < filtersInternal.value.limit) {
+        if (nearestMasjidsResponse.count <= nearestMasjids.value.length) {
           removeScrollListener()
         }
         else {

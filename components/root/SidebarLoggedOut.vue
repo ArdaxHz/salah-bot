@@ -1,6 +1,8 @@
 <script setup>
 const optionsStore = useOptionsStore()
 const { sidebarExpanded, mobile } = storeToRefs(optionsStore)
+const activeItem = ref(null)
+const route = useRoute()
 
 function ToggleMenu() {
   sidebarExpanded.value = !sidebarExpanded.value
@@ -11,6 +13,10 @@ function ToggleMenuOff() {
     sidebarExpanded.value = false
   }
 }
+
+watch(route, () => {
+  activeItem.value = route.path
+})
 
 const navItemsTop = ref([
   {
@@ -77,6 +83,7 @@ const navItemsBottom = ref([
         class="flex flex-col justify-between h-full w-full"
       >
         <RootNavMenuItems
+          v-model="activeItem"
           :is_expanded="sidebarExpanded"
           :nav-items="navItemsTop"
           @click="ToggleMenuOff"
@@ -90,6 +97,7 @@ const navItemsBottom = ref([
           class="menu-footer flex gap-4"
         >
           <RootNavMenuItems
+            v-model="activeItem"
             :is_expanded="sidebarExpanded"
             :nav-items="navItemsBottom"
             class="w-full"
