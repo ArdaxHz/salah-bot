@@ -39,12 +39,7 @@ const searchName = computed(() => {
   return filtersInternal.value.name
 })
 
-if (route.query.distance) {
-  checkQueries()
-}
-else {
-  updateQueries()
-}
+checkQueries()
 
 function checkQueries() {
   updateObj(filtersInternal.value, route.query)
@@ -185,6 +180,7 @@ function expandFiltersButton() {
 
 <template>
   <div class="flex flex-col gap-4 sm:gap-6">
+    <RootReturnPageName name="Nearest Masaajid" />
     <ClientOnly
       class="flex w-full items-center justify-center font-bold text-[--light-text-color] dark:text-[--dark-text-color]"
       fallback="Loading masaajid..."
@@ -223,12 +219,9 @@ function expandFiltersButton() {
             />
           </div>
         </Transition>
-        <HomeNearestMasjid
-          v-if="checkValidNearestMasjid()"
-          :key="dataKey"
-          :data="nearestMasjids"
-          :dist="filtersInternal.name"
-        />
+        <div :key="dataKey" class="flex flex-col gap-6 lg:gap-6 w-full">
+          <HomeNearestTable :data="nearestMasjids" />
+        </div>
       </div>
       <div
         v-if="isLoading"

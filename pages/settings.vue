@@ -22,18 +22,21 @@ watch(checked, (newVal, oldVal) => {
 </script>
 
 <template>
-  <div class="tabs tabs-lifted" role="tablist">
-    <input
-      v-model="checked"
-      :class="`${checked === 'tab-1' ? 'tab-active' : 'tab-inactive'}`"
-      aria-label="Adhan Settings"
-      class="tab"
-      role="tab"
-      type="radio"
-      value="tab-1"
-    >
-    <div class="tab-content p-6" role="tabpanel">
-      <SettingsAdhanSettings />
+  <div class="flex flex-col gap-4 sm:gap-6">
+    <RootReturnPageName name="Settings" />
+    <div class="tabs tabs-lifted" role="tablist">
+      <input
+        v-model="checked"
+        :class="`${checked === 'tab-1' ? 'tab-active' : 'tab-inactive'}`"
+        aria-label="Adhan Settings"
+        class="tab"
+        role="tab"
+        type="radio"
+        value="tab-1"
+      >
+      <div class="tab-content p-6" role="tabpanel">
+        <SettingsAdhanSettings />
+      </div>
     </div>
   </div>
 </template>

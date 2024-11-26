@@ -11,40 +11,64 @@ const offset = ref(0)
 const nearestPrayerTimes = ref({
   data: [
     {
-      masjid_id: '4624c1c5-b3d1-4314-b7e8-e3e03d22f429',
-      masjid_name: 'Attaqwa Mosque',
-      lat: 51.54174777,
-      long: 0.08471488,
-      dist_meters: 264.95190743,
-      next_prayer: 'fajr',
-      prayer_time: '2024-11-09T05:20:46+00:00',
+      id: '4624c1c5-b3d1-4314-b7e8-e3e03d22f429',
+      name: 'Attaqwa Mosque',
+      location: {
+        lat: 51.54174777,
+        long: 0.08471488,
+      },
+      distance: 264.95190743,
+      prayer: {
+        next: {
+          name: 'fajr',
+          time: '2024-11-09T05:20:46+00:00',
+        },
+      },
     },
     {
-      masjid_id: 'f27bdd4b-0f61-4084-91c5-1fe0f32a387d',
-      masjid_name: 'Al-Madina Masjid',
-      lat: 51.5443534,
-      long: 0.077290535,
-      dist_meters: 769.59046919,
-      next_prayer: 'fajr',
-      prayer_time: '2024-11-09T05:15:46+00:00',
+      id: 'f27bdd4b-0f61-4084-91c5-1fe0f32a387d',
+      name: 'Al-Madina Masjid',
+      location: {
+        lat: 51.5443534,
+        long: 0.077290535,
+      },
+      distance: 769.59046919,
+      prayer: {
+        next: {
+          name: 'fajr',
+          time: '2024-11-09T05:15:46+00:00',
+        },
+      },
     },
     {
-      masjid_id: '67de7d8c-96ff-49f1-b9fd-a46963defd2f',
-      masjid_name: 'Masjed-e-Umar',
-      lat: 51.53568101,
-      long: 0.093294606,
-      dist_meters: 873.31244919,
-      next_prayer: 'fajr',
-      prayer_time: '2024-11-09T05:18:46+00:00',
+      id: '67de7d8c-96ff-49f1-b9fd-a46963defd2f',
+      name: 'Masjed-e-Umar',
+      location: {
+        lat: 51.53568101,
+        long: 0.093294606,
+      },
+      distance: 873.31244919,
+      prayer: {
+        next: {
+          name: 'fajr',
+          time: '2024-11-09T05:18:46+00:00',
+        },
+      },
     },
     {
-      masjid_id: 'df9309d9-1ead-487c-8c8a-5831d2b57a32',
-      masjid_name: 'Ilford Muslim Community Centre and Mosque',
-      lat: 51.55021469,
-      long: 0.080004931,
-      dist_meters: 995.28183959,
-      next_prayer: 'fajr',
-      prayer_time: '2024-11-09T05:14:46+00:00',
+      id: 'df9309d9-1ead-487c-8c8a-5831d2b57a32',
+      name: 'Ilford Muslim Community Centre and Mosque',
+      location: {
+        lat: 51.55021469,
+        long: 0.080004931,
+      },
+      distance: 995.28183959,
+      prayer: {
+        next: {
+          name: 'fajr',
+          time: '2024-11-09T05:14:46+00:00',
+        },
+      },
     },
   ],
   count: 4,
@@ -161,74 +185,21 @@ onMounted(async () => {
         </p>
       </div>
       <div v-if="checkValidNearestPrayer()" class="flex flex-col gap-5">
-        <HomeNearestPrayer
+        <RootGoPageName name="Nearest Prayers" route="/prayers" />
+        <HomeNearestTable
+          :key="nearestPrayerTimes"
           :data="nearestPrayerTimes.data"
-          :next-prayer="currentPrayer"
         />
-        <div class="text-center text-base underline underline-offset-2">
-          <NuxtLink
-            class="inline-flex items-center text-[--light-text-color] dark:text-[--dark-text-color] hover:text-[--dark-text-accent-color-hover-light] dark:hover:text-[--light-text-accent-color-hover-light]"
-            to="/prayers"
-          >
-            More Prayers Near Me
-            <Icon
-              name="material-symbols:arrow-outward-rounded"
-              size="1.25rem"
-            />
-          </NuxtLink>
-        </div>
       </div>
       <div v-if="checkValidNearestMasjid()" class="flex flex-col gap-5">
-        <HomeNearestMasjid :data="nearestMasjids.data" />
-        <div class="text-center text-base underline underline-offset-2">
-          <NuxtLink
-            class="inline-flex items-center text-[--light-text-color] dark:text-[--dark-text-color] hover:text-[--dark-text-accent-color-hover-light] dark:hover:text-[--light-text-accent-color-hover-light]"
-            to="/masjids"
-          >
-            More Masaajid Near Me
-            <Icon
-              name="material-symbols:arrow-outward-rounded"
-              size="1.25rem"
-            />
-          </NuxtLink>
-        </div>
+        <RootGoPageName name="Nearest Masaajid" route="/masjids" />
+        <HomeNearestTable :key="nearestMasjids" :data="nearestMasjids.data" />
       </div>
     </div>
   </div>
 </template>
 
 <style>
-.skeleton-item {
-  background-size: 200% 100%;
-  border-radius: 8px;
-  height: 20px;
-  animation: skeleton-loading 1.5s infinite ease-in-out;
-}
-
-.skeleton-prayer {
-  width: 60%;
-  height: 30px;
-}
-
-.skeleton-next-prayer {
-  width: 80%;
-  height: 30px;
-}
-
-.skeleton-nearest-masjid {
-  width: 100%;
-  height: 50px;
-}
-
-@keyframes skeleton-loading {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
 .dark .daily-current-prayer {
   padding: 0.5rem;
   border-radius: theme("borderRadius.lg");

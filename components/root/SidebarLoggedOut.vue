@@ -260,7 +260,8 @@ const navItemsBottom = ref([
   background-color: var(--light-text-accent-color-hover);
 }
 
-.menu-item:active:focus {
+.menu-item:active:focus,
+.button-scale:active:focus {
   animation: button-pop 0s ease-out;
   transform: scale(var(--btn-focus-scale, 0.97));
 }

@@ -1,48 +1,60 @@
 <script setup>
-import { useLocationStore } from '@/composables/stores/location'
-import { useAdhanStore } from '@/composables/stores/adhan'
-
+const adhanStore = useAdhanStore()
 const route = useRoute()
 const router = useRouter()
-const adhan = useAdhanStore()
 const location = useLocationStore()
-const { currentPrayer, nextPrayer } = storeToRefs(adhan)
-const nearestPrayerTimes = ref([])
+const nearestPrayers = ref([])
 const isLoading = ref(true)
 const isError = ref(false)
 const scrollListenerAdded = ref(true)
-const dataKey = ref(0)
+const nextPrayer = ref(null)
 const filtersExpanded = ref(false)
+const dataKey = ref(0)
 const filtersInternal = ref({
   limit: 20,
   offset: 0,
   distance: 5000,
+  name: null,
 })
 const filtersUri = computed(() => {
   const obj = {}
   if (filtersInternal.value.distance) {
     obj.distance = filtersInternal.value.distance
   }
+  if (filtersInternal.value.name) {
+    obj.name = filtersInternal.value.name
+  }
   return obj
 })
 
-if (route.query.distance) {
-  checkQueries()
-}
-else {
-  updateQueries()
-}
+const filtersFetch = computed(() => {
+  return Object.keys(filtersInternal.value)
+    .filter(key => !['limit', 'offset'].includes(key))
+    .reduce((obj, key) => {
+      obj[key] = filtersInternal.value[key]
+      return obj
+    }, {})
+})
+
+const searchName = computed(() => {
+  return filtersInternal.value.name
+})
+
+checkQueries()
 
 function checkQueries() {
   updateObj(filtersInternal.value, route.query)
 }
 
 function updateQueries() {
-  router.replace({ path: '/prayers', query: filtersUri.value })
+  router.replace({ path: '/masjids', query: filtersUri.value })
 }
 
 watch(filtersInternal.value, () => {
   updateQueries()
+})
+
+watch(filtersFetch, () => {
   fetchData()
 })
 
@@ -52,44 +64,34 @@ async function fetchData(extendArr = false) {
 
   if (location.location && location.latitude && location.longitude) {
     try {
-      const [nearestPrayerTimesResponse] = await Promise.all([
-        $fetch('/api/prayers', {
-          headers: useRequestHeaders(['cookie']),
-          params: {
-            latitude: location.latitude,
-            longitude: location.longitude,
-            input_time: '2024-11-08 23:50:00+0000',
-            adhan_passed: false,
-            limit: filtersInternal.value.limit,
-            offset: filtersInternal.value.offset,
-            max_distance: filtersInternal.value.distance,
-          },
-        }),
-      ])
+      const nearestPrayersResponse = await $fetch('/api/prayers', {
+        headers: useRequestHeaders(['cookie']),
+        params: {
+          latitude: location.latitude,
+          longitude: location.longitude,
+          limit: filtersInternal.value.limit,
+          offset: filtersInternal.value.offset,
+          input_time: '2024-11-08 23:50:00+0000',
+          adhan_passed: false,
+          max_distance: filtersInternal.value.distance,
+          name: filtersInternal.value.name,
+        },
+      })
 
       if (
-        nearestPrayerTimesResponse.data
-        && Array.isArray(nearestPrayerTimesResponse.data.data)
+        nearestPrayersResponse
+        && Array.isArray(nearestPrayersResponse.data)
       ) {
-        dataKey.value += 1
-
         if (extendArr) {
-          const existingIds = new Set(
-            nearestPrayerTimes.value.map(m => m.id)
-          )
-          nearestPrayerTimes.value.push(
-            ...nearestPrayerTimesResponse.data.data.filter(
-              m => !existingIds.has(m.id)
-            )
-          )
+          nearestPrayers.value.push(...nearestPrayersResponse.data)
         }
         else {
-          nearestPrayerTimes.value = nearestPrayerTimesResponse.data.data
+          nearestPrayers.value = nearestPrayersResponse.data
         }
 
-        if (
-          nearestPrayerTimesResponse.data.count < filtersInternal.value.limit
-        ) {
+        dataKey.value += 1
+
+        if (nearestPrayersResponse.count <= nearestPrayers.value.length) {
           removeScrollListener()
         }
         else {
@@ -99,7 +101,7 @@ async function fetchData(extendArr = false) {
       else {
         console.error(
           'Data fetched is not in expected format:',
-          nearestPrayerTimesResponse.data
+          nearestPrayersResponse
         )
         removeScrollListener()
       }
@@ -118,14 +120,14 @@ async function fetchData(extendArr = false) {
 watch(
   location,
   () => {
-    nearestPrayerTimes.value = []
+    nearestPrayers.value = []
     fetchData()
   },
   { immediate: true }
 )
 
-function checkValidNearestPrayer() {
-  if (nearestPrayerTimes.value && nearestPrayerTimes.value.length > 0) {
+function checkValidNearestMasjid() {
+  if (nearestPrayers.value && nearestPrayers.value.length > 0) {
     return true
   }
   removeScrollListener()
@@ -153,8 +155,6 @@ function addScrollListener() {
     window.addEventListener('scroll', handleScroll)
     scrollListenerAdded.value = true
   }
-  filtersInternal.value.offset += filtersInternal.value.limit
-  fetchData()
 }
 
 function fetchNextPage() {
@@ -164,6 +164,9 @@ function fetchNextPage() {
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
+  scrollListenerAdded.value = true
+
+  nextPrayer.value = adhanStore.nextPrayer()
 })
 
 onBeforeUnmount(() => {
@@ -182,13 +185,19 @@ function expandFiltersButton() {
 
 <template>
   <div class="flex flex-col gap-4 sm:gap-6">
+    <RootReturnPageName name="Nearest Prayers" />
     <ClientOnly
       class="flex w-full items-center justify-center font-bold text-[--light-text-color] dark:text-[--dark-text-color]"
-      fallback="Loading masaajid..."
+      fallback="Loading prayers..."
       fallback-tag="span"
     >
       <div class="flex flex-col gap-4 sm:gap-6">
         <div class="filters-row flex flex-col sm:flex-row gap-2 w-full">
+          <FiltersSearchBar
+            v-model.trim="filtersInternal.name"
+            class="w-full sm:w-9/12"
+            @search-filter="updateSearchFilter"
+          />
           <UButton
             :ui="{ rounded: 'rounded-lg' }"
             class="w-full sm:w-3/12"
@@ -215,12 +224,9 @@ function expandFiltersButton() {
             />
           </div>
         </Transition>
-        <HomeNearestPrayer
-          v-if="checkValidNearestPrayer()"
-          :key="dataKey"
-          :data="nearestPrayerTimes"
-          :next-prayer="currentPrayer"
-        />
+        <div :key="dataKey" class="flex flex-col gap-6 lg:gap-6 w-full">
+          <HomeNearestTable :data="nearestPrayers" />
+        </div>
       </div>
       <div
         v-if="isLoading"
@@ -232,12 +238,12 @@ function expandFiltersButton() {
         Error loading data. Please try again.
       </div>
       <div
-        v-if="!isLoading && !checkValidNearestPrayer()"
+        v-if="!isLoading && !checkValidNearestMasjid()"
         class="error-message"
       >
         <p class="!text-[--error-color-text]">
-          No maasajid found based on your filters. Change your filters or choose
-          a different location.
+          No maasajid found based on your filters, change your filters or
+          location.
         </p>
       </div>
       <button

@@ -87,17 +87,16 @@
     --save-color-text: theme('colors.green.500');
 }
 
-*::selection {
+::selection {
+    background: #cc0000;
+}
+
+::-moz-selection {
     background: #cc0000;
     color: #ffffff;
 }
 
-*::-moz-selection {
-    background: #cc0000;
-    color: #ffffff;
-}
-
-*::-webkit-selection {
+::-webkit-selection {
     background: #cc0000;
     color: #ffffff;
 }
