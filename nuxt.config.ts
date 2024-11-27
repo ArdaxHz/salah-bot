@@ -73,25 +73,25 @@ export default defineNuxtConfig({
     cache: true,
   },
   hooks: {
-    'pages:extend': function (pages) {
-      function setMiddleware(pages) {
-        for (const page of pages) {
-          page.meta ||= {}
-          const middleware = ['location']
-          if (page.meta.middleware) {
-            page.meta.middleware.push(...middleware)
-          }
-          else {
-            page.meta.middleware = middleware
-          }
-          if (page.children) {
-            setMiddleware(page.children)
-          }
-        }
-      }
-
-      setMiddleware(pages)
-    },
+    // 'pages:extend': function (pages) {
+    //   function setMiddleware(pages) {
+    //     for (const page of pages) {
+    //       page.meta ||= {}
+    //       const middleware = ['location']
+    //       if (page.meta.middleware) {
+    //         page.meta.middleware.push(...middleware)
+    //       }
+    //       else {
+    //         page.meta.middleware = middleware
+    //       }
+    //       if (page.children) {
+    //         setMiddleware(page.children)
+    //       }
+    //     }
+    //   }
+    //
+    //   setMiddleware(pages)
+    // },
   },
   viewport: {
     breakpoints: {

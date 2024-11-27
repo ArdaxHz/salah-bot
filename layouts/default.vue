@@ -1,6 +1,8 @@
 <script setup>
 const viewport = useViewport()
 const optionsStore = useOptionsStore()
+const locationStore = useLocationStore()
+const { latitude, longitude } = storeToRefs(locationStore)
 const { sidebarExpanded, mobile, tablet, desktop } = storeToRefs(optionsStore)
 
 function ToggleMenuOff() {
@@ -23,6 +25,10 @@ function updateBreakpoints() {
     mobile.value = false
   }
 }
+
+const validLocation = computed(() => {
+  return !latitude.value || !longitude.value
+})
 </script>
 
 <template>
@@ -37,7 +43,13 @@ function updateBreakpoints() {
         <RootHeaderLoggedOut />
       </div>
       <div class="main-content-container">
-        <div class="content-announcement-container" />
+        <div
+          v-if="validLocation"
+          :key="validLocation"
+          class="content-announcement-container font-bold text-xl sm:text-2xl text-center text-[--error-color-text]"
+        >
+          Please enable location access for this site to work correctly.
+        </div>
         <div class="content-container" @mousedown="ToggleMenuOff">
           <slot />
         </div>
@@ -82,6 +94,7 @@ function updateBreakpoints() {
   display: flex;
   flex-direction: column;
   width: 100%;
+  gap: 2rem;
 
   max-width: 80rem;
 

@@ -34,13 +34,21 @@ function getValidDate(date) {
     <div
       v-for="(nearest, _) in data"
       :key="nearest.name"
-      class="grid grid-rows-4 sm:grid-rows-3 grid-cols-1 items-center px-4 py-3 justify-start sm:dark:bg-silver-600/70 sm:bg-silver-300/70 dark:hover:bg-[--dark-text-accent-color-hover-light] hover:bg-[--light-text-accent-color-hover-light] rounded-lg sm:rounded-none"
+      :class="[nearest.prayer ? 'grid-rows-4' : 'grid-rows-3']"
+      class="grid sm:grid-rows-3 grid-cols-1 items-center px-4 py-3 justify-start sm:dark:bg-silver-600/70 sm:bg-silver-300/70 dark:hover:bg-[--dark-text-accent-color-hover-light] hover:bg-[--light-text-accent-color-hover-light] rounded-lg sm:rounded-none"
     >
       <NuxtLink
         :to="`/masjids/${nearest.id}`"
         class="font-bold text-xl sm:text-2xl text-ellipsis whitespace-nowrap overflow-hidden hover:dark:text-[--light-text-accent-color-hover-light] hover:text-[--light-text-accent-color] text-[--light-text-color] dark:text-[--dark-text-color]"
       >
-        {{ nearest.name }}
+        <!--        <span -->
+        <!--          class="inline-block align-middle mr-2 max-w-[1ch] overflow-hidden" -->
+        <!--        > -->
+        <!--          Shia -->
+        <!--        </span> -->
+        <span class="align-middle">
+          {{ nearest.name }}
+        </span>
       </NuxtLink>
       <div class="flex flex-row justify-between w-full">
         <p class="text-md">
