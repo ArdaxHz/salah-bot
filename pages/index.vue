@@ -135,14 +135,32 @@ function updatePrayers() {
   currentPrayer.value = adhanStore.currentPrayer()
 }
 
-onMounted(async () => {
-  const interval = setInterval(() => {
-    updatePrayers()
-  }, 60000)
+const prayerTimeout = ref(null)
 
-  onUnmounted(() => {
-    clearInterval(interval)
-  })
+function calculateTimeUntilNextPrayer() {
+  if (nextPrayer.value && nextPrayer.value.time) {
+    const now = DateTime.now()
+    const nextPrayerTime = DateTime.fromISO(nextPrayer.value.time)
+    const diffInMillis = nextPrayerTime.diff(now).toMillis()
+    return Math.max(diffInMillis, 0) // Ensure non-negative value
+  }
+  return 60000 // Default to 1 minute if next prayer time is unavailable
+}
+
+onMounted(() => {
+  function scheduleNextUpdate() {
+    updatePrayers()
+    const timeUntilNextPrayer = calculateTimeUntilNextPrayer()
+    prayerTimeout.value = setTimeout(scheduleNextUpdate, timeUntilNextPrayer)
+  }
+
+  scheduleNextUpdate()
+})
+
+onUnmounted(() => {
+  if (prayerTimeout.value) {
+    clearTimeout(prayerTimeout.value)
+  }
 })
 </script>
 
@@ -153,11 +171,19 @@ onMounted(async () => {
         <div class="skeleton h-8 w-24 rounded-lg" />
         <div class="skeleton h-8 w-48 rounded-lg" />
       </div>
+      <div class="flex flex-col gap-5">
+        <RootGoPageName name="Nearest Prayers" route="/prayers" />
+        <SkeletonHomeNearestTable :prayer="true" />
+      </div>
+      <div class="flex flex-col gap-5">
+        <RootGoPageName name="Nearest Masaajid" route="/masjids" />
+        <SkeletonHomeNearestTable :prayer="false" />
+      </div>
     </div>
-    <div v-else-if="isError" class="error-message">
+    <div v-if="isError" class="error-message">
       Failed to load data. Please try again later.
     </div>
-    <div v-else class="flex flex-col gap-10 sm:gap-10">
+    <div v-if="!isLoading" class="flex flex-col gap-10 sm:gap-10">
       <div class="flex flex-col sm:flex-row gap-4 sm:flex-0 justify-between">
         <p
           v-if="currentPrayer"
@@ -167,12 +193,14 @@ onMounted(async () => {
           <span class="daily-current-prayer">
             {{ capitalizeFirstLetter(currentPrayer.prayer) }}</span>
         </p>
+        <div v-else class="skeleton h-8 w-24 rounded-lg" />
         <p
           v-if="nextPrayer"
           :key="updatePrayerKey"
           class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
         >
           <RootToolTip
+            :key="DateTime.fromJSDate(nextPrayer.time).toRelative()"
             :text="`${DateTime.fromJSDate(nextPrayer.time).toLocaleString(
               DateTime.DATETIME_FULL,
             )}`"
@@ -183,17 +211,25 @@ onMounted(async () => {
             </template>
           </RootToolTip>
         </p>
+        <div v-else class="skeleton h-8 w-24 rounded-lg" />
       </div>
-      <div v-if="checkValidNearestPrayer()" class="flex flex-col gap-5">
+      <div class="flex flex-col gap-5">
         <RootGoPageName name="Nearest Prayers" route="/prayers" />
         <HomeNearestTable
+          v-if="checkValidNearestPrayer()"
           :key="nearestPrayerTimes"
           :data="nearestPrayerTimes.data"
         />
+        <SkeletonHomeNearestTable v-else :prayer="true" />
       </div>
-      <div v-if="checkValidNearestMasjid()" class="flex flex-col gap-5">
+      <div class="flex flex-col gap-5">
         <RootGoPageName name="Nearest Masaajid" route="/masjids" />
-        <HomeNearestTable :key="nearestMasjids" :data="nearestMasjids.data" />
+        <HomeNearestTable
+          v-if="checkValidNearestMasjid()"
+          :key="nearestMasjids"
+          :data="nearestMasjids.data"
+        />
+        <SkeletonHomeNearestTable v-else :prayer="false" />
       </div>
     </div>
   </div>

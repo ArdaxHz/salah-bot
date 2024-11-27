@@ -6,7 +6,6 @@ const nearestMasjids = ref([])
 const isLoading = ref(true)
 const isError = ref(false)
 const scrollListenerAdded = ref(true)
-
 const filtersExpanded = ref(false)
 const dataKey = ref(0)
 const filtersInternal = ref({
@@ -96,6 +95,7 @@ async function fetchData(extendArr = false) {
         }
       }
       else {
+        isError.value = true
         console.error(
           'Data fetched is not in expected format:',
           nearestMasjidsResponse
@@ -182,53 +182,42 @@ function expandFiltersButton() {
   <div class="flex flex-col gap-4 sm:gap-6">
     <RootReturnPageName name="Nearest Masaajid" />
     <ClientOnly
-      class="flex w-full items-center justify-center font-bold text-[--light-text-color] dark:text-[--dark-text-color]"
+      class="flex flex flex-col gap-4 sm:gap-6 w-full items-center justify-center font-bold text-[--light-text-color] dark:text-[--dark-text-color]"
       fallback="Loading masaajid..."
       fallback-tag="span"
     >
-      <div class="flex flex-col gap-4 sm:gap-6">
-        <div class="filters-row flex flex-col sm:flex-row gap-2 w-full">
-          <FiltersSearchBar
-            v-model.trim="filtersInternal.name"
-            class="w-full sm:w-9/12"
-            @search-filter="updateSearchFilter"
-          />
-          <UButton
-            :ui="{ rounded: 'rounded-lg' }"
-            class="w-full sm:w-3/12"
-            label="Show search filters"
-            @click="expandFiltersButton"
-          >
-            <template #trailing>
-              <Icon
-                v-if="filtersExpanded"
-                name="material-symbols:check-indeterminate-small-rounded"
-              />
-              <Icon v-else name="material-symbols:add-2-rounded" />
-            </template>
-          </UButton>
-        </div>
-        <Transition name="slide-down">
-          <div
-            v-if="filtersExpanded"
-            class="flex flex-col sm:flex-row gap-2 w-full"
-          >
-            <FiltersDistanceFilter
-              v-model="filtersInternal.distance"
-              class="w-full sm:w-3/12"
+      <div class="filters-row flex flex-col sm:flex-row gap-2 w-full">
+        <FiltersSearchBar
+          v-model.trim="filtersInternal.name"
+          class="w-full sm:w-9/12"
+          @search-filter="updateSearchFilter"
+        />
+        <UButton
+          :ui="{ rounded: 'rounded-lg' }"
+          class="w-full sm:w-3/12"
+          label="Show search filters"
+          @click="expandFiltersButton"
+        >
+          <template #trailing>
+            <Icon
+              v-if="filtersExpanded"
+              name="material-symbols:check-indeterminate-small-rounded"
             />
-          </div>
-        </Transition>
-        <div :key="dataKey" class="flex flex-col gap-6 lg:gap-6 w-full">
-          <HomeNearestTable :data="nearestMasjids" />
+            <Icon v-else name="material-symbols:add-2-rounded" />
+          </template>
+        </UButton>
+      </div>
+      <Transition name="slide-down">
+        <div
+          v-if="filtersExpanded"
+          class="flex flex-col sm:flex-row gap-2 w-full"
+        >
+          <FiltersDistanceFilter
+            v-model="filtersInternal.distance"
+            class="w-full sm:w-3/12"
+          />
         </div>
-      </div>
-      <div
-        v-if="isLoading"
-        class="loading-bar flex items-center justify-center"
-      >
-        <span class="loading loading-dots loading-md" />
-      </div>
+      </Transition>
       <div v-if="isError" class="error-message">
         Error loading data. Please try again.
       </div>
@@ -240,6 +229,18 @@ function expandFiltersButton() {
           No maasajid found based on your filters, change your filters or
           location.
         </p>
+      </div>
+      <div>
+        <HomeNearestTable
+          v-if="!isLoading && checkValidNearestMasjid()"
+          :key="dataKey"
+          :data="nearestMasjids"
+        />
+        <SkeletonHomeNearestTable
+          v-if="isLoading && !checkValidNearestMasjid()"
+          :length="20"
+          :prayer="false"
+        />
       </div>
       <button
         v-if="scrollListenerAdded && !isLoading"
