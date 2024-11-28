@@ -168,8 +168,8 @@ onUnmounted(() => {
   <div class="w-full h-full">
     <div v-if="isLoading" class="flex flex-col gap-10 sm:gap-10">
       <div class="flex flex-col sm:flex-row gap-4 sm:flex-0 justify-between">
-        <div class="skeleton h-8 w-24 rounded-lg" />
-        <div class="skeleton h-8 w-48 rounded-lg" />
+        <div class="skeleton h-8 w-24" />
+        <div class="skeleton h-8 w-48" />
       </div>
       <div class="flex flex-col gap-5">
         <RootGoPageName name="Nearest Prayers" route="/prayers" />
@@ -193,7 +193,6 @@ onUnmounted(() => {
           <span class="daily-current-prayer">
             {{ capitalizeFirstLetter(currentPrayer.prayer) }}</span>
         </p>
-        <div v-else class="skeleton h-8 w-24 rounded-lg" />
         <p
           v-if="nextPrayer"
           :key="updatePrayerKey"
@@ -211,7 +210,6 @@ onUnmounted(() => {
             </template>
           </RootToolTip>
         </p>
-        <div v-else class="skeleton h-8 w-24 rounded-lg" />
       </div>
       <div class="flex flex-col gap-5">
         <RootGoPageName name="Nearest Prayers" route="/prayers" />
@@ -238,14 +236,14 @@ onUnmounted(() => {
 <style>
 .dark .daily-current-prayer {
   padding: 0.5rem;
-  border-radius: theme("borderRadius.lg");
+  border-radius: theme("borderRadius.base");
   background-color: var(--light-text-secondary-color-hover-light);
   color: var(--dark-text-color);
 }
 
 .light .daily-current-prayer {
   padding: 0.5rem;
-  border-radius: theme("borderRadius.lg");
+  border-radius: theme("borderRadius.base");
   background-color: var(--light-text-secondary-color-hover-light);
   color: var(--dark-text-color);
 }

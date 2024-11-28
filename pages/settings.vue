@@ -80,7 +80,7 @@ watch(checked, (newVal, oldVal) => {
 }
 
 .tab-content {
-  border-radius: theme("borderRadius.lg");
+  border-radius: theme("borderRadius.xl");
   border-width: 0.25rem;
 
   transition: opacity 0.5s, transform 0.5s;

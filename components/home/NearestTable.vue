@@ -41,7 +41,7 @@ function checkValidData() {
         v-for="(nearest, _) in data"
         :key="nearest.name"
         :class="[nearest.prayer ? 'grid-rows-4' : 'grid-rows-3']"
-        class="grid sm:grid-rows-3 grid-cols-1 items-center px-4 py-3 justify-start sm:dark:bg-silver-600/70 sm:bg-silver-300/70 dark:hover:bg-[--dark-text-accent-color-hover-light] hover:bg-[--light-text-accent-color-hover-light] rounded-lg sm:rounded-none"
+        class="grid sm:grid-rows-3 grid-cols-1 items-center px-4 py-3 justify-start sm:dark:bg-silver-600/70 sm:bg-silver-300/70 dark:hover:bg-[--dark-text-accent-color-hover-light] hover:bg-[--light-text-accent-color-hover-light] rounded-xl sm:rounded-none"
       >
         <NuxtLink
           :to="`/masjids/${nearest.id}`"

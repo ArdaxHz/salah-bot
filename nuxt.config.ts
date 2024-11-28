@@ -13,7 +13,16 @@ export default defineNuxtConfig({
     'nuxt-viewport',
     '@vite-pwa/nuxt',
     'nuxt-authorization',
+    '@nuxt/scripts',
+    '@nuxtjs/turnstile',
   ],
+  scripts: {
+    registry: {
+      googleAnalytics: true,
+      googleTagManager: true,
+      cloudflareWebAnalytics: true,
+    },
+  },
   i18n: {
     strategy: 'prefix_except_default',
     lazy: true,
@@ -45,10 +54,29 @@ export default defineNuxtConfig({
     storage: 'localStorage', // or 'sessionStorage' or 'cookie'
     storageKey: 'nuxt-color-mode',
   },
+  turnstile: {
+    siteKey: process.env.TURNSTILE_SITE_KEY,
+  },
   runtimeConfig: {
     public: {
+      baseUrl: process.env.BASE_URL || 'http://localhost:3000',
       SUPABASE_URL: process.env.SUPABASE_URL,
       SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
+
+      scripts: {
+        googleAnalytics: {
+          id: process.env.GOOGLE_ANALYTICS_ID,
+        },
+        googleTagManager: {
+          id: process.env.GOOGLE_TAG_MANAGER_ID,
+        },
+        cloudflareWebAnalytics: {
+          token: process.env.CLOUDFLARE_WEB_ANALYTICS_TOKEN,
+        },
+      },
+    },
+    turnstile: {
+      secretKey: process.env.TURNSTILE_SECRET_KEY,
     },
   },
   supabase: {
@@ -59,13 +87,13 @@ export default defineNuxtConfig({
       callback: '/confirm',
       include: undefined,
       exclude: ['/*'],
-      cookieRedirect: false,
+      cookieRedirect: true,
     },
   },
   imports: {
     dirs: ['composables/**'],
   },
-  css: ['~/assets/css/main.css', '~/assets/css/nearestTable.css'],
+  css: ['~/assets/css/main.css'],
   experimental: {
     renderJsonPayloads: true,
   },

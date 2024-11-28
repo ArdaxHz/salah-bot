@@ -46,12 +46,12 @@ const navItemsTop = ref([
 ])
 
 const navItemsBottom = ref([
-  // {
-  //   label: 'Account',
-  //   icon: 'material-symbols:account-circle-outline',
-  //   to: '/me',
-  //   active: 'material-symbols:account-circle',
-  // },
+  {
+    label: 'Account',
+    icon: 'material-symbols:account-circle-outline',
+    to: '/me',
+    active: 'material-symbols:account-circle',
+  },
   {
     label: 'Settings',
     icon: 'material-symbols:settings-outline-rounded',
@@ -70,7 +70,7 @@ const navItemsBottom = ref([
   >
     <div class="flex flex-col h-full w-full">
       <div
-        class="menu-toggle-wrap flex flex-col mb-4 rounded-lg justify-center items-center w-max"
+        class="menu-toggle-wrap flex flex-col mb-4 rounded-md justify-center items-center w-max"
       >
         <button class="menu-toggle" @click="ToggleMenu">
           <Icon name="material-symbols:menu-rounded" size="2rem" />
@@ -239,7 +239,7 @@ const navItemsBottom = ref([
   align-items: center;
 
   padding: 0.5rem;
-  border-radius: theme("borderRadius.lg");
+  border-radius: theme("borderRadius.base");
 }
 
 .menu-item-expanded {

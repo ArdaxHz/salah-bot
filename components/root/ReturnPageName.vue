@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 const props = defineProps({
   name: String,
+  route: String,
 })
 
 const router = useRouter()
@@ -12,7 +13,7 @@ const router = useRouter()
   >
     <button
       class="flex p-1 button-scale items-center rounded-full dark:hover:bg-[--dark-text-accent-color-hover-light] hover:bg-[--light-text-accent-color-hover-light]"
-      @click="router.back()"
+      @click="route ? navigateTo(route) : router.back()"
     >
       <Icon class="rotate-180" name="material-symbols:arrow-forward-rounded" />
     </button>

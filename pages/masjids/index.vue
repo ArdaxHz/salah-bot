@@ -193,7 +193,7 @@ function expandFiltersButton() {
           @search-filter="updateSearchFilter"
         />
         <UButton
-          :ui="{ rounded: 'rounded-lg' }"
+          :ui="{ rounded: 'rounded-md' }"
           class="w-full sm:w-3/12"
           label="Show search filters"
           @click="expandFiltersButton"
@@ -238,7 +238,7 @@ function expandFiltersButton() {
         />
         <SkeletonHomeNearestTable
           v-if="isLoading && !checkValidNearestMasjid()"
-          :length="20"
+          :length="filtersInternal.limit"
           :prayer="false"
         />
       </div>

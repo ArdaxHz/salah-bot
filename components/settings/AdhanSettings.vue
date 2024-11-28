@@ -222,7 +222,7 @@ async function resetSettings() {
           v-model="model.calculationMethod"
           :options="calculationMethodOptions"
           :ui="{
-            rounded: 'rounded-lg',
+            rounded: 'rounded-md',
             color: {
               white: {
                 outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
@@ -253,7 +253,7 @@ async function resetSettings() {
         <UInput
           v-model="model.fajrAngle"
           :ui="{
-            rounded: 'rounded-lg',
+            rounded: 'rounded-md',
             color: {
               white: {
                 outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
@@ -294,7 +294,7 @@ async function resetSettings() {
             <UInput
               v-model="model.ishaAngle"
               :ui="{
-                rounded: 'rounded-lg',
+                rounded: 'rounded-md',
                 color: {
                   white: {
                     outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
@@ -327,7 +327,7 @@ async function resetSettings() {
           <!--            <UInput -->
           <!--              v-model="model.ishaInterval" -->
           <!--              :ui="{ -->
-          <!--                rounded: 'rounded-lg', -->
+          <!--                rounded: 'rounded-md', -->
           <!--                color: { -->
           <!--                  white: { -->
           <!--                    outline: `bg-[&#45;&#45;light-bg-color] dark:bg-[&#45;&#45;dark-bg-color] -->
@@ -378,7 +378,7 @@ async function resetSettings() {
               v-model="model.highLatitudeRule"
               :options="highLatitudeRuleOptions"
               :ui="{
-                rounded: 'rounded-lg',
+                rounded: 'rounded-md',
                 color: {
                   white: {
                     outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
@@ -410,7 +410,7 @@ async function resetSettings() {
               v-model="model.polarCircleResolution"
               :options="polarCircleResolutionOptions"
               :ui="{
-                rounded: 'rounded-lg',
+                rounded: 'rounded-md',
                 color: {
                   white: {
                     outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
@@ -442,7 +442,7 @@ async function resetSettings() {
               v-model="model.shafaq"
               :options="shafaqOptions"
               :ui="{
-                rounded: 'rounded-lg',
+                rounded: 'rounded-md',
                 color: {
                   white: {
                     outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
@@ -476,7 +476,7 @@ async function resetSettings() {
               <UInput
                 v-model="model.adjustments[prayer]"
                 :ui="{
-                  rounded: 'rounded-lg',
+                  rounded: 'rounded-md',
                   color: {
                     white: {
                       outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
@@ -497,7 +497,7 @@ async function resetSettings() {
           </div>
           <UButton
             :ui="{
-              rounded: 'rounded-lg',
+              rounded: 'rounded-md',
               inline: `flex justify-center font-bold text-sm
             text-[--light-text-color]
             dark:text-[--dark-text-color]`,
@@ -512,7 +512,7 @@ async function resetSettings() {
 
       <UButton
         :ui="{
-          rounded: 'rounded-lg',
+          rounded: 'rounded-full',
           inline: `flex justify-center font-bold text-sm
             text-[--light-text-color]
             dark:text-[--dark-text-color]`,

@@ -13,7 +13,7 @@ function ToggleMenu() {
   >
     <div class="max-w-7xl flex w-full px-3 sm:px-6 lg:px-8 py-4 h-full">
       <div class="flex flex-row gap-3 sm:gap-6 items-center h-full">
-        <div class="flex lg:hidden menu-toggle-wrap rounded-lg">
+        <div class="flex lg:hidden menu-toggle-wrap rounded-md">
           <button class="menu-toggle flex lg:hidden" @mousedown="ToggleMenu">
             <Icon
               class="[--light-text-color] dark:[--dark-text-color]"

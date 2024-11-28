@@ -16,7 +16,7 @@ const distance = defineModel()
       <UInput
         v-model="distance"
         :ui="{
-          rounded: 'rounded-lg',
+          rounded: 'rounded-md',
           color: {
             white: {
               outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]

@@ -11,7 +11,7 @@ const model = defineModel()
       v-model="model"
       :label="madhab.label"
       :ui="{
-        label: `flex cursor-pointer text-md px-3 py-1 rounded-lg
+        label: `flex cursor-pointer text-md px-3 py-1 rounded-md
                       ring-1 ring-inset
 
                       text-[--light-text-color]

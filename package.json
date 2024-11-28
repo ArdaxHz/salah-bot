@@ -17,10 +17,12 @@
   "dependencies": {
     "@nuxt/fonts": "^0.10.2",
     "@nuxt/icon": "^1.6.1",
+    "@nuxt/scripts": "^0.9.5",
     "@nuxt/ui": "^2.19.2",
     "@nuxthub/core": "^0.8.7",
     "@nuxtjs/color-mode": "^3.5.2",
     "@nuxtjs/supabase": "^1.2.2",
+    "@nuxtjs/turnstile": "^0.9.11",
     "@pinia/nuxt": "^0.7.0",
     "@supabase/ssr": "^0.5.1",
     "@supabase/supabase-js": "^2.46.1",
