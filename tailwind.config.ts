@@ -1,8 +1,9 @@
 import type { Config } from 'tailwindcss'
 import daisyui from 'daisyui'
+import tailwindcssDisplaymodes from 'tailwindcss-displaymodes'
 
 export default <Partial<Config>>{
-  plugins: [daisyui],
+  plugins: [daisyui, tailwindcssDisplaymodes],
   theme: {
     extend: {
       borderRadius: {

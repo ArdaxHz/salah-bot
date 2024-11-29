@@ -28,7 +28,7 @@ const navItemsTop = ref([
   {
     label: 'Prayer Times',
     icon: 'material-symbols:alarm-outline-rounded',
-    to: '/today',
+    to: '/adhan',
     active: 'material-symbols:alarm-rounded',
   },
   {
@@ -66,49 +66,47 @@ const navItemsBottom = ref([
     :class="{
       'is-expanded bg-[--light-bg-color]': sidebarExpanded,
     }"
-    class="sidebar flex h-[100dvh] !fixed lg:!sticky top-0 z-10 left-0 flex-col bg-[--light-bg-color] dark:bg-[--dark-bg-color] ring-2 ring-[--neutral-secondary-color]"
+    class="sidebar h-[100dvh] !fixed lg:!sticky top-0 z-10 left-0 flex-col bg-[--light-bg-color] dark:bg-[--dark-bg-color] ring-2 ring-[--neutral-secondary-color]"
   >
-    <div class="flex flex-col h-full w-full">
+    <div
+      class="menu-toggle-wrap flex flex-col standalone:mb-[env(safe-area-inset-bottom,2.5rem)] standalone:mt-4 standalone:sm:mt-0 standalone:sm:mb-4 mb-4 rounded-md justify-center items-center w-max"
+    >
+      <button class="menu-toggle" @click="ToggleMenu">
+        <Icon name="material-symbols:menu-rounded" size="2rem" />
+      </button>
+    </div>
+    <div
+      :class="{
+        'overflow-y-auto': sidebarExpanded,
+      }"
+      class="flex flex-col standalone:flex-col-reverse standalone:sm:flex-col justify-between h-full w-full"
+    >
+      <RootNavMenuItems
+        v-model="activeItem"
+        :is_expanded="sidebarExpanded"
+        :nav-items="navItemsTop"
+        @click="ToggleMenuOff"
+      />
       <div
-        class="menu-toggle-wrap flex flex-col mb-4 rounded-md justify-center items-center w-max"
-      >
-        <button class="menu-toggle" @click="ToggleMenu">
-          <Icon name="material-symbols:menu-rounded" size="2rem" />
-        </button>
-      </div>
-      <div
-        :class="{
-          'overflow-y-auto': sidebarExpanded,
-        }"
-        class="flex flex-col justify-between h-full w-full"
+        :class="`${
+          sidebarExpanded
+            ? 'flex-col w-full justify-start items-start'
+            : 'justify-center items-center flex-col-reverse gap-7'
+        }`"
+        class="menu-footer flex gap-4 standalone:flex-col-reverse standalone:sm:flex-col"
       >
         <RootNavMenuItems
           v-model="activeItem"
           :is_expanded="sidebarExpanded"
-          :nav-items="navItemsTop"
+          :nav-items="navItemsBottom"
+          class="w-full standalone:flex-col-reverse standalone:sm:flex-col"
           @click="ToggleMenuOff"
         />
-        <div
-          :class="`${
-            sidebarExpanded
-              ? 'flex-col w-full justify-start items-start'
-              : 'justify-center items-center flex-col-reverse gap-7'
-          }`"
-          class="menu-footer flex gap-4"
-        >
-          <RootNavMenuItems
-            v-model="activeItem"
-            :is_expanded="sidebarExpanded"
-            :nav-items="navItemsBottom"
-            class="w-full"
-            @click="ToggleMenuOff"
-          />
-          <RootThemeSelector
-            :class="`${sidebarExpanded ? 'rotate-0' : '-rotate-90'}`"
-            :is_expanded="sidebarExpanded"
-            class="grow w-100"
-          />
-        </div>
+        <RootThemeSelector
+          :class="`${sidebarExpanded ? 'rotate-0' : '-rotate-90'}`"
+          :is_expanded="sidebarExpanded"
+          class="grow w-100"
+        />
       </div>
     </div>
   </aside>
@@ -156,6 +154,12 @@ const navItemsBottom = ref([
   transition: 0.2s ease-in-out;
   box-shadow: 4px 0 2px -2px theme("colors.mulled.500");
   animation: translateOut 500ms forwards;
+}
+
+@media all and (display-mode: standalone) and (max-width: 640px) {
+  .sidebar {
+    flex-direction: column-reverse;
+  }
 }
 
 .sidebar.is-expanded {

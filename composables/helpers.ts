@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon'
+
 export function capitalizeFirstLetter(stringToCapitalise: string) {
   return (
     stringToCapitalise.charAt(0).toUpperCase() + stringToCapitalise.slice(1)
@@ -15,7 +17,9 @@ export function updateObj(obj /* , … */) {
         // Check if the value is a string and can be converted to a number
         if (typeof val === 'string' && !isNaN(val)) {
           // Convert to a number (int or float)
-          obj[prop] = val.includes('.') ? Number.parseFloat(val) : Number.parseInt(val, 10)
+          obj[prop] = val.includes('.')
+            ? Number.parseFloat(val)
+            : Number.parseInt(val, 10)
         }
         else {
           obj[prop] = val
@@ -24,4 +28,20 @@ export function updateObj(obj /* , … */) {
     }
   }
   return obj
+}
+
+export function getValidDate(date) {
+  let convertedDate = DateTime.fromISO(date)
+
+  if (convertedDate.isValid) {
+    return convertedDate
+  }
+
+  convertedDate = DateTime.fromJSDate(date)
+
+  if (convertedDate.isValid) {
+    return convertedDate
+  }
+
+  return null
 }

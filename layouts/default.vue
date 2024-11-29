@@ -3,7 +3,7 @@ const viewport = useViewport()
 const optionsStore = useOptionsStore()
 const locationStore = useLocationStore()
 const { latitude, longitude } = storeToRefs(locationStore)
-const { sidebarExpanded, mobile, tablet, desktop } = storeToRefs(optionsStore)
+const { sidebarExpanded, mobile, pwa } = storeToRefs(optionsStore)
 
 function ToggleMenuOff() {
   if (sidebarExpanded.value && viewport.isLessThan('lg')) {
@@ -36,13 +36,13 @@ const validLocation = computed(() => {
     <NuxtLoadingIndicator color="#9081d3" />
     <!--    <div class="top-announcement-container" /> -->
     <div class="sidebar-container">
-      <RootSidebarLoggedOut />
+      <LayoutSidebar />
     </div>
     <div class="top-content-container">
       <div class="header-container">
-        <RootHeaderLoggedOut />
+        <LayoutHeader />
       </div>
-      <div class="main-content-container">
+      <div class="main-content-container" @mousedown="ToggleMenuOff">
         <div
           v-if="validLocation"
           :key="validLocation"
@@ -50,7 +50,7 @@ const validLocation = computed(() => {
         >
           Please enable location access for this site to work correctly.
         </div>
-        <div class="content-container" @mousedown="ToggleMenuOff">
+        <div class="content-container">
           <slot />
         </div>
       </div>
@@ -143,5 +143,22 @@ const validLocation = computed(() => {
 
   justify-items: center;
   align-items: start;
+}
+
+@media all and (display-mode: standalone) and (max-width: 640px) {
+  .top-content-container {
+    grid-template-rows: [main-content-container] auto [header-container] var(--header-height);
+    grid-template-areas:
+      "main-content-container"
+      "header-container";
+  }
+
+  .header-container {
+    bottom: 0;
+  }
+
+  .main-content-container {
+    margin-top: 3rem;
+  }
 }
 </style>

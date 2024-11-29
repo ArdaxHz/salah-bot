@@ -12,7 +12,7 @@ export const useLocationStore = defineStore(
   },
   {
     persist: {
-      storage: piniaPluginPersistedstate.cookies(),
+      storage: piniaPluginPersistedstate.localStorage(),
     },
   }
 )

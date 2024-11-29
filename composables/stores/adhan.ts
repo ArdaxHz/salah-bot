@@ -29,5 +29,10 @@ export const useAdhanStore = defineStore('adhan', () => {
     return todayStore.toJson()
   })
 
-  return { nextPrayer, currentPrayer, settings, today }
+  return {
+    nextPrayer,
+    currentPrayer,
+    settings,
+    today,
+  }
 })

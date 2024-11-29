@@ -2,10 +2,10 @@
 import { z } from 'zod'
 
 const client = useSupabaseClient()
-const redirectTo = `${useRuntimeConfig().public.baseUrl}/confirm`
 const isLoading = ref(false)
 const isDisabled = ref(true)
 const errorMessage = ref(null)
+const turnstile = ref()
 const token = ref(null)
 const state = ref({
   email: undefined,
@@ -23,6 +23,33 @@ useSeoMeta({
 const schema = z.object({
   email: z.string().email('Invalid email'),
   password: z.string().min(8, 'Min 8 characters').max(32, 'Max 32 characters'),
+}).superRefine(({ password }, checkPassComplexity) => {
+  const containsUppercase = (ch: string) => /[A-Z]/.test(ch)
+  const containsLowercase = (ch: string) => /[a-z]/.test(ch)
+  const containsSpecialChar = (ch: string) =>
+    /[`!@#$%^&*()_\-+=[\]{};':"\\|,.<>/?~ ]/.test(ch)
+  let countOfUpperCase = 0
+  let countOfLowerCase = 0
+  let countOfNumbers = 0
+  let countOfSpecialChar = 0
+  for (let i = 0; i < password.length; i++) {
+    const ch = password.charAt(i)
+    if (!Number.isNaN(+ch)) { countOfNumbers++ }
+    else if (containsUppercase(ch)) { countOfUpperCase++ }
+    else if (containsLowercase(ch)) { countOfLowerCase++ }
+    else if (containsSpecialChar(ch)) { countOfSpecialChar++ }
+  }
+  if (
+    countOfLowerCase < 1
+    || countOfUpperCase < 1
+    || countOfSpecialChar < 1
+    || countOfNumbers < 1
+  ) {
+    checkPassComplexity.addIssue({
+      code: 'custom',
+      message: 'Password is not safe enough',
+    })
+  }
 })
 // .superRefine(({ confirmPassword, password }, ctx) => {
 //   if (confirmPassword !== password) {
@@ -36,6 +63,12 @@ const schema = z.object({
 
 async function onSubmit(event) {
   isLoading.value = true
+  if (!token.value) {
+    isLoading.value = false
+    errorMessage.value = `Captcha not valid.`
+    return
+  }
+
   try {
     const rawState = toRaw(state.value)
     const creds = {
@@ -44,12 +77,8 @@ async function onSubmit(event) {
       options: { captchaToken: token.value },
     }
 
-    console.log(rawState)
-    console.log(creds)
-    console.log(JSON.stringify(creds))
     const { data, error } = await client.auth.signInWithPassword(creds)
     if (data) {
-      isLoading.value = false
       if (data?.user?.aud === 'authenticated') {
       }
     }
@@ -68,6 +97,12 @@ async function onSubmit(event) {
 watch(state.value, (newValue) => {
   try {
     schema.parse(newValue)
+
+    if (!token.value) {
+      isLoading.value = false
+      errorMessage.value = `Captcha not valid.`
+      return
+    }
     isDisabled.value = false
   }
   catch (error) {
@@ -78,7 +113,7 @@ watch(state.value, (newValue) => {
 
 <template>
   <div class="flex flex-col gap-4 sm:gap-6 w-full items-center">
-    <RootReturnPageName name="Home" route="/" />
+    <RootReturnPageName name="Login" route="/" />
     <div
       class="flex flex-col md:w-3/12 bg-white/75 dark:bg-white/5 backdrop-blur p-6 rounded-xl text-ellipsis whitespace-normal overflow-hidden"
     >
@@ -188,33 +223,9 @@ watch(state.value, (newValue) => {
           size="md"
         />
 
-        <UButton
-          :ui="{
-            rounded: 'rounded-md',
-            inline: `flex justify-center font-bold text-sm
-            dark:text-[--light-text-color]
-            text-[--dark-text-color]`,
-            base: 'w-full',
-            color: {
-              primary: {
-                solid:
-                  'bg-black dark:bg-white hover:bg-[--light-text-accent-color] hover:dark:bg-[--light-text-accent-color-hover-light] focus:shadow-md dark:text-[--light-text-color] text-[--dark-text-color]',
-              },
-            },
-          }"
-          block
-          class="mt-3"
-          icon="mdi:google"
-          label="Google"
-          @click="
-            auth.signInWithOAuth({
-              provider: 'google',
-              options: { redirectTo },
-            })
-          "
-        />
+        <AuthGoogleSignInButton />
       </UForm>
     </div>
-    <NuxtTurnstile v-model="token" />
+    <NuxtTurnstile ref="turnstile" v-model="token" />
   </div>
 </template>

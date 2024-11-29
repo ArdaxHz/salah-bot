@@ -128,6 +128,8 @@ export default defineNuxtConfig({
       short_name: 'salah.bot',
       background_color: '#1b1d16',
       theme_color: '#1b1d16',
+      display: 'standalone',
+      orientation: 'portrait',
       icons: [
         {
           src: 'pwa-192x192.png',

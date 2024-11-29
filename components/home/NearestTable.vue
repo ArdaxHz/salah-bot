@@ -13,22 +13,6 @@ function getMapLink(data) {
   )
 }
 
-function getValidDate(date) {
-  let convertedDate = DateTime.fromISO(date)
-
-  if (convertedDate.isValid) {
-    return convertedDate
-  }
-
-  convertedDate = DateTime.fromJSDate(date)
-
-  if (convertedDate.isValid) {
-    return convertedDate
-  }
-
-  return null
-}
-
 function checkValidData() {
   return props.data && props.data.length > 0
 }
