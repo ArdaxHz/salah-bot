@@ -1,9 +1,9 @@
-interface location {
+interface LocationType {
   latitude: string | number | null
   longitude: string | number | null
 }
 
-interface MasjidsQueryParams extends Partial<location> {
+interface MasjidsQueryParams extends Partial<LocationType> {
   max_distance?: string | number | null
   limit?: string | number | null
   offset?: string | number | null

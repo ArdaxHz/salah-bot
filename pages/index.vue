@@ -2,6 +2,8 @@
 import { DateTime } from 'luxon'
 
 const adhanStore = useAdhanStore()
+const { currentPrayer: currentPrayerReactive, nextPrayer: nextPrayerReactive }
+  = storeToRefs(adhanStore)
 const location = useLocationStore()
 const currentPrayer = ref(null)
 const nextPrayer = ref(null)
@@ -126,6 +128,7 @@ async function fetchData() {
 }
 
 watch(location, fetchData, { immediate: true })
+watch(() => currentPrayerReactive, scheduleNextUpdate)
 
 function checkValidNearestPrayer() {
   return nearestPrayerTimes.value && nearestPrayerTimes.value.data != null
@@ -136,8 +139,9 @@ function checkValidNearestMasjid() {
 }
 
 function updatePrayers() {
-  nextPrayer.value = adhanStore.nextPrayer()
-  currentPrayer.value = adhanStore.currentPrayer()
+  const date = new Date()
+  nextPrayer.value = adhanStore.nextPrayer(date)
+  currentPrayer.value = adhanStore.currentPrayer(date)
 }
 
 const prayerTimeout = ref(null)
@@ -145,20 +149,23 @@ const prayerTimeout = ref(null)
 function calculateTimeUntilNextPrayer() {
   if (nextPrayer.value && nextPrayer.value.time) {
     const now = DateTime.now()
-    const nextPrayerTime = DateTime.fromISO(nextPrayer.value.time)
+    const nextPrayerTime = DateTime.fromJSDate(nextPrayer.value.time)
     const diffInMillis = nextPrayerTime.diff(now).toMillis()
-    return Math.max(diffInMillis, 0) // Ensure non-negative value
+    if (Number.isNaN(diffInMillis)) {
+      return 60000
+    }
+    return Math.max(diffInMillis, 0)
   }
-  return 60000 // Default to 1 minute if next prayer time is unavailable
+  return 60000
+}
+
+function scheduleNextUpdate() {
+  updatePrayers()
+  const timeUntilNextPrayer = calculateTimeUntilNextPrayer()
+  prayerTimeout.value = setTimeout(scheduleNextUpdate, timeUntilNextPrayer)
 }
 
 onMounted(() => {
-  function scheduleNextUpdate() {
-    updatePrayers()
-    const timeUntilNextPrayer = calculateTimeUntilNextPrayer()
-    prayerTimeout.value = setTimeout(scheduleNextUpdate, timeUntilNextPrayer)
-  }
-
   scheduleNextUpdate()
 })
 
@@ -189,63 +196,65 @@ onUnmounted(() => {
       Failed to load data. Please try again later.
     </div>
     <div v-if="!isLoading" class="flex flex-col gap-10 sm:gap-10">
-      <div class="flex flex-col sm:flex-row gap-4 sm:flex-0 justify-between">
-        <p
-          v-if="currentPrayer"
-          :key="updatePrayerKey"
-          class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
-        >
-          <span class="daily-current-prayer">
-            {{ capitalizeFirstLetter(currentPrayer.prayer) }}</span>
-        </p>
-        <p
-          v-if="nextPrayer"
-          :key="updatePrayerKey"
-          class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
-        >
-          <RootToolTip
-            :key="DateTime.fromJSDate(nextPrayer.time).toRelative()"
-            :text="`${DateTime.fromJSDate(nextPrayer.time).toLocaleString(
-              DateTime.DATETIME_FULL,
-            )}`"
+      <ClientOnly>
+        <div class="flex flex-col sm:flex-row gap-4 sm:flex-0 justify-between">
+          <p
+            v-if="currentPrayer"
+            :key="updatePrayerKey"
+            class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
           >
-            <template #content>
-              {{ capitalizeFirstLetter(nextPrayer.prayer) }}
-              {{ DateTime.fromJSDate(nextPrayer.time).toRelative() }}
-            </template>
-          </RootToolTip>
-        </p>
-      </div>
-      <div class="flex flex-col gap-5">
-        <RootGoPageName name="Nearest Prayers" route="/prayers" />
-        <p class="italic">
-          This data here in the nearest prayers grid is provisional and does not
-          reflect your real location. To add more masaajid jamaa'ah times,
-          please contact us with your masjid's Google map link and a contact for
-          the masjid. It will be even better if you supplied the jamaa'ah times
-          for the masjid directly.
-        </p>
+            <span class="daily-current-prayer">
+              {{ capitalizeFirstLetter(currentPrayer.prayer) }}</span>
+          </p>
+          <p
+            v-if="nextPrayer"
+            :key="updatePrayerKey"
+            class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
+          >
+            <RootToolTip
+              :key="DateTime.fromJSDate(nextPrayer.time).toRelative()"
+              :text="`${DateTime.fromJSDate(nextPrayer.time).toLocaleString(
+                DateTime.DATETIME_FULL,
+              )}`"
+            >
+              <template #content>
+                {{ capitalizeFirstLetter(nextPrayer.prayer) }}
+                {{ DateTime.fromJSDate(nextPrayer.time).toRelative() }}
+              </template>
+            </RootToolTip>
+          </p>
+        </div>
+        <div class="flex flex-col gap-5">
+          <RootGoPageName name="Nearest Prayers" route="/prayers" />
+          <p class="italic">
+            This data here in the nearest prayers grid is provisional and does
+            not reflect your real location. To add more masaajid jamaa'ah times,
+            please contact us with your masjid's Google map link and a contact
+            for the masjid. It will be even better if you supplied the jamaa'ah
+            times for the masjid directly.
+          </p>
 
-        <p class="italic">
-          All the other location aspects of this website are working as
-          intended.
-        </p>
-        <HomeNearestTable
-          v-if="checkValidNearestPrayer()"
-          :key="nearestPrayerTimes"
-          :data="nearestPrayerTimes.data"
-        />
-        <SkeletonHomeNearestTable v-else :prayer="true" />
-      </div>
-      <div class="flex flex-col gap-5">
-        <RootGoPageName name="Nearest Masaajid" route="/masjids" />
-        <HomeNearestTable
-          v-if="checkValidNearestMasjid()"
-          :key="nearestMasjids"
-          :data="nearestMasjids.data"
-        />
-        <SkeletonHomeNearestTable v-else :prayer="false" />
-      </div>
+          <p class="italic">
+            All the other location aspects of this website are working as
+            intended.
+          </p>
+          <HomeNearestTable
+            v-if="checkValidNearestPrayer()"
+            :key="nearestPrayerTimes"
+            :data="nearestPrayerTimes.data"
+          />
+          <SkeletonHomeNearestTable v-else :prayer="true" />
+        </div>
+        <div class="flex flex-col gap-5">
+          <RootGoPageName name="Nearest Masaajid" route="/masjids" />
+          <HomeNearestTable
+            v-if="checkValidNearestMasjid()"
+            :key="nearestMasjids"
+            :data="nearestMasjids.data"
+          />
+          <SkeletonHomeNearestTable v-else :prayer="false" />
+        </div>
+      </ClientOnly>
     </div>
   </div>
 </template>

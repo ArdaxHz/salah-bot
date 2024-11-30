@@ -167,7 +167,7 @@ onMounted(() => {
   window.addEventListener('scroll', handleScroll)
   scrollListenerAdded.value = true
 
-  nextPrayer.value = adhanStore.nextPrayer()
+  nextPrayer.value = adhanStore.nextPrayer(new Date())
 })
 
 onBeforeUnmount(() => {

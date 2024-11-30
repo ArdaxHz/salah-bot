@@ -165,7 +165,10 @@ export function nextPrayer(prayerTimes, date, tomorrow) {
 }
 
 export function currentPrayer(prayerTimes, date, tomorrow) {
-  if (date >= prayerTimes.isha) {
+  if (prayerTimes.fajr == null) {
+    return null
+  }
+  else if (date >= prayerTimes.isha) {
     return { prayer: 'isha', time: prayerTimes.isha }
   }
   else if (date >= prayerTimes.maghrib) {
