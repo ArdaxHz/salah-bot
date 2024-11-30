@@ -47,6 +47,26 @@ export const useAdhanSettings = defineStore(
       }
     }
 
+    function $reset() {
+      calculationMethod.value = 'MuslimWorldLeague'
+      fajrAngle.value = 18
+      ishaAngle.value = 17
+      ishaInterval.value = null
+      rounding.value = 'nearest'
+      madhab.value = 'shafi'
+      highLatitudeRule.value = 'recommended'
+      polarCircleResolution.value = 'Unresolved'
+      shafaq.value = 'general'
+      adjustments.value = {
+        fajr: 0,
+        sunrise: 0,
+        dhuhr: 0,
+        asr: 0,
+        maghrib: 0,
+        isha: 0,
+      }
+    }
+
     return {
       calculationMethod,
       fajrAngle,
@@ -59,6 +79,7 @@ export const useAdhanSettings = defineStore(
       shafaq,
       adjustments,
       params,
+      $reset,
     }
   },
   {

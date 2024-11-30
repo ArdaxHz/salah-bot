@@ -130,6 +130,7 @@ export default defineNuxtConfig({
       theme_color: '#1b1d16',
       display: 'standalone',
       orientation: 'portrait',
+      start_url: '/?mode=standalone',
       icons: [
         {
           src: 'pwa-192x192.png',

@@ -5,7 +5,7 @@ const client = useSupabaseClient()
 const isLoading = ref(false)
 const isDisabled = ref(true)
 const errorMessage = ref(null)
-const turnstile = ref()
+const turnstileValid = ref(false)
 const token = ref(null)
 const state = ref({
   email: undefined,
@@ -20,37 +20,52 @@ useSeoMeta({
   title: 'Login',
 })
 
-const schema = z.object({
-  email: z.string().email('Invalid email'),
-  password: z.string().min(8, 'Min 8 characters').max(32, 'Max 32 characters'),
-}).superRefine(({ password }, checkPassComplexity) => {
-  const containsUppercase = (ch: string) => /[A-Z]/.test(ch)
-  const containsLowercase = (ch: string) => /[a-z]/.test(ch)
-  const containsSpecialChar = (ch: string) =>
-    /[`!@#$%^&*()_\-+=[\]{};':"\\|,.<>/?~ ]/.test(ch)
-  let countOfUpperCase = 0
-  let countOfLowerCase = 0
-  let countOfNumbers = 0
-  let countOfSpecialChar = 0
-  for (let i = 0; i < password.length; i++) {
-    const ch = password.charAt(i)
-    if (!Number.isNaN(+ch)) { countOfNumbers++ }
-    else if (containsUppercase(ch)) { countOfUpperCase++ }
-    else if (containsLowercase(ch)) { countOfLowerCase++ }
-    else if (containsSpecialChar(ch)) { countOfSpecialChar++ }
-  }
-  if (
-    countOfLowerCase < 1
-    || countOfUpperCase < 1
-    || countOfSpecialChar < 1
-    || countOfNumbers < 1
-  ) {
-    checkPassComplexity.addIssue({
-      code: 'custom',
-      message: 'Password is not safe enough',
-    })
-  }
-})
+const schema = z
+  .object({
+    email: z.string().email('Invalid email'),
+    password: z
+      .string()
+      .min(8, 'Min 8 characters')
+      .max(32, 'Max 32 characters'),
+  })
+  .superRefine(({ password }, checkPassComplexity) => {
+    const containsUppercase = (ch: string) => /[A-Z]/.test(ch)
+    const containsLowercase = (ch: string) => /[a-z]/.test(ch)
+    const specialCharas = /[`!@#$%^&*()_\-+=[\]{};':"\\|,.<>/?~ ]/
+    const containsSpecialChar = (ch: string) => specialCharas.test(ch)
+    let countOfUpperCase = 0
+    let countOfLowerCase = 0
+    let countOfNumbers = 0
+    let countOfSpecialChar = 0
+    for (let i = 0; i < password.length; i++) {
+      const ch = password.charAt(i)
+      if (!Number.isNaN(+ch)) {
+        countOfNumbers++
+      }
+      else if (containsUppercase(ch)) {
+        countOfUpperCase++
+      }
+      else if (containsLowercase(ch)) {
+        countOfLowerCase++
+      }
+      else if (containsSpecialChar(ch)) {
+        countOfSpecialChar++
+      }
+    }
+    if (
+      countOfLowerCase < 1
+      || countOfUpperCase < 1
+      || countOfSpecialChar < 1
+      || countOfNumbers < 1
+    ) {
+      checkPassComplexity.addIssue({
+        validation: 'password',
+        code: z.ZodIssueCode.custom,
+        message: `Password needs to contain at least one uppercase character, one lowercase character, one special character, and one number.`,
+        path: ['password'],
+      })
+    }
+  })
 // .superRefine(({ confirmPassword, password }, ctx) => {
 //   if (confirmPassword !== password) {
 //     ctx.addIssue({
@@ -63,9 +78,9 @@ const schema = z.object({
 
 async function onSubmit(event) {
   isLoading.value = true
-  if (!token.value) {
+  if (!token.value || !turnstileValid.value) {
     isLoading.value = false
-    errorMessage.value = `Captcha not valid.`
+    errorMessage.value = 'CAPTCHA validation failed. Please try again.'
     return
   }
 
@@ -94,33 +109,49 @@ async function onSubmit(event) {
   }
 }
 
-watch(state.value, (newValue) => {
-  try {
-    schema.parse(newValue)
+// Watch form state and CAPTCHA token
+watch(
+  [state, token],
+  ([newState, newToken]) => {
+    try {
+      schema.parse(newState)
 
-    if (!token.value) {
-      isLoading.value = false
-      errorMessage.value = `Captcha not valid.`
-      return
+      if (!turnstileValid.value) {
+        isDisabled.value = true
+        return
+      }
+      isDisabled.value = false
     }
-    isDisabled.value = false
-  }
-  catch (error) {
-    isDisabled.value = true
-  }
-})
+    catch (error) {
+      console.log(error)
+      isDisabled.value = true
+    }
+  },
+  { deep: true }
+)
+
+function onCaptchaSuccess(captchaToken: string) {
+  token.value = captchaToken
+  turnstileValid.value = true
+}
+
+function onCaptchaError() {
+  token.value = null
+  turnstileValid.value = false
+  isDisabled.value = true
+}
 </script>
 
 <template>
   <div class="flex flex-col gap-4 sm:gap-6 w-full items-center">
     <RootReturnPageName name="Login" route="/" />
     <div
-      class="flex flex-col md:w-3/12 bg-white/75 dark:bg-white/5 backdrop-blur p-6 rounded-xl text-ellipsis whitespace-normal overflow-hidden"
+      class="flex flex-col gap-4 max-w-96 w-full bg-white/75 dark:bg-white/5 shadow shadow-neutral-500 p-6 rounded-xl text-ellipsis whitespace-normal overflow-hidden items-center"
     >
       <UForm
         :schema="schema"
         :state="state"
-        class="space-y-4 w-full"
+        class="gap-4 w-full flex flex-col"
         @submit="onSubmit"
       >
         <p
@@ -158,11 +189,19 @@ watch(state.value, (newValue) => {
         </UFormGroup>
 
         <UFormGroup
-          :ui="{ error: 'mt-2 !text-red-500 dark:!text-red-400' }"
+          :ui="{
+            error: 'mt-2 !text-red-500 dark:!text-red-400',
+            hint: 'text-right',
+          }"
           label="Password"
           name="password"
           required
         >
+          <template #hint>
+            <NuxtLink to="/pages/forgot-password">
+              Forgot password?
+            </NuxtLink>
+          </template>
           <UInput
             v-model="state.password"
             :ui="{
@@ -206,26 +245,23 @@ watch(state.value, (newValue) => {
           Login
         </UButton>
 
-        <NuxtLink
-          class="flex !mt-1 justify-center items-center text-[--light-text-color] dark:text-[--dark-text-color] underline underline-offset-2 text-sm"
-          to="/forgotpassword"
-        >
-          Forgot password?
-        </NuxtLink>
+        <!--        <UDivider -->
+        <!--          :ui="{ -->
+        <!--            border: { -->
+        <!--              base: 'border-[&#45;&#45;light-text-accent-color-hover-light] dark:border-[&#45;&#45;dark-text-accent-color-hover-light]', -->
+        <!--            }, -->
+        <!--          }" -->
+        <!--          label="OR" -->
+        <!--          size="md" -->
+        <!--        /> -->
 
-        <UDivider
-          :ui="{
-            border: {
-              base: 'border-[--light-text-accent-color-hover-light] dark:border-[--dark-text-accent-color-hover-light]',
-            },
-          }"
-          label="OR"
-          size="md"
-        />
-
-        <AuthGoogleSignInButton />
+        <!--        <AuthGoogleSignInButton :disabled="!turnstileValid" /> -->
       </UForm>
+      <AuthTurnstile
+        v-model="token"
+        @on-captcha-error="onCaptchaError"
+        @on-captcha-success="onCaptchaSuccess"
+      />
     </div>
-    <NuxtTurnstile ref="turnstile" v-model="token" />
   </div>
 </template>

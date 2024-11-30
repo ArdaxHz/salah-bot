@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-const user = useSupabaseUser()
+definePageMeta({
+  middleware: 'confirm',
+})
 
-// Get redirect path from cookies
+const user = useSupabaseUser()
 const cookieName = useRuntimeConfig().public.supabase.cookieName
 const redirectPath = useCookie(`${cookieName}-redirect-path`).value
 

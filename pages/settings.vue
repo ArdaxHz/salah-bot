@@ -1,8 +1,8 @@
 <script setup>
 const route = useRoute()
 const router = useRouter()
-const checked = ref('tab-1')
-const previousTab = ref('tab-1')
+const checked = ref('adhansettings')
+const previousTab = ref('adhansettings')
 
 if (route.query.tab) {
   checked.value = route.query.tab
@@ -24,15 +24,17 @@ watch(checked, (newVal, oldVal) => {
 <template>
   <div class="flex flex-col gap-4 sm:gap-6">
     <RootReturnPageName name="Settings" />
-    <div class="tabs tabs-lifted" role="tablist">
+    <div class="tabs tabs-bordered" role="tablist">
       <input
         v-model="checked"
-        :class="`${checked === 'tab-1' ? 'tab-active' : 'tab-inactive'}`"
+        :class="`${
+          checked === 'adhansettings' ? 'tab-active' : 'tab-inactive'
+        }`"
         aria-label="Adhan Settings"
         class="tab"
         role="tab"
         type="radio"
-        value="tab-1"
+        value="adhansettings"
       >
       <div class="tab-content p-6" role="tabpanel">
         <SettingsAdhanSettings />
@@ -80,17 +82,6 @@ watch(checked, (newVal, oldVal) => {
 }
 
 .tab-content {
-  border-radius: theme("borderRadius.xl");
-  border-width: 0.25rem;
-
   transition: opacity 0.5s, transform 0.5s;
-}
-
-.dark .tab-content {
-  border-color: var(--dark-accent-color-dark);
-}
-
-.light .tab-content {
-  border-color: var(--light-text-accent-color-hover);
 }
 </style>

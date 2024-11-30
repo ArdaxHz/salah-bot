@@ -14,7 +14,7 @@ function getMapLink(data) {
 }
 
 function checkValidData() {
-  return props.data && props.data.length > 0
+  return props.data != null
 }
 </script>
 

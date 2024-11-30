@@ -184,6 +184,7 @@ async function handleSubmit(event) {
 
 async function resetSettings() {
   adhanSettingsStore.$reset()
+  model.value = adhanSettingsStore.params()
 }
 </script>
 
@@ -499,9 +500,10 @@ async function resetSettings() {
             :ui="{
               rounded: 'rounded-md',
               inline: `flex justify-center font-bold text-sm
-            text-[--light-text-color]
-            dark:text-[--dark-text-color]`,
+                text-[--light-text-color]
+                dark:text-[--dark-text-color]`,
             }"
+            class="button-scale"
             type="submit"
             @click.prevent="resetSettings"
           >
@@ -517,6 +519,7 @@ async function resetSettings() {
             text-[--light-text-color]
             dark:text-[--dark-text-color]`,
         }"
+        class="button-scale"
         type="submit"
         @click.prevent="handleSubmit"
       >

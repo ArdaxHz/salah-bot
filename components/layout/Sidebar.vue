@@ -9,7 +9,7 @@ function ToggleMenu() {
 }
 
 function ToggleMenuOff() {
-  if (sidebarExpanded.value && mobile.value) {
+  if (sidebarExpanded && mobile) {
     sidebarExpanded.value = false
   }
 }
@@ -26,7 +26,7 @@ const navItemsTop = ref([
     active: 'material-symbols:home-rounded',
   },
   {
-    label: 'Prayer Times',
+    label: 'Adhan Times',
     icon: 'material-symbols:alarm-outline-rounded',
     to: '/adhan',
     active: 'material-symbols:alarm-rounded',
@@ -72,7 +72,14 @@ const navItemsBottom = ref([
       class="menu-toggle-wrap flex flex-col standalone:mb-[env(safe-area-inset-bottom,2.5rem)] standalone:mt-4 standalone:sm:mt-0 standalone:sm:mb-4 mb-4 rounded-md justify-center items-center w-max"
     >
       <button class="menu-toggle" @click="ToggleMenu">
-        <Icon name="material-symbols:menu-rounded" size="2rem" />
+        <Icon
+          :name="`${
+            sidebarExpanded
+              ? 'material-symbols:close-rounded'
+              : 'material-symbols:menu-rounded'
+          }`"
+          size="2rem"
+        />
       </button>
     </div>
     <div
@@ -81,7 +88,7 @@ const navItemsBottom = ref([
       }"
       class="flex flex-col standalone:flex-col-reverse standalone:sm:flex-col justify-between h-full w-full"
     >
-      <RootNavMenuItems
+      <LayoutNavMenuItems
         v-model="activeItem"
         :is_expanded="sidebarExpanded"
         :nav-items="navItemsTop"
@@ -95,7 +102,7 @@ const navItemsBottom = ref([
         }`"
         class="menu-footer flex gap-4 standalone:flex-col-reverse standalone:sm:flex-col"
       >
-        <RootNavMenuItems
+        <LayoutNavMenuItems
           v-model="activeItem"
           :is_expanded="sidebarExpanded"
           :nav-items="navItemsBottom"

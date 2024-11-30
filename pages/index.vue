@@ -82,19 +82,24 @@ async function fetchData() {
   isError.value = false
   updatePrayers()
 
+  const prayerParams = {
+    latitude: location.latitude,
+    longitude: location.longitude,
+    limit: limit.value,
+    offset: offset.value,
+    input_time: DateTime.now().toJSDate(),
+    adhan_passed: false,
+  }
+  if (currentPrayer.value && currentPrayer.value.prayer) {
+    prayerParams.next_prayer = currentPrayer.value.prayer
+  }
+
   if (location.location && location.latitude && location.longitude) {
     try {
       const [getPrayersResponse, getMasjidsResponse] = await Promise.all([
         $fetch('/api/prayers', {
           headers: useRequestHeaders(['cookie']),
-          params: {
-            latitude: location.latitude,
-            longitude: location.longitude,
-            limit: limit.value,
-            offset: offset.value,
-            input_time: new Date(),
-            adhan_passed: false,
-          },
+          params: prayerParams,
         }),
         $fetch('/api/masjids', {
           headers: useRequestHeaders(['cookie']),
@@ -123,11 +128,11 @@ async function fetchData() {
 watch(location, fetchData, { immediate: true })
 
 function checkValidNearestPrayer() {
-  return nearestPrayerTimes.value && nearestPrayerTimes.value.count > 0
+  return nearestPrayerTimes.value && nearestPrayerTimes.value.data != null
 }
 
 function checkValidNearestMasjid() {
-  return nearestMasjids.value && nearestMasjids.value.count > 0
+  return nearestMasjids.value && nearestMasjids.value.data != null
 }
 
 function updatePrayers() {
@@ -213,6 +218,18 @@ onUnmounted(() => {
       </div>
       <div class="flex flex-col gap-5">
         <RootGoPageName name="Nearest Prayers" route="/prayers" />
+        <p class="italic">
+          This data here in the nearest prayers grid is provisional and does not
+          reflect your real location. To add more masaajid jamaa'ah times,
+          please contact us with your masjid's Google map link and a contact for
+          the masjid. It will be even better if you supplied the jamaa'ah times
+          for the masjid directly.
+        </p>
+
+        <p class="italic">
+          All the other location aspects of this website are working as
+          intended.
+        </p>
         <HomeNearestTable
           v-if="checkValidNearestPrayer()"
           :key="nearestPrayerTimes"

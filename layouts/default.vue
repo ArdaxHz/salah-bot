@@ -43,13 +43,15 @@ const validLocation = computed(() => {
         <LayoutHeader />
       </div>
       <div class="main-content-container" @mousedown="ToggleMenuOff">
-        <div
-          v-if="validLocation"
-          :key="validLocation"
-          class="content-announcement-container font-bold text-xl sm:text-2xl text-center text-[--error-color-text]"
-        >
-          Please enable location access for this site to work correctly.
-        </div>
+        <ClientOnly>
+          <div
+            v-if="validLocation"
+            :key="validLocation"
+            class="content-announcement-container font-bold text-xl sm:text-2xl text-center text-[--error-color-text]"
+          >
+            Please enable location access for this site to work correctly.
+          </div>
+        </ClientOnly>
         <div class="content-container">
           <slot />
         </div>
@@ -147,7 +149,9 @@ const validLocation = computed(() => {
 
 @media all and (display-mode: standalone) and (max-width: 640px) {
   .top-content-container {
-    grid-template-rows: [main-content-container] auto [header-container] var(--header-height);
+    grid-template-rows: [main-content-container] auto [header-container] var(
+        --header-height
+      );
     grid-template-areas:
       "main-content-container"
       "header-container";
