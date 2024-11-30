@@ -39,9 +39,9 @@ export const useTodayAdhanStore = defineStore(
     }
 
     function toJson(): Omit<AdhanTimes, 'date'> {
-      // if (fajr.value === null) {
-      //   calculateToday()
-      // }
+      if (fajr.value === null) {
+        calculateToday()
+      }
 
       return {
         fajr: fajr.value,
