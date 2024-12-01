@@ -18,6 +18,9 @@ const adhanOvermorrow = computed(() => {
 })
 
 const adhanCustom = computed(() => {
+  if (dateCustom.value === undefined || dateCustom.value === null) {
+    dateCustom.value = DateTime.now().plus({ days: 3 })
+  }
   return calculateAdhan(dateCustom)
 })
 
