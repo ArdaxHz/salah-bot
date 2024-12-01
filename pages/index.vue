@@ -1,6 +1,11 @@
 <script setup>
 import { DateTime } from 'luxon'
 
+useSeoMeta({
+  title: 'salah.bot',
+  description: 'Find your nearest masjid and its Jamaa\'ah times',
+})
+
 const adhanStore = useAdhanStore()
 const { currentPrayer: currentPrayerReactive, nextPrayer: nextPrayerReactive }
   = storeToRefs(adhanStore)

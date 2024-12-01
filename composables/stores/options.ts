@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { DateTime } from 'luxon'
 
 export const useOptionsStore = defineStore(
   'options',
@@ -6,7 +7,7 @@ export const useOptionsStore = defineStore(
     const sidebarExpanded = ref(false)
     const mobile = ref(false)
     const pwa = ref(false)
-    const adhanCustomDate = ref(new Date())
+    const adhanCustomDate = ref(DateTime.now().plus({ days: 3 }).toJSDate())
     const filters: MasjidsQueryParams | PrayersQueryParams = ref({
       limit: 20,
       offset: 0,
@@ -21,10 +22,17 @@ export const useOptionsStore = defineStore(
       distance_order: 'asc',
       prayer_order: null,
     })
-    return { sidebarExpanded, mobile, pwa, adhanCustomDate, filters }
+    return {
+      sidebarExpanded,
+      mobile,
+      pwa,
+      adhanCustomDate,
+      filters,
+    }
   },
   {
     persist: {
+      omit: ['sidebarExpanded', 'mobile', 'pwa'],
       storage: piniaPluginPersistedstate.localStorage(),
     },
   }

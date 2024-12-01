@@ -5,14 +5,15 @@ export const useLocationStore = defineStore(
   () => {
     const latitude = ref(null)
     const longitude = ref(null)
+    const locationAccess = ref(false)
     const location = computed(() => {
       return { latitude, longitude }
     })
-    return { latitude, longitude, location }
+    return { latitude, longitude, location, locationAccess }
   },
   {
     persist: {
-      storage: piniaPluginPersistedstate.localStorage(),
+      storage: piniaPluginPersistedstate.cookies(),
     },
   }
 )

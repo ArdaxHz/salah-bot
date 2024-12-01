@@ -3,6 +3,8 @@ const route = useRoute()
 const router = useRouter()
 const checked = ref('adhansettings')
 const previousTab = ref('adhansettings')
+const locationStore = useLocationStore()
+const { latitude, longitude } = storeToRefs(locationStore)
 
 if (route.query.tab) {
   checked.value = route.query.tab
@@ -24,6 +26,10 @@ watch(checked, (newVal, oldVal) => {
 <template>
   <div class="flex flex-col gap-4 sm:gap-6">
     <RootReturnPageName name="Settings" />
+    <div>
+      <p>Latitude: {{ latitude }}</p>
+      <p>Longitude: {{ longitude }}</p>
+    </div>
     <div class="tabs tabs-bordered" role="tablist">
       <input
         v-model="checked"

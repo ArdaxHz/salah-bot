@@ -2,7 +2,7 @@
 const viewport = useViewport()
 const optionsStore = useOptionsStore()
 const locationStore = useLocationStore()
-const { latitude, longitude } = storeToRefs(locationStore)
+const { locationAccess } = storeToRefs(locationStore)
 const { sidebarExpanded, mobile, pwa } = storeToRefs(optionsStore)
 
 function ToggleMenuOff() {
@@ -18,16 +18,14 @@ watch(viewport.breakpoint, () => {
 })
 
 function updateBreakpoints() {
-  if (viewport.isLessThan('sm')) {
-    mobile.value = true
-  }
-  else {
-    mobile.value = false
+  mobile.value = !!viewport.isLessThan('sm')
+  if (!mobile.value) {
+    sidebarExpanded.value = true
   }
 }
 
 const validLocation = computed(() => {
-  return !latitude.value || !longitude.value
+  return !locationAccess
 })
 </script>
 
@@ -45,11 +43,15 @@ const validLocation = computed(() => {
       <div class="main-content-container" @mousedown="ToggleMenuOff">
         <ClientOnly>
           <div
-            v-if="validLocation"
+            v-if="!locationAccess"
             :key="validLocation"
-            class="content-announcement-container font-bold text-xl sm:text-2xl text-center text-[--error-color-text]"
+            class="content-announcement-container font-bold text-xl sm:text-2xl text-center"
           >
-            Please enable location access for this site to work correctly.
+            <p v-if="!locationAccess" class="!text-[--error-color-text]">
+              Please enable location access for this site to work correctly.
+              Press the location pin button in the header to update your
+              location. on the
+            </p>
           </div>
         </ClientOnly>
         <div class="content-container">

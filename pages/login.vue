@@ -59,22 +59,12 @@ const schema = z
       || countOfNumbers < 1
     ) {
       checkPassComplexity.addIssue({
-        validation: 'password',
         code: z.ZodIssueCode.custom,
         message: `Password needs to contain at least one uppercase character, one lowercase character, one special character, and one number.`,
         path: ['password'],
       })
     }
   })
-// .superRefine(({ confirmPassword, password }, ctx) => {
-//   if (confirmPassword !== password) {
-//     ctx.addIssue({
-//       code: 'custom',
-//       message: 'The passwords did not match',
-//       path: ['confirmPassword'],
-//     })
-//   }
-// })
 
 async function onSubmit(event) {
   isLoading.value = true

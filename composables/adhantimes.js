@@ -132,6 +132,20 @@ export function calculateAdhanMonth(latitude, longitude, date, userParameters) {
   return month
 }
 
+function calculateMiddleOfNight(date, prayerTimes, tomorrow) {
+  const maghribTime = prayerTimes.maghrib
+  if (!tomorrow || !('fajr' in tomorrow)) {
+    return null
+  }
+  const fajrTime = tomorrow?.fajr
+
+  const halfMaghrib = maghribTime.getTime() / 2
+  const halfFajr = fajrTime.getTime() / 2
+  const middleOfNightTime = new Date(halfMaghrib + halfFajr + 6 * 60)
+
+  return middleOfNightTime
+}
+
 export function nextPrayer(prayerTimes, date, tomorrow) {
   const midnightTomorrow = new Date()
   midnightTomorrow.setHours(24, 0, 0, 0)
@@ -139,7 +153,7 @@ export function nextPrayer(prayerTimes, date, tomorrow) {
   midnightToday.setHours(0, 0, 0, 0)
 
   if (date >= prayerTimes.isha && date < midnightTomorrow) {
-    return null
+    return tomorrow?.fajr ? { prayer: 'fajr', time: tomorrow.fajr } : null
   }
   else if (date >= prayerTimes.maghrib) {
     return { prayer: 'isha', time: prayerTimes.isha }
@@ -165,11 +179,26 @@ export function nextPrayer(prayerTimes, date, tomorrow) {
 }
 
 export function currentPrayer(prayerTimes, date, tomorrow) {
+  const midnightTomorrow = new Date()
+  midnightTomorrow.setHours(24, 0, 0, 0)
+  const midnightToday = new Date(date.getTime())
+  midnightToday.setHours(0, 0, 0, 0)
+  const middleOfNight = calculateMiddleOfNight(date, prayerTimes, tomorrow)
+
   if (prayerTimes.fajr == null) {
     return null
   }
-  else if (date >= prayerTimes.isha) {
+  else if (
+    date >= prayerTimes.isha
+    && prayerTimes.isha < (middleOfNight || midnightTomorrow)
+  ) {
     return { prayer: 'isha', time: prayerTimes.isha }
+  }
+  else if (
+    date >= prayerTimes.isha
+    && prayerTimes.isha >= (middleOfNight || midnightTomorrow)
+  ) {
+    return null
   }
   else if (date >= prayerTimes.maghrib) {
     return { prayer: 'maghrib', time: prayerTimes.maghrib }

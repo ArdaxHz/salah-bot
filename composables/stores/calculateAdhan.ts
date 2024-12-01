@@ -61,6 +61,7 @@ export const useTodayAdhanStore = defineStore(
         locationData.latitude !== location.latitude
         || locationData.longitude !== location.longitude
         || fajr.value === null
+        || isDifferentDate(new Date(), date.value)
       ) {
         calculateAdhan(new Date(), locationData)
       }
@@ -70,15 +71,18 @@ export const useTodayAdhanStore = defineStore(
       const locationStore = useLocationStore()
       const { location: locationData } = storeToRefs(locationStore)
 
-      const date = new Date()
-      date.setDate(date.getDate() + 1)
+      const dateTomorrow = new Date()
+      dateTomorrow.setDate(dateTomorrow.getDate() + 1)
       if (
         locationData.latitude !== location.latitude
         || locationData.longitude !== location.longitude
         || tomorrow.value === null
         || tomorrow.value?.fajr === null
+        || isDifferentDate(new Date(), date.value)
       ) {
-        tomorrow.value = createAdhanObj(date, locationData)
+        const calcTom = createAdhanObj(dateTomorrow, locationData)
+        tomorrow.value = calcTom
+        return calcTom
       }
       return tomorrow.value
     }

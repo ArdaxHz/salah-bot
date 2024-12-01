@@ -1,4 +1,5 @@
 <script setup>
+const viewport = useViewport()
 const optionsStore = useOptionsStore()
 const { sidebarExpanded, mobile } = storeToRefs(optionsStore)
 const activeItem = ref(null)
@@ -9,7 +10,7 @@ function ToggleMenu() {
 }
 
 function ToggleMenuOff() {
-  if (sidebarExpanded && mobile) {
+  if (sidebarExpanded.value && viewport.isLessThan('lg')) {
     sidebarExpanded.value = false
   }
 }
@@ -26,7 +27,7 @@ const navItemsTop = ref([
     active: 'material-symbols:home-rounded',
   },
   {
-    label: 'Adhan Times',
+    label: 'Adhan',
     icon: 'material-symbols:alarm-outline-rounded',
     to: '/adhan',
     active: 'material-symbols:alarm-rounded',
