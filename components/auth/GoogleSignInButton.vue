@@ -14,7 +14,7 @@ const { auth } = useSupabaseClient()
       color: {
         primary: {
           solid:
-            'bg-black dark:bg-white hover:bg-[--light-text-accent-color] hover:dark:bg-[--light-text-accent-color-hover-light] focus:shadow-md dark:text-[--light-text-color] text-[--dark-text-color]',
+            'bg-black dark:bg-white hover:bg-[--color-accent-800] hover:dark:bg-[--color-accent-300] focus:shadow-md dark:text-[--light-text-color] text-[--dark-text-color]',
         },
       },
     }"

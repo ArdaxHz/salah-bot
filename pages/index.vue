@@ -6,10 +6,12 @@ useSeoMeta({
   description: 'Find your nearest masjid and its Jamaa\'ah times',
 })
 
+const todayStore = useTodayAdhanStore()
 const adhanStore = useAdhanStore()
 const { currentPrayer: currentPrayerReactive, nextPrayer: nextPrayerReactive }
   = storeToRefs(adhanStore)
 const location = useLocationStore()
+const { middleOfTheNight } = storeToRefs(todayStore)
 const currentPrayer = ref(null)
 const nextPrayer = ref(null)
 const updatePrayerKey = ref(0)
@@ -179,6 +181,13 @@ onUnmounted(() => {
     clearTimeout(prayerTimeout.value)
   }
 })
+
+function getCurrentPrayerTooltipText() {
+  if (currentPrayer.value.prayer === 'isha') {
+    return getValidDate(middleOfTheNight.value)
+  }
+  return getValidDate(currentPrayer.value.time)
+}
 </script>
 
 <template>
@@ -208,8 +217,18 @@ onUnmounted(() => {
             :key="updatePrayerKey"
             class="font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl"
           >
-            <span class="daily-current-prayer">
-              {{ capitalizeFirstLetter(currentPrayer.prayer) }}</span>
+            <RootToolTip
+              :text="`${capitalizeFirstLetter(
+                currentPrayer.prayer,
+              )} ends on ${getCurrentPrayerTooltipText().toLocaleString(
+                DateTime.DATETIME_FULL,
+              )}`"
+            >
+              <template #content>
+                <span class="daily-current-prayer">
+                  {{ capitalizeFirstLetter(currentPrayer.prayer) }}</span>
+              </template>
+            </RootToolTip>
           </p>
           <p
             v-if="nextPrayer"
@@ -223,8 +242,10 @@ onUnmounted(() => {
               )}`"
             >
               <template #content>
-                {{ capitalizeFirstLetter(nextPrayer.prayer) }}
-                {{ DateTime.fromJSDate(nextPrayer.time).toRelative() }}
+                <span class="p-2">
+                  {{ capitalizeFirstLetter(nextPrayer.prayer) }}
+                  {{ DateTime.fromJSDate(nextPrayer.time).toRelative() }}
+                </span>
               </template>
             </RootToolTip>
           </p>
@@ -268,14 +289,14 @@ onUnmounted(() => {
 .dark .daily-current-prayer {
   padding: 0.5rem;
   border-radius: theme("borderRadius.base");
-  background-color: var(--light-text-secondary-color-hover-light);
+  background-color: var(--color-secondary-600);
   color: var(--dark-text-color);
 }
 
 .light .daily-current-prayer {
   padding: 0.5rem;
   border-radius: theme("borderRadius.base");
-  background-color: var(--light-text-secondary-color-hover-light);
+  background-color: var(--color-secondary-600);
   color: var(--dark-text-color);
 }
 </style>

@@ -2,6 +2,9 @@
 import { z } from 'zod'
 
 const client = useSupabaseClient()
+const route = useRoute()
+const router = useRouter()
+const inviteToken = ref(route.query.invite)
 const isLoading = ref(false)
 const isDisabled = ref(true)
 const errorMessage = ref(null)
@@ -10,20 +13,25 @@ const token = ref(null)
 const state = ref({
   email: undefined,
   password: undefined,
+  confirmpassword: undefined,
 })
 
 definePageMeta({
-  // middleware: 'auth',
+  middleware: ['invite'],
 })
 
 useSeoMeta({
-  title: 'Login',
+  title: 'Signup',
 })
 
 const schema = z
   .object({
     email: z.string().email('Invalid email'),
     password: z
+      .string()
+      .min(8, 'Min 8 characters')
+      .max(32, 'Max 32 characters'),
+    confirmpassword: z
       .string()
       .min(8, 'Min 8 characters')
       .max(32, 'Max 32 characters'),
@@ -65,6 +73,15 @@ const schema = z
       })
     }
   })
+  .superRefine(({ confirmpassword, password }, ctx) => {
+    if (confirmpassword !== password) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'The passwords do not match',
+        path: ['confirmpassword'],
+      })
+    }
+  })
 
 async function onSubmit(event) {
   isLoading.value = true
@@ -82,7 +99,7 @@ async function onSubmit(event) {
       options: { captchaToken: token.value },
     }
 
-    const { data, error } = await client.auth.signInWithPassword(creds)
+    const { data, error } = await client.auth.signUp(creds)
     if (data) {
       if (data?.user?.aud === 'authenticated') {
       }
@@ -130,6 +147,25 @@ function onCaptchaError() {
   turnstileValid.value = false
   isDisabled.value = true
 }
+
+async function validateInvite() {
+  try {
+    const { valid } = await useFetch('/api/validate-invite', {
+      params: { invite: inviteToken.value },
+    })
+    tokenValid.value = valid
+  }
+  catch (error) {
+    createError({
+      statusCode: 401,
+      statusMessage: 'Invalid or expired invite link.',
+    })
+  }
+}
+
+onBeforeMount(async () => {
+  await validateInvite()
+})
 </script>
 
 <template>
@@ -187,13 +223,38 @@ function onCaptchaError() {
           name="password"
           required
         >
-          <template #hint>
-            <NuxtLink to="/forgot-password">
-              Forgot password?
-            </NuxtLink>
-          </template>
           <UInput
             v-model="state.password"
+            :ui="{
+              rounded: 'rounded-md',
+              color: {
+                white: {
+                  outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
+                focus:ring-2
+                ring-[--color-accent-200]
+                focus:ring-[--color-secondary-300]
+
+                dark:ring-[--color-accent-900]
+                dark:focus:ring-[--color-secondary-600]
+                `,
+                },
+              },
+            }"
+            autocomplete="current-password"
+            type="password"
+          />
+        </UFormGroup>
+        <UFormGroup
+          :ui="{
+            error: 'mt-2 !text-red-500 dark:!text-red-400',
+            hint: 'text-right',
+          }"
+          label="Confirm Password"
+          name="confirmpassword"
+          required
+        >
+          <UInput
+            v-model="state.confirmpassword"
             :ui="{
               rounded: 'rounded-md',
               color: {

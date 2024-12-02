@@ -25,17 +25,15 @@ function checkValidData() {
         v-for="(nearest, _) in data"
         :key="nearest.name"
         :class="[nearest.prayer ? 'grid-rows-4' : 'grid-rows-3']"
-        class="grid sm:grid-rows-3 grid-cols-1 items-center px-4 py-3 justify-start sm:dark:bg-silver-600/70 sm:bg-silver-300/70 dark:hover:bg-[--dark-text-accent-color-hover-light] hover:bg-[--light-text-accent-color-hover-light] rounded-xl sm:rounded-none"
+        class="grid sm:grid-rows-3 grid-cols-1 items-center px-4 py-3 justify-start sm:dark:bg-[--color-accent-700] sm:bg-[--color-accent-200] dark:hover:bg-[--color-accent-500] hover:bg-[--color-accent-300] rounded-xl sm:rounded-none"
       >
         <NuxtLink
           :to="`/masjids/${nearest.id}`"
-          class="font-bold text-xl sm:text-2xl text-ellipsis whitespace-nowrap overflow-hidden hover:dark:text-[--light-text-accent-color-hover-light] hover:text-[--light-text-accent-color] text-[--light-text-color] dark:text-[--dark-text-color]"
+          class="font-bold text-xl sm:text-2xl text-ellipsis whitespace-nowrap overflow-hidden hover:dark:text-[--color-accent-300] hover:text-[--color-accent-800] text-[--light-text-color] dark:text-[--dark-text-color]"
         >
-          <!--        <span -->
-          <!--          class="inline-block align-middle mr-2 max-w-[1ch] overflow-hidden" -->
-          <!--        > -->
-          <!--          Shia -->
-          <!--        </span> -->
+          <span v-if="nearest.sect" class="inline-block align-middle mr-2">
+            <HomeSectBadge :label="nearest.sect" />
+          </span>
           <span class="align-middle">
             {{ nearest.name }}
           </span>
@@ -71,7 +69,7 @@ function checkValidData() {
         </p>
         <NuxtLink
           :to="getMapLink(nearest)"
-          class="flex w-max items-center underline underline-offset-2 text-sm sm:text-md hover:dark:text-[--light-text-accent-color-hover-light] hover:text-[--light-text-accent-color] text-[--light-text-color] dark:text-[--dark-text-color]"
+          class="flex w-max items-center underline underline-offset-2 text-sm sm:text-md hover:dark:text-[--color-accent-300] hover:text-[--color-accent-800] text-[--light-text-color] dark:text-[--dark-text-color]"
           target="_blank"
         >
           Open Map

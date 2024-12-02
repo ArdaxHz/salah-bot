@@ -21,11 +21,11 @@ const distance = defineModel()
             white: {
               outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
                 focus:ring-2
-                ring-[--light-text-accent-color-hover]
-                focus:ring-[--dark-text-secondary-color-hover-light]
+                ring-[--color-accent-200]
+                focus:ring-[--color-secondary-300]
 
-                dark:ring-[--dark-accent-color-dark]
-                dark:focus:ring-[--light-text-secondary-color-hover-light]
+                dark:ring-[--color-accent-900]
+                dark:focus:ring-[--color-secondary-600]
                 `,
             },
           },

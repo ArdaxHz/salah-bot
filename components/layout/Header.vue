@@ -9,7 +9,7 @@ function ToggleMenu() {
 
 <template>
   <div
-    class="flex w-full !sticky standalone:h-[calc(var(--header-height)+env(safe-area-inset-bottom,2.5rem))] standalone:sm:h-[--header-height] standalone:sm:pb-0 leading-[0] z-[9] h-[--header-height] items-center justify-center bg-[--light-bg-color] dark:bg-[--dark-bg-color] ring-2 ring-[--neutral-secondary-color] header"
+    class="flex w-full !sticky standalone:h-[calc(var(--header-height)+env(safe-area-inset-bottom,2.5rem))] standalone:sm:h-[--header-height] standalone:sm:pb-0 leading-[0] z-[9] h-[--header-height] items-center justify-center bg-[--light-bg-color] dark:bg-[--dark-bg-color] ring-2 ring-[--color-secondary-500] header"
   >
     <header class="max-w-7xl flex w-full px-3 sm:px-6 lg:px-8 py-4 h-full">
       <div class="flex flex-row gap-3 sm:gap-6 items-center h-full">

@@ -105,11 +105,11 @@ onMounted(() => {
 
 <style scoped>
 .dark .timings-name {
-  color: var(--dark-text-secondary-color);
+  color: var(--color-secondary-200);
 }
 
 .light .timings-name {
-  color: var(--light-text-secondary-color);
+  color: var(--color-secondary-800);
 }
 
 .dark .timings-time {

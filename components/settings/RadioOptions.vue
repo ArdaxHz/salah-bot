@@ -15,24 +15,24 @@ const model = defineModel()
                       ring-1 ring-inset
 
                       text-[--light-text-color]
-                      ring-[--light-text-accent-color-hover-light]
-                      hover:ring-[--light-text-accent-color-hover-light]
-                      hover:bg-[--light-text-accent-color-hover-light]
-                      group-has-[:checked]:bg-[--dark-text-secondary-color-hover-light]
+                      ring-[--color-accent-300]
+                      hover:ring-[--color-accent-300]
+                      hover:bg-[--color-accent-300]
+                      group-has-[:checked]:bg-[--color-secondary-300]
                       group-has-[:checked]:text-[--light-text-color]
-                      group-has-[:checked]:ring-[--dark-text-secondary-color-hover-light]
-                      group-has-[:checked]:hover:bg-[--dark-text-secondary-color-hover]
-                      group-has-[:checked]:hover:ring-[--dark-text-secondary-color-hover]
+                      group-has-[:checked]:ring-[--color-secondary-300]
+                      group-has-[:checked]:hover:bg-[--color-secondary-200]
+                      group-has-[:checked]:hover:ring-[--color-secondary-200]
 
                       dark:text-[--dark-text-color]
-                      dark:ring-[--dark-text-accent-color-hover-light]
-                      dark:hover:ring-[--dark-text-accent-color-hover-light]
-                      dark:hover:bg-[--dark-text-accent-color-hover-light]
-                      dark:group-has-[:checked]:bg-[--neutral-secondary-color]
+                      dark:ring-[--color-accent-600]
+                      dark:hover:ring-[--color-accent-600]
+                      dark:hover:bg-[--color-accent-600]
+                      dark:group-has-[:checked]:bg-[--color-secondary-500]
                       dark:group-has-[:checked]:text-[--dark-text-color]
-                      dark:group-has-[:checked]:ring-[--neutral-secondary-color]
-                      dark:group-has-[:checked]:hover:bg-[--light-text-secondary-color-hover-light]
-                      dark:group-has-[:checked]:hover:ring-[--light-text-secondary-color-hover-light] `,
+                      dark:group-has-[:checked]:ring-[--color-secondary-500]
+                      dark:group-has-[:checked]:hover:bg-[--color-secondary-600]
+                      dark:group-has-[:checked]:hover:ring-[--color-secondary-600] `,
         inner: 'm-0',
       }"
       class="flex radio-option group"

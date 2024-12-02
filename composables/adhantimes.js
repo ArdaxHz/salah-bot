@@ -132,7 +132,7 @@ export function calculateAdhanMonth(latitude, longitude, date, userParameters) {
   return month
 }
 
-function calculateMiddleOfNight(date, prayerTimes, tomorrow) {
+export function calculateMiddleOfNight(prayerTimes, tomorrow) {
   const maghribTime = prayerTimes.maghrib
   if (!tomorrow || !('fajr' in tomorrow)) {
     return null
@@ -178,12 +178,11 @@ export function nextPrayer(prayerTimes, date, tomorrow) {
   }
 }
 
-export function currentPrayer(prayerTimes, date, tomorrow) {
+export function currentPrayer(prayerTimes, date, middleOfNight) {
   const midnightTomorrow = new Date()
   midnightTomorrow.setHours(24, 0, 0, 0)
   const midnightToday = new Date(date.getTime())
   midnightToday.setHours(0, 0, 0, 0)
-  const middleOfNight = calculateMiddleOfNight(date, prayerTimes, tomorrow)
 
   if (prayerTimes.fajr == null) {
     return null

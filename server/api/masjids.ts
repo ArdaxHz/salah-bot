@@ -63,7 +63,6 @@ export default eventHandler(async (event: H3Event) => {
     }
   }
 
-  // Trim text values
   const trimText = (text: string | null): string | null =>
     text ? text.trim() : null
   const sects = query.sects?.map(trimText) ?? null

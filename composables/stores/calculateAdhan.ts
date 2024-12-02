@@ -1,6 +1,9 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { useAdhanSettings } from '@/composables/stores/adhanSettings'
-import { calculateAdhanDay } from '@/composables/adhantimes'
+import {
+  calculateAdhanDay,
+  calculateMiddleOfNight,
+} from '@/composables/adhantimes'
 import { customParse, customStringify } from '@/composables/serialiser'
 
 interface AdhanTimes {
@@ -26,17 +29,9 @@ export const useTodayAdhanStore = defineStore(
     const isha = ref<Date | null>(null)
     const date = ref<Date>(new Date())
     const location = ref<LocationType | null>(null)
+    const today = ref<object | null>(null)
     const tomorrow = ref<object | null>(null)
-
-    function daily(): Omit<AdhanTimes, 'sunrise' | 'sunset' | 'date'> {
-      return {
-        fajr: fajr.value,
-        dhuhr: dhuhr.value,
-        asr: asr.value,
-        maghrib: maghrib.value,
-        isha: isha.value,
-      }
-    }
+    const middleOfTheNight = ref<Date | null>(null)
 
     function toJson(): Omit<AdhanTimes, 'date'> {
       if (fajr.value === null) {
@@ -58,12 +53,13 @@ export const useTodayAdhanStore = defineStore(
       const { location: locationData } = storeToRefs(locationStore)
 
       if (
-        locationData.latitude !== location.latitude
-        || locationData.longitude !== location.longitude
+        locationData.latitude !== location?.latitude
+        || locationData.longitude !== location?.longitude
         || fajr.value === null
         || isDifferentDate(new Date(), date.value)
       ) {
         calculateAdhan(new Date(), locationData)
+        calculateTomorrow()
       }
     }
 
@@ -81,8 +77,23 @@ export const useTodayAdhanStore = defineStore(
         || isDifferentDate(new Date(), date.value)
       ) {
         const calcTom = createAdhanObj(dateTomorrow, locationData)
-        tomorrow.value = calcTom
-        return calcTom
+        if (calcTom) {
+          tomorrow.value = {
+            fajr: calcTom.fajr,
+            sunrise: calcTom.sunrise,
+            dhuhr: calcTom.dhuhr,
+            asr: calcTom.asr,
+            maghrib: calcTom.maghrib,
+            sunset: calcTom.sunset,
+            isha: calcTom.isha,
+            date: calcTom.date,
+          }
+          middleOfTheNight.value = calculateMiddleOfNight(
+            toJson(),
+            tomorrow.value
+          )
+        }
+        return tomorrow.value
       }
       return tomorrow.value
     }
@@ -98,7 +109,7 @@ export const useTodayAdhanStore = defineStore(
         sunset.value = times.sunset
         isha.value = times.isha
         date.value = times.date
-        location.value = times.coordinates
+        location.value = { ...times.coordinates }
       }
     }
 
@@ -132,7 +143,10 @@ export const useTodayAdhanStore = defineStore(
       maghrib,
       isha,
       date,
-      daily,
+      location,
+      today,
+      tomorrow,
+      middleOfTheNight,
       toJson,
       calculateToday,
       calculateTomorrow,

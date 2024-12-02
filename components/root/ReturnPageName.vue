@@ -12,7 +12,7 @@ const router = useRouter()
     class="flex w-full gap-1 sm:gap-3 justify-start font-semibold sm:font-bold text-xl sm:text-2xl md:text-3xl items-center dark:text-[--dark-text-color] text-[--light-text-color]"
   >
     <button
-      class="flex p-1 button-scale items-center rounded-full dark:hover:bg-[--dark-text-accent-color-hover-light] hover:bg-[--light-text-accent-color-hover-light]"
+      class="flex p-1 button-scale items-center rounded-full dark:hover:bg-[--color-accent-700] hover:bg-[--color-accent-200]"
       @click="route ? navigateTo(route) : router.back()"
     >
       <Icon class="rotate-180" name="material-symbols:arrow-forward-rounded" />

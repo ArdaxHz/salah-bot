@@ -17,7 +17,11 @@ export const useAdhanStore = defineStore('adhan', () => {
 
   function currentPrayer(date) {
     const tomorrow = todayStore.calculateTomorrow()
-    return currentPrayerCalc(todayStore.toJson(), date, tomorrow)
+    return currentPrayerCalc(
+      todayStore.toJson(),
+      date,
+      todayStore.middleOfTheNight
+    )
   }
 
   const settings = computed((state) => {

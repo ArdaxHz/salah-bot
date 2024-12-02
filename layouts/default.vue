@@ -3,7 +3,7 @@ const viewport = useViewport()
 const optionsStore = useOptionsStore()
 const locationStore = useLocationStore()
 const { locationAccess } = storeToRefs(locationStore)
-const { sidebarExpanded, mobile, pwa } = storeToRefs(optionsStore)
+const { sidebarExpanded, mobile } = storeToRefs(optionsStore)
 
 function ToggleMenuOff() {
   if (sidebarExpanded.value && viewport.isLessThan('lg')) {
@@ -19,9 +19,12 @@ watch(viewport.breakpoint, () => {
 
 function updateBreakpoints() {
   mobile.value = !!viewport.isLessThan('sm')
-  if (!mobile.value) {
-    sidebarExpanded.value = true
-  }
+  //   if (mobile.value && sidebarExpanded.value) {
+  //     sidebarExpanded.value = false
+  //   }
+  //   if (!mobile.value) {
+  //     sidebarExpanded.value = true
+  //   }
 }
 
 const validLocation = computed(() => {

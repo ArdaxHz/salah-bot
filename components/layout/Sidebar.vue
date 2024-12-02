@@ -67,7 +67,7 @@ const navItemsBottom = ref([
     :class="{
       'is-expanded bg-[--light-bg-color]': sidebarExpanded,
     }"
-    class="sidebar h-[100dvh] !fixed lg:!sticky top-0 z-10 left-0 flex-col bg-[--light-bg-color] dark:bg-[--dark-bg-color] ring-2 ring-[--neutral-secondary-color]"
+    class="sidebar h-[100dvh] !fixed lg:!sticky top-0 z-10 left-0 flex-col bg-[--light-bg-color] dark:bg-[--dark-bg-color] ring-2 ring-[--color-secondary-500]"
   >
     <div
       class="menu-toggle-wrap flex flex-col standalone:mb-[env(safe-area-inset-bottom,2.5rem)] standalone:mt-4 standalone:sm:mt-0 standalone:sm:mb-4 mb-4 rounded-md justify-center items-center w-max"
@@ -264,12 +264,12 @@ const navItemsBottom = ref([
 
 .dark .menu-item:hover,
 .dark .menu-toggle-wrap:hover {
-  background-color: var(--dark-text-accent-color-hover);
+  background-color: var(--color-accent-700);
 }
 
 .light .menu-item:hover,
 .light .menu-toggle-wrap:hover {
-  background-color: var(--light-text-accent-color-hover);
+  background-color: var(--color-accent-200);
 }
 
 .menu-item:active:focus,

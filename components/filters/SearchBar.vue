@@ -24,11 +24,11 @@ watch(() => searchText.value, emitSearchText)
           white: {
             outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
                 focus:ring-2
-                ring-[--neutral-accent-color]
-                focus:ring-[--neutral-secondary-color]
+                ring-[--color-accent-500]
+                focus:ring-[--color-secondary-500]
 
-                dark:ring-[--neutral-accent-color]
-                dark:focus:ring-[--neutral-secondary-color]
+                dark:ring-[--color-accent-500]
+                dark:focus:ring-[--color-secondary-500]
                 `,
           },
         },

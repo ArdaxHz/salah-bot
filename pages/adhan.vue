@@ -88,7 +88,7 @@ function getDate(slot) {
           <UButton
             :class="[
               open
-                ? 'shadow-lg shadow-[--dark-text-secondary-color]'
+                ? 'shadow-lg shadow-[--color-secondary-200]'
                 : 'shadow-md shadow-neutral-500',
             ]"
             :ui="{
@@ -100,7 +100,7 @@ function getDate(slot) {
               color: {
                 primary: {
                   solid:
-                    'bg-[--light-bg-color] dark:bg-[--dark-bg-color] dark:hover:bg-silver-950 hover:bg-[--light-text-accent-color-hover-light] hover:shadow-[--dark-text-secondary-color]',
+                    'bg-[--light-bg-color] dark:bg-[--dark-bg-color] dark:hover:bg-silver-950 hover:bg-[--color-accent-300] hover:shadow-[--color-secondary-200]',
                 },
               },
             }"

@@ -64,14 +64,14 @@ watch(checked, (newVal, oldVal) => {
 }
 
 .dark .tab-active {
-  --tab-bg: var(--dark-accent-color-dark);
-  --tab-border-color: var(--dark-accent-color-dark);
+  --tab-bg: var(--color-accent-900);
+  --tab-border-color: var(--color-accent-900);
   --tab-color: var(--dark-text-color);
 }
 
 .light .tab-active {
-  --tab-bg: var(--light-text-accent-color-hover);
-  --tab-border-color: var(--light-text-accent-color-hover);
+  --tab-bg: var(--color-accent-200);
+  --tab-border-color: var(--color-accent-200);
   --tab-color: var(--light-text-color);
 }
 
