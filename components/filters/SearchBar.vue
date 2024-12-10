@@ -19,7 +19,7 @@ watch(() => searchText.value, emitSearchText)
       v-model.trim="searchText"
       :trailing="false"
       :ui="{
-        rounded: 'rounded-md',
+        rounded: 'rounded',
         color: {
           white: {
             outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]

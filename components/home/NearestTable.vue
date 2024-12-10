@@ -46,7 +46,7 @@ function checkValidData() {
             <RootToolTip
               :key="getValidDate(nearest.prayer.next.time).toRelative()"
               :text="`${getValidDate(nearest.prayer.next.time).toLocaleString(
-                DateTime.DATETIME_FULL,
+                DateTime.DATETIME_SHORT,
               )}`"
             >
               <template #content>
@@ -59,7 +59,7 @@ function checkValidData() {
           <RootToolTip
             :key="getValidDate(nearest.prayer.next.time).toRelative()"
             :text="`${getValidDate(nearest.prayer.next.time).toLocaleString(
-              DateTime.DATETIME_FULL,
+              DateTime.DATETIME_SHORT,
             )}`"
           >
             <template #content>

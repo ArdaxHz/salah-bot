@@ -57,3 +57,19 @@ export function isDifferentDate(date1, date2) {
 
   return year1 !== year2 || month1 !== month2 || day1 !== day2
 }
+
+export function isDateAfter(date1, date2) {
+  return date1.getTime() > date2.getTime()
+}
+
+export function generateString() {
+  return [...Array(64)]
+    .map(
+      () =>
+        (Math.random().toString(36)
+          + Math.random().toString(36).toUpperCase())[2] || '0'
+    )
+    .join('')
+}
+
+export const verifyString = str => /^[a-z0-9]{64}$/i.test(str)

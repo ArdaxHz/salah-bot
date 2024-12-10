@@ -218,7 +218,7 @@ function expandFiltersButton() {
           v-if="filtersExpanded"
           class="flex flex-col sm:flex-row gap-2 w-full"
         >
-          <FiltersDistanceFilter
+          <FiltersMasjidsFilter
             v-model="filtersInternal.distance"
             class="w-full sm:w-3/12"
           />

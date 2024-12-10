@@ -221,7 +221,7 @@ function getCurrentPrayerTooltipText() {
               :text="`${capitalizeFirstLetter(
                 currentPrayer.prayer,
               )} ends on ${getCurrentPrayerTooltipText().toLocaleString(
-                DateTime.DATETIME_FULL,
+                DateTime.DATETIME_SHORT,
               )}`"
             >
               <template #content>
@@ -238,7 +238,7 @@ function getCurrentPrayerTooltipText() {
             <RootToolTip
               :key="DateTime.fromJSDate(nextPrayer.time).toRelative()"
               :text="`${DateTime.fromJSDate(nextPrayer.time).toLocaleString(
-                DateTime.DATETIME_FULL,
+                DateTime.DATETIME_SHORT,
               )}`"
             >
               <template #content>

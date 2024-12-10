@@ -5,6 +5,7 @@ const client = useSupabaseClient()
 const route = useRoute()
 const router = useRouter()
 const inviteToken = ref(route.query.invite)
+const tokenValid = ref(false)
 const isLoading = ref(false)
 const isDisabled = ref(true)
 const errorMessage = ref(null)
@@ -15,6 +16,7 @@ const state = ref({
   password: undefined,
   confirmpassword: undefined,
 })
+const emailEditable = ref(true)
 
 definePageMeta({
   middleware: ['invite'],
@@ -102,6 +104,15 @@ async function onSubmit(event) {
     const { data, error } = await client.auth.signUp(creds)
     if (data) {
       if (data?.user?.aud === 'authenticated') {
+        const { data: updateInviteData } = await useFetch('/api/invite', {
+          method: 'PUT',
+          params: { invite: inviteToken.value, userId: data.user.id },
+        })
+        tokenValid.value = data.valid
+        if (data.email) {
+          state.value.email = 'sdfdfds'
+          emailEditable.value = false
+        }
       }
     }
     else {
@@ -150,13 +161,18 @@ function onCaptchaError() {
 
 async function validateInvite() {
   try {
-    const { valid } = await useFetch('/api/validate-invite', {
+    const { data } = await useFetch('/api/invite', {
+      method: 'GET',
       params: { invite: inviteToken.value },
     })
-    tokenValid.value = valid
+    tokenValid.value = data.valid
+    if (data.email) {
+      state.value.email = 'sdfdfds'
+      emailEditable.value = false
+    }
   }
   catch (error) {
-    createError({
+    throw createError({
       statusCode: 401,
       statusMessage: 'Invalid or expired invite link.',
     })
@@ -193,8 +209,14 @@ onBeforeMount(async () => {
           name="email"
           required
         >
+          <template v-if="!emailEditable" #help>
+            <p class="italic">
+              Your email has been prefilled and cannot be changed.
+            </p>
+          </template>
           <UInput
             v-model="state.email"
+            :disabled="!emailEditable"
             :ui="{
               rounded: 'rounded-md',
               color: {

@@ -219,24 +219,9 @@ async function resetSettings() {
         label="Calculation Method"
         name="calculationMethod"
       >
-        <UInputMenu
+        <FiltersInputMenu
           v-model="model.calculationMethod"
           :options="calculationMethodOptions"
-          :ui="{
-            rounded: 'rounded-md',
-            color: {
-              white: {
-                outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
-                focus:ring-2
-                ring-[--color-accent-200]
-                focus:ring-[--color-secondary-300]
-
-                dark:ring-[--color-accent-900]
-                dark:focus:ring-[--color-secondary-600]
-                `,
-              },
-            },
-          }"
           label-attribute="label"
           value-attribute="value"
         />
@@ -375,24 +360,9 @@ async function resetSettings() {
             label="High Latitude Rule"
             name="highLatitudeRule"
           >
-            <USelectMenu
+            <FiltersSelectMenu
               v-model="model.highLatitudeRule"
               :options="highLatitudeRuleOptions"
-              :ui="{
-                rounded: 'rounded-md',
-                color: {
-                  white: {
-                    outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
-                focus:ring-2
-                ring-[--color-accent-200]
-                focus:ring-[--color-secondary-300]
-
-                dark:ring-[--color-accent-900]
-                dark:focus:ring-[--color-secondary-600]
-                `,
-                  },
-                },
-              }"
               label-attribute="label"
               value-attribute="value"
             />
@@ -407,24 +377,9 @@ async function resetSettings() {
             label="Polar Circle Resolution"
             name="polarCircleResolution"
           >
-            <USelectMenu
+            <FiltersSelectMenu
               v-model="model.polarCircleResolution"
               :options="polarCircleResolutionOptions"
-              :ui="{
-                rounded: 'rounded-md',
-                color: {
-                  white: {
-                    outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
-                focus:ring-2
-                ring-[--color-accent-200]
-                focus:ring-[--color-secondary-300]
-
-                dark:ring-[--color-accent-900]
-                dark:focus:ring-[--color-secondary-600]
-                `,
-                  },
-                },
-              }"
               label-attribute="label"
               value-attribute="value"
             />
@@ -439,24 +394,9 @@ async function resetSettings() {
             label="Shafaq"
             name="shafaq"
           >
-            <USelectMenu
+            <FiltersSelectMenu
               v-model="model.shafaq"
               :options="shafaqOptions"
-              :ui="{
-                rounded: 'rounded-md',
-                color: {
-                  white: {
-                    outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
-                focus:ring-2
-                ring-[--color-accent-200]
-                focus:ring-[--color-secondary-300]
-
-                dark:ring-[--color-accent-900]
-                dark:focus:ring-[--color-secondary-600]
-                `,
-                  },
-                },
-              }"
               label-attribute="label"
               value-attribute="value"
             />

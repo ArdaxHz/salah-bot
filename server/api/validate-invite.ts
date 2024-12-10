@@ -12,18 +12,17 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Check if the token exists and is valid
-  const { data, error } = await supabase
-    .from('auth.invites')
+  const { data, error } = await client
+    .from('invites')
     .select('*')
     .eq('token', invite)
     .eq('is_used', false)
     .single()
 
-  if (error || !data) {
+  if (error) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Invalid or expired invite link',
+      statusMessage: 'Invalid invite.',
     })
   }
 
@@ -31,9 +30,16 @@ export default defineEventHandler(async (event) => {
   if (data.expires_at && new Date(data.expires_at) < now) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Invite link has expired',
+      statusMessage: 'Expired invite.',
     })
   }
 
-  return { valid: true }
+  if (query.email && data.email && query.email !== data.email) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Invalid invite.',
+    })
+  }
+
+  return { ...data, valid: true }
 })

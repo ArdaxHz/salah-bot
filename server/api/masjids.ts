@@ -28,6 +28,9 @@ export default eventHandler(async (event: H3Event) => {
   const limit = query.limit !== undefined ? Number(query.limit) : 10
   const offset = query.offset !== undefined ? Number(query.offset) : 0
 
+  const trimText = (text: string | null): string | null =>
+    text ? text.trim() : null
+
   // Validation logic
   const isNumber = (value: any): boolean =>
     value !== null
@@ -63,12 +66,47 @@ export default eventHandler(async (event: H3Event) => {
     }
   }
 
-  const trimText = (text: string | null): string | null =>
-    text ? text.trim() : null
-  const sects = query.sects?.map(trimText) ?? null
-  const usageTypes = query.usage_types?.map(trimText) ?? null
-  const managementTypes = query.management_types?.map(trimText) ?? null
+  const sects = Array.isArray(query.sects)
+    ? query.sects.length > 0
+      ? query.sects.map(trimText)
+      : null
+    : typeof query.sects === 'string' && query.sects.trim() !== ''
+      ? [trimText(query.sects)]
+      : null
+
+  const usageTypes = Array.isArray(query.usage_types)
+    ? query.usage_types.length > 0
+      ? query.usage_types.map(trimText)
+      : null
+    : typeof query.usage_types === 'string' && query.usage_types.trim() !== ''
+      ? [trimText(query.usage_types)]
+      : null
+
+  const managementTypes = Array.isArray(query.management_types)
+    ? query.management_types.length > 0
+      ? query.management_types.map(trimText)
+      : null
+    : typeof query.management_types === 'string'
+      && query.management_types.trim() !== ''
+      ? [trimText(query.management_types)]
+      : null
   const name = trimText(query.name ?? null)
+
+  // return {
+  //   query,
+  //   latitude,
+  //   longitude,
+  //   max_distance: maxDistance,
+  //   result_limit: limit,
+  //   result_offset: offset,
+  //   sects,
+  //   women_facility: query.women_facility ?? null,
+  //   min_capacity: query.min_capacity ? Number(query.min_capacity) : null,
+  //   usage_types: usageTypes,
+  //   management_types: managementTypes,
+  //   search_name: name,
+  //   order_by_capacity: trimText(query.order_by_capacity ?? null),
+  // }
 
   const { data, error } = await client.functions.invoke('masjids', {
     body: JSON.stringify({
@@ -78,7 +116,7 @@ export default eventHandler(async (event: H3Event) => {
       result_limit: limit,
       result_offset: offset,
       sects,
-      women_facility: query.women_facility,
+      women_facility: query.women_facility ?? null,
       min_capacity: query.min_capacity ? Number(query.min_capacity) : null,
       usage_types: usageTypes,
       management_types: managementTypes,
