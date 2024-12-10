@@ -18,7 +18,7 @@ const props = defineProps({
   >
     <RootToolTip :key="props.label" :text="props.label">
       <template #content>
-        {{ label.slice(0, 1) }}
+        {{ label.slice(0, 2) }}
       </template>
     </RootToolTip>
   </UBadge>

@@ -15,7 +15,7 @@ export function updateObj(obj /* , … */) {
       }
       else {
         // Check if the value is a string and can be converted to a number
-        if (typeof val === 'string' && !Number.isNaN(val)) {
+        if (typeof val === 'string' && val.trim() !== '' && !isNaN(val)) {
           // Convert to a number (int or float)
           obj[prop] = val.includes('.')
             ? Number.parseFloat(val)

@@ -8,6 +8,16 @@ const isError = ref(false)
 const scrollListenerAdded = ref(true)
 const filtersExpanded = ref(false)
 const dataKey = ref(0)
+const filterNames = ref([
+  'name',
+  'distance',
+  'sects',
+  'management',
+  'usage',
+  'women',
+  'capacity',
+  'orderByCapacity',
+])
 const filters = ref({
   distance: 5000,
   sects: [],
@@ -30,45 +40,23 @@ const filtersInternal = ref({
   orderByCapacity: null,
 })
 
-function serialize(obj) {
-  const str = []
-  for (const p in obj) {
-    if (obj.hasOwnProperty(p)) {
-      str.push(`${encodeURIComponent(p)}=${encodeURIComponent(obj[p])}`)
-    }
-  }
-  return str.join('&')
-}
-
 const filtersUri = computed(() => {
-  return
-  const obj = serialize(filtersInternal.value)
-  // if (filtersInternal.value.distance) {
-  //   obj.distance = filtersInternal.value.distance
-  // }
-  // if (filtersInternal.value.name) {
-  //   obj.name = filtersInternal.value.name
-  // }
-  return obj
-})
-
-const filtersFetch = computed(() => {
-  return Object.keys(filtersInternal.value)
-    .filter(key => !['limit', 'offset'].includes(key))
-    .reduce((obj, key) => {
-      obj[key] = filtersInternal.value[key]
-      return obj
-    }, {})
-})
-
-const searchName = computed(() => {
-  return filtersInternal.value.name
+  return Object.fromEntries(
+    Object.entries(filtersInternal.value).filter(
+      ([key, value]) =>
+        filterNames.value.includes(key) && value != null && value !== ''
+    )
+  )
 })
 
 checkQueries()
 
 function checkQueries() {
-  updateObj(filtersInternal.value, route.query)
+  updateObj(filters.value, route.query)
+  updateFilters()
+  if (route.query.name) {
+    filtersInternal.value.name = route.query.name
+  }
 }
 
 function updateQueries() {
@@ -216,6 +204,7 @@ function resetFilters() {
   filters.value.women = null
   filters.value.capacity = null
   filters.value.orderByCapacity = null
+  filtersInternal.value.name = null
   updateFilters()
 }
 
@@ -249,13 +238,13 @@ function updateFilters() {
             :ui="{
               rounded: 'rounded',
               inline: `text-md font-semibold
-            dark:text-[--dark-text-color]
-            text-[--light-text-color]`,
+            dark:text-[--light-text-color]
+            text-[--dark-text-color]`,
               base: 'w-full',
               color: {
                 primary: {
                   solid:
-                    'bg-[--color-accent-300] dark:bg-[--color-accent-700] hover:bg-[--color-accent-200] hover:dark:bg-[--color-accent-900]',
+                    'bg-black dark:bg-white hover:bg-[--color-accent-800] hover:dark:bg-[--color-accent-300] focus:shadow-md dark:text-[--light-text-color] text-[--dark-text-color]',
                 },
               },
             }"
@@ -281,15 +270,7 @@ function updateFilters() {
           <UButton
             :ui="{
               rounded: 'rounded',
-              inline: `text-md font-semibold
-            dark:text-[--dark-text-color]
-            text-[--light-text-color]`,
-              color: {
-                primary: {
-                  solid:
-                    'bg-[--color-accent-400] dark:bg-[--color-accent-700] hover:bg-[--color-accent-200] hover:dark:bg-[--color-accent-900]',
-                },
-              },
+              inline: `text-md font-semibold`,
             }"
             color="red"
             label="Reset filters"
@@ -320,23 +301,23 @@ function updateFilters() {
       <div v-if="isError" class="error-message">
         Error loading data. Please try again.
       </div>
-      <div
-        v-if="!isError && !isLoading && !checkValidNearestMasjid()"
-        class="error-message"
-      >
-        <p class="!text-[--error-color-text]">
-          No maasajid found based on your filters, change your filters or
-          location.
-        </p>
-      </div>
       <div>
         <HomeNearestTable
           v-if="!isError && !isLoading && checkValidNearestMasjid()"
           :key="dataKey"
           :data="nearestMasjids"
         />
+        <div
+          v-else-if="!isError && !isLoading && !checkValidNearestMasjid()"
+          class="error-message"
+        >
+          <p class="!text-[--error-color-text]">
+            No maasajid found based on your filters, change your filters or
+            location.
+          </p>
+        </div>
         <SkeletonHomeNearestTable
-          v-if="!isError && isLoading && !checkValidNearestMasjid()"
+          v-else
           :length="filtersInternal.limit"
           :prayer="false"
         />

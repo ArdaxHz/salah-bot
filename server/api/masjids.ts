@@ -92,22 +92,6 @@ export default eventHandler(async (event: H3Event) => {
       : null
   const name = trimText(query.name ?? null)
 
-  // return {
-  //   query,
-  //   latitude,
-  //   longitude,
-  //   max_distance: maxDistance,
-  //   result_limit: limit,
-  //   result_offset: offset,
-  //   sects,
-  //   women_facility: query.women_facility ?? null,
-  //   min_capacity: query.min_capacity ? Number(query.min_capacity) : null,
-  //   usage_types: usageTypes,
-  //   management_types: managementTypes,
-  //   search_name: name,
-  //   order_by_capacity: trimText(query.order_by_capacity ?? null),
-  // }
-
   const { data, error } = await client.functions.invoke('masjids', {
     body: JSON.stringify({
       latitude,

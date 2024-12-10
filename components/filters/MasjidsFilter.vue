@@ -28,6 +28,7 @@ const usageTypes = ['Irregular', 'Jumu\'ah Only']
         v-model="filters.distance"
         :ui="{
           rounded: 'rounded-md',
+          base: 'sm:w-32',
           color: {
             white: {
               outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]
@@ -61,6 +62,7 @@ const usageTypes = ['Irregular', 'Jumu\'ah Only']
         v-model="filters.sects"
         :multiple="true"
         :options="sects"
+        class="sm:w-32"
         placeholder="Select Sects"
       />
     </UFormGroup>
@@ -78,6 +80,7 @@ const usageTypes = ['Irregular', 'Jumu\'ah Only']
         v-model="filters.management"
         :multiple="true"
         :options="management"
+        class="sm:w-32"
         placeholder="Select management"
       />
     </UFormGroup>
@@ -95,6 +98,7 @@ const usageTypes = ['Irregular', 'Jumu\'ah Only']
         v-model="filters.usage"
         :multiple="true"
         :options="usageTypes"
+        class="sm:w-32"
         placeholder="Usage Type"
       />
     </UFormGroup>

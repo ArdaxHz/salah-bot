@@ -1,16 +1,5 @@
 <script setup>
-const props = defineProps({ name: String })
-
-const emits = defineEmits(['search-filter'])
-
-const searchText = ref(props.name)
-
-function emitSearchText() {
-  searchText.value = searchText.value
-  emits('search-filter', searchText.value)
-}
-
-watch(() => searchText.value, emitSearchText)
+const searchText = defineModel()
 </script>
 
 <template>
