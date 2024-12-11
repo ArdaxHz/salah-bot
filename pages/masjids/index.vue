@@ -42,12 +42,14 @@ const filtersInternal = ref({
 })
 
 const filtersUri = computed(() => {
-  return Object.fromEntries(
+  const obj = Object.fromEntries(
     Object.entries(filtersInternal.value).filter(
       ([key, value]) =>
         filterNames.value.includes(key) && value != null && value !== ''
     )
   )
+  obj.page = page.value
+  return obj
 })
 
 checkQueries()
@@ -57,6 +59,12 @@ function checkQueries() {
   updateFilters()
   if (route.query.name) {
     filtersInternal.value.name = route.query.name
+  }
+
+  if (route.query.page) {
+    page.value = Number(route.query.page)
+    filtersInternal.value.offset
+      = (page.value - 1) * filtersInternal.value.limit
   }
 }
 
