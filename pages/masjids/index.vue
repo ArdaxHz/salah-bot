@@ -5,9 +5,10 @@ const location = useLocationStore()
 const nearestMasjids = ref([])
 const isLoading = ref(true)
 const isError = ref(false)
-const scrollListenerAdded = ref(true)
 const filtersExpanded = ref(false)
 const dataKey = ref(0)
+const count = ref(0)
+const page = ref(1)
 const filterNames = ref([
   'name',
   'distance',
@@ -64,7 +65,6 @@ function updateQueries() {
 }
 
 watch(filtersInternal.value, () => {
-  filtersInternal.value.offset = 0
   updateQueries()
   fetchData()
 })
@@ -105,13 +105,7 @@ async function fetchData(extendArr = false) {
         }
 
         dataKey.value += 1
-
-        if (nearestMasjidsResponse.count <= nearestMasjids.value.length) {
-          removeScrollListener()
-        }
-        else {
-          addScrollListener()
-        }
+        count.value = nearestMasjidsResponse.count
       }
       else {
         isError.value = true
@@ -119,13 +113,11 @@ async function fetchData(extendArr = false) {
           'Data fetched is not in expected format:',
           nearestMasjidsResponse
         )
-        removeScrollListener()
       }
     }
     catch (error) {
       console.error('Error fetching data:', error)
       isError.value = true
-      removeScrollListener()
     }
     finally {
       isLoading.value = false
@@ -143,48 +135,16 @@ watch(
 )
 
 function checkValidNearestMasjid() {
-  if (nearestMasjids.value && nearestMasjids.value.length > 0) {
-    return true
-  }
-  removeScrollListener()
-  return false
+  return nearestMasjids.value && nearestMasjids.value.length > 0
 }
 
-function handleScroll() {
-  const bottomOfWindow
-    = window.innerHeight + window.scrollY >= document.body.offsetHeight - 100
-  if (bottomOfWindow && !isLoading.value && !isError.value) {
-    filtersInternal.value.offset += filtersInternal.value.limit
-    fetchData(true)
-  }
+function fetchPage() {
+  filtersInternal.value.offset = (page.value - 1) * filtersInternal.value.limit
+  fetchData()
 }
 
-function removeScrollListener() {
-  if (scrollListenerAdded.value) {
-    window.removeEventListener('scroll', handleScroll)
-    scrollListenerAdded.value = false
-  }
-}
-
-function addScrollListener() {
-  if (!scrollListenerAdded.value) {
-    window.addEventListener('scroll', handleScroll)
-    scrollListenerAdded.value = true
-  }
-}
-
-function fetchNextPage() {
-  filtersInternal.value.offset += filtersInternal.value.limit
-  fetchData(true)
-}
-
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
-  scrollListenerAdded.value = true
-})
-
-onBeforeUnmount(() => {
-  removeScrollListener()
+watch(page, () => {
+  fetchPage()
 })
 
 function updateSearchFilter(text) {
@@ -209,6 +169,7 @@ function resetFilters() {
 }
 
 function updateFilters() {
+  filtersInternal.value.offset = 0
   filtersInternal.value.distance = filters.value.distance
   filtersInternal.value.sects = filters.value.sects
   filtersInternal.value.management = filters.value.management
@@ -322,13 +283,33 @@ function updateFilters() {
           :prayer="false"
         />
       </div>
-      <button
-        v-if="scrollListenerAdded && !isLoading"
-        class="block w-full cursor-pointer p-4 items-center font-bold text-[--light-text-color] dark:text-[--dark-text-color]"
-        @click="fetchNextPage"
-      >
-        Load More
-      </button>
+      <div class="flex w-full justify-center">
+        <UPagination
+          v-model="page"
+          :first-button="{
+            icon: 'mdi:arrow-left',
+            label: 'First',
+            color: 'gray',
+          }"
+          :last-button="{
+            icon: 'mdi:arrow-right',
+            trailing: true,
+            label: 'Last',
+            color: 'gray',
+          }"
+          :max="2"
+          :page-count="filtersInternal.limit"
+          :to="
+            (page) => ({
+              query: { page },
+            })
+          "
+          :total="count"
+          show-first
+          show-last
+          size="md"
+        />
+      </div>
       <template #fallback>
         <div
           v-if="isLoading"
