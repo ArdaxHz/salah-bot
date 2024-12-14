@@ -41,4 +41,12 @@ const activeItem = defineModel()
 .dark .active-nav-item {
   background-color: var(--color-secondary-600);
 }
+
+.light .active-nav-item:hover {
+  background-color: var(--color-secondary-200) !important;
+}
+
+.dark .active-nav-item:hover {
+  background-color: var(--color-secondary-700) !important;
+}
 </style>

@@ -8,7 +8,7 @@ const salahs = ref(['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'])
 const polarSalah = ref(['maghrib', 'isha'])
 
 function validAdhanTimes(adhan) {
-  if (!adhan) {
+  if (!adhan || Object.keys(adhan).length === 0) {
     return false
   }
   return Object.entries(adhan).every(([name, time]) => {
@@ -29,9 +29,9 @@ function adhanTimes(adhan) {
     .map(([key, value]) => ({
       prayer: capitalizeFirstLetter(key),
       time:
-        polarSalah.value.includes(key) && value === undefined
-          ? ''
-          : getValidDate(value)?.toLocaleString(DateTime.TIME_SIMPLE),
+            polarSalah.value.includes(key) && value === undefined
+              ? ''
+              : getValidDate(value)?.toLocaleString(DateTime.TIME_SIMPLE),
     }))
 }
 
@@ -57,49 +57,52 @@ onMounted(() => {
 </script>
 
 <template>
-  <div
-    v-if="validAdhanTimesComputed"
-    :class="`${
-      header
-        ? ''
-        : 'max-w-[12rem] sm:max-w-[16rem] lg:max-w-[20rem] w-full items-center justify-center mx-auto rounded-md shadow-md shadow-mulled-500/50 ring-1 ring-mulled-500/40'
-    }`"
-    class="flex"
-  >
+  <div class="w-full">
     <div
+      v-if="validAdhanTimesComputed"
       :class="`${
         header
-          ? 'flex gap-2'
-          : 'w-full py-2 px-3 sm:py-4 sm:px-6 lg:py-6 lg:px-8'
+          ? ''
+          : 'max-w-[12rem] sm:max-w-[16rem] lg:max-w-[20rem] w-full items-center justify-center mx-auto rounded-md shadow-md shadow-mulled-500/50 ring-1 ring-mulled-500/40'
       }`"
+      class="flex"
     >
       <div
-        v-for="prayers in adhanTimesComputed"
-        :key="prayers.prayer"
-        :class="`${header ? 'flex-col items-center' : 'justify-between'}`"
-        class="flex"
+        :class="`${
+          header
+            ? 'flex gap-2'
+            : 'w-full py-2 px-3 sm:py-4 sm:px-6 lg:py-6 lg:px-8'
+        }`"
       >
-        <p
-          :class="`${
-            header
-              ? 'text-sm timings-name'
-              : 'text-base sm:text-2xl lg:text-4xl'
-          }`"
-          class="font-bold"
+        <div
+          v-for="prayers in adhanTimesComputed"
+          :key="prayers.prayer"
+          :class="`${header ? 'flex-col' : 'justify-between'}`"
+          class="flex items-center"
         >
-          {{ prayers.prayer }}
-        </p>
-        <p
-          :class="`${
-            header
-              ? 'font-bold text-lg timings-time'
-              : 'text-base sm:text-2xl lg:text-4xl'
-          }`"
-        >
-          {{ prayers.time }}
-        </p>
+          <p
+            :class="`${
+              header
+                ? 'text-sm timings-name'
+                : 'text-base sm:text-2xl lg:text-4xl'
+            }`"
+            class="font-bold"
+          >
+            {{ prayers.prayer }}
+          </p>
+          <p
+            :class="`${
+              header
+                ? 'font-bold text-lg timings-time'
+                : 'text-base sm:text-2xl lg:text-4xl'
+            }`"
+          >
+            {{ prayers.time }}
+          </p>
+        </div>
       </div>
     </div>
+    <SkeletonAdhanTable v-else :header="header" />
   </div>
 </template>
 

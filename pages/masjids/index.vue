@@ -2,7 +2,7 @@
 const route = useRoute()
 const router = useRouter()
 const location = useLocationStore()
-const nearestMasjids = ref([])
+const nearestData = ref([])
 const isLoading = ref(true)
 const isError = ref(false)
 const filtersExpanded = ref(false)
@@ -64,7 +64,7 @@ function checkQueries() {
   if (route.query.page) {
     page.value = Number(route.query.page)
     filtersInternal.value.offset
-      = (page.value - 1) * filtersInternal.value.limit
+        = (page.value - 1) * filtersInternal.value.limit
   }
 }
 
@@ -83,7 +83,7 @@ async function fetchData(extendArr = false) {
 
   if (location.location && location.latitude && location.longitude) {
     try {
-      const nearestMasjidsResponse = await $fetch('/api/masjids', {
+      const nearestDataResponse = await $fetch('/api/masjids', {
         headers: useRequestHeaders(['cookie']),
         params: {
           latitude: location.latitude,
@@ -102,24 +102,24 @@ async function fetchData(extendArr = false) {
       })
 
       if (
-        nearestMasjidsResponse
-        && Array.isArray(nearestMasjidsResponse.data)
+        nearestDataResponse
+        && Array.isArray(nearestDataResponse.data)
       ) {
         if (extendArr) {
-          nearestMasjids.value.push(...nearestMasjidsResponse.data)
+          nearestData.value.push(...nearestDataResponse.data)
         }
         else {
-          nearestMasjids.value = nearestMasjidsResponse.data
+          nearestData.value = nearestDataResponse.data
         }
 
         dataKey.value += 1
-        count.value = nearestMasjidsResponse.count
+        count.value = nearestDataResponse.count
       }
       else {
         isError.value = true
         console.error(
           'Data fetched is not in expected format:',
-          nearestMasjidsResponse
+          nearestDataResponse
         )
       }
     }
@@ -136,14 +136,14 @@ async function fetchData(extendArr = false) {
 watch(
   location,
   () => {
-    nearestMasjids.value = []
+    nearestData.value = []
     fetchData()
   },
   { immediate: true }
 )
 
 function checkValidNearestMasjid() {
-  return nearestMasjids.value && nearestMasjids.value.length > 0
+  return nearestData.value && nearestData.value.length > 0
 }
 
 function fetchPage() {
@@ -274,14 +274,14 @@ function updateFilters() {
         <HomeNearestTable
           v-if="!isError && !isLoading && checkValidNearestMasjid()"
           :key="dataKey"
-          :data="nearestMasjids"
+          :data="nearestData"
         />
         <div
           v-else-if="!isError && !isLoading && !checkValidNearestMasjid()"
           class="error-message"
         >
           <p class="!text-[--error-color-text]">
-            No maasajid found based on your filters, change your filters or
+            No maasajid found based on your filters, change your filters or your
             location.
           </p>
         </div>
@@ -291,33 +291,11 @@ function updateFilters() {
           :prayer="false"
         />
       </div>
-      <div class="flex w-full justify-center">
-        <UPagination
-          v-model="page"
-          :first-button="{
-            icon: 'mdi:arrow-left',
-            label: 'First',
-            color: 'gray',
-          }"
-          :last-button="{
-            icon: 'mdi:arrow-right',
-            trailing: true,
-            label: 'Last',
-            color: 'gray',
-          }"
-          :max="2"
-          :page-count="filtersInternal.limit"
-          :to="
-            (page) => ({
-              query: { page },
-            })
-          "
-          :total="count"
-          show-first
-          show-last
-          size="md"
-        />
-      </div>
+      <AdhanPagination
+        v-model="page"
+        :limit="filtersInternal.limit"
+        :total="count"
+      />
       <template #fallback>
         <div
           v-if="isLoading"
@@ -330,7 +308,7 @@ function updateFilters() {
   </div>
 </template>
 
-<style scoped>
+<style>
 .slide-down-enter-active,
 .slide-down-leave-active {
   transition: max-height 0.3s ease, opacity 0.3s ease;
