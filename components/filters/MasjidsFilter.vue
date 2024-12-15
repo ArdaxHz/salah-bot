@@ -103,19 +103,19 @@ const usageTypes = ['Irregular', 'Jumu\'ah Only']
       />
     </UFormGroup>
 
-    <UFormGroup
-      :ui="{
-        label: {
-          base: 'text-[--light-text-color] dark:text-[--dark-text-color]',
-        },
-      }"
-      label="Women Facilities"
-      name="womenfacilities"
-    >
-      <SettingsRadioOptions
-        v-model="filters.women"
-        :list="[{ label: 'Women Facilities', value: null }]"
-      />
-    </UFormGroup>
+    <!--    <UFormGroup -->
+    <!--      :ui="{ -->
+    <!--        label: { -->
+    <!--          base: 'text-[&#45;&#45;light-text-color] dark:text-[&#45;&#45;dark-text-color]', -->
+    <!--        }, -->
+    <!--      }" -->
+    <!--      label="Women Facilities" -->
+    <!--      name="womenfacilities" -->
+    <!--    > -->
+    <!--      <SettingsRadioOptions -->
+    <!--        v-model="filters.women" -->
+    <!--        :list="[{ label: 'Women Facilities', value: null }]" -->
+    <!--      /> -->
+    <!--    </UFormGroup> -->
   </div>
 </template>

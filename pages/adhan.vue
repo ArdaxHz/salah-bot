@@ -61,7 +61,8 @@ function calculateAdhan(date) {
   return times.prayerTimes
 }
 
-function parseCustomDate(date) {}
+function parseCustomDate(date) {
+}
 
 function getDate(slot) {
   if (slot === 'today') {
@@ -83,7 +84,7 @@ function getDate(slot) {
   <div class="flex flex-col gap-4 sm:gap-6">
     <RootReturnPageName name="Adhan" />
     <ClientOnly>
-      <UAccordion :items="items" size="lg">
+      <UAccordion :items="items" multiple size="lg">
         <template #default="{ item, index, open }">
           <UButton
             :class="[
@@ -100,7 +101,7 @@ function getDate(slot) {
               color: {
                 primary: {
                   solid:
-                    'bg-[--light-bg-color] dark:bg-[--dark-bg-color] dark:hover:bg-silver-950 hover:bg-[--color-accent-300] hover:shadow-[--color-secondary-200]',
+                    'bg-[--light-bg-color] dark:bg-[--dark-bg-color]',
                 },
               },
             }"
@@ -115,10 +116,14 @@ function getDate(slot) {
               }}</span>
 
             <template #trailing>
-              <UIcon
-                :class="[open && 'rotate-90']"
+              <Icon
+                v-if="open"
                 class="w-5 h-5 ms-auto transform transition-transform duration-200"
-                name="material-symbols:chevron-right-rounded"
+                name="material-symbols:check-indeterminate-small-rounded"
+              />
+              <Icon
+                v-else class="w-5 h-5 ms-auto transform transition-transform duration-200"
+                name="material-symbols:add-2-rounded"
               />
             </template>
           </UButton>

@@ -2,6 +2,7 @@
 const route = useRoute()
 const router = useRouter()
 const location = useLocationStore()
+const optionsStore = useOptionsStore()
 const nearestData = ref([])
 const isLoading = ref(true)
 const isError = ref(false)
@@ -17,7 +18,7 @@ const filterNames = ref([
   'usage',
   'women',
   'capacity',
-  'orderByCapacity',
+  'order_by_capacity',
 ])
 const filters = ref({
   distance: 5000,
@@ -26,7 +27,7 @@ const filters = ref({
   usage: [],
   women: null,
   capacity: null,
-  orderByCapacity: null,
+  order_by_capacity: null,
 })
 const filtersInternal = ref({
   limit: 20,
@@ -38,7 +39,7 @@ const filtersInternal = ref({
   usage: [],
   women: null,
   capacity: null,
-  orderByCapacity: null,
+  order_by_capacity: null,
 })
 
 const filtersUri = computed(() => {
@@ -53,6 +54,7 @@ const filtersUri = computed(() => {
 })
 
 checkQueries()
+updateFiltersStore()
 
 function checkQueries() {
   updateObj(filters.value, route.query)
@@ -70,6 +72,23 @@ function checkQueries() {
 
 function updateQueries() {
   router.replace({ path: '/masjids', query: filtersUri.value })
+}
+
+function updateFiltersStore() {
+  if (!optionsStore.filters.save_filter) {
+    return
+  }
+
+  filters.value.distance = optionsStore.filters.distance
+  filters.value.sects = optionsStore.filters.sects
+  filters.value.management = optionsStore.filters.management
+  filters.value.usage = optionsStore.filters.usage
+  filters.value.women = optionsStore.filters.women
+  filters.value.capacity = optionsStore.filters.capacity
+  filters.value.order_by_capacity = optionsStore.filters.order_by_capacity
+  updateFilters()
+  filtersInternal.value.limit = optionsStore.filters.limit
+  filtersInternal.value.offset = optionsStore.filters.offset
 }
 
 watch(filtersInternal.value, () => {
@@ -97,7 +116,7 @@ async function fetchData(extendArr = false) {
           usage_types: filtersInternal.value.usage,
           // women_facility: filtersInternal.value.women,
           min_capacity: filtersInternal.value.capacity,
-          order_by_capacity: filtersInternal.value.orderByCapacity,
+          order_by_capacity: filtersInternal.value.order_by_capacity,
         },
       })
 
@@ -171,7 +190,7 @@ function resetFilters() {
   filters.value.usage = null
   filters.value.women = null
   filters.value.capacity = null
-  filters.value.orderByCapacity = null
+  filters.value.order_by_capacity = null
   filtersInternal.value.name = null
   updateFilters()
 }
@@ -184,7 +203,20 @@ function updateFilters() {
   filtersInternal.value.usage = filters.value.usage
   filtersInternal.value.women = filters.value.women
   filtersInternal.value.capacity = filters.value.capacity
-  filtersInternal.value.orderByCapacity = filters.value.orderByCapacity
+  filtersInternal.value.order_by_capacity = filters.value.order_by_capacity
+}
+
+function storeFilters() {
+  optionsStore.filters.limit = filtersInternal.value.limit
+  optionsStore.filters.offset = filtersInternal.value.offset
+  optionsStore.filters.distance = filtersInternal.value.distance
+  optionsStore.filters.sects = filtersInternal.value.sects
+  optionsStore.filters.management = filtersInternal.value.management
+  optionsStore.filters.usage = filtersInternal.value.usage
+  optionsStore.filters.women = filtersInternal.value.women
+  optionsStore.filters.capacity = filtersInternal.value.capacity
+  optionsStore.filters.order_by_capacity = filtersInternal.value.order_by_capacity
+  optionsStore.filters.save_filter = true
 }
 </script>
 
@@ -203,32 +235,7 @@ function updateFilters() {
             class="w-full sm:w-9/12"
             @search-filter="updateSearchFilter"
           />
-          <UButton
-            :ui="{
-              rounded: 'rounded',
-              inline: `text-md font-semibold
-            dark:text-[--light-text-color]
-            text-[--dark-text-color]`,
-              base: 'w-full',
-              color: {
-                primary: {
-                  solid:
-                    'bg-black dark:bg-white hover:bg-[--color-accent-800] hover:dark:bg-[--color-accent-300] focus:shadow-md dark:text-[--light-text-color] text-[--dark-text-color]',
-                },
-              },
-            }"
-            class="w-full sm:w-3/12"
-            label="Show filters"
-            @click="expandFiltersButton"
-          >
-            <template #trailing>
-              <Icon
-                v-if="filtersExpanded"
-                name="material-symbols:check-indeterminate-small-rounded"
-              />
-              <Icon v-else name="material-symbols:add-2-rounded" />
-            </template>
-          </UButton>
+          <FiltersShowFilters :filters-expanded="filtersExpanded" @expand-filters="expandFiltersButton" />
         </div>
         <Transition name="slide-down">
           <div v-if="filtersExpanded">
@@ -236,34 +243,9 @@ function updateFilters() {
           </div>
         </Transition>
         <div class="flex w-full justify-end gap-2 xs:flex-row flex-col">
-          <UButton
-            :ui="{
-              rounded: 'rounded',
-              inline: `text-md font-semibold`,
-            }"
-            color="red"
-            label="Reset filters"
-            size="lg"
-            variant="soft"
-            @click="resetFilters"
-          />
-          <UButton
-            :ui="{
-              rounded: 'rounded',
-              inline: `text-md font-semibold
-            dark:text-[--dark-text-color]
-            text-[--light-text-color]`,
-              color: {
-                primary: {
-                  solid:
-                    'bg-[--color-secondary-400] dark:bg-[--color-secondary-600] hover:bg-[--color-secondary-200] hover:dark:bg-[--color-secondary-800]',
-                },
-              },
-            }"
-            icon="material-symbols:search-rounded"
-            label="Filter results"
-            size="lg"
-            @click="updateFilters"
+          <FiltersCTAButtons
+            @update-filters="updateFilters" @reset-filters="resetFilters"
+            @store-filters="storeFilters"
           />
         </div>
       </div>
@@ -307,23 +289,3 @@ function updateFilters() {
     </ClientOnly>
   </div>
 </template>
-
-<style>
-.slide-down-enter-active,
-.slide-down-leave-active {
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-  overflow: hidden;
-}
-
-.slide-down-enter-from,
-.slide-down-leave-to {
-  max-height: 0;
-  opacity: 0;
-}
-
-.slide-down-enter-to,
-.slide-down-leave-from {
-  max-height: 200px; /* Adjust based on your content height */
-  opacity: 1;
-}
-</style>

@@ -9,6 +9,7 @@ const searchText = defineModel()
       :trailing="false"
       :ui="{
         rounded: 'rounded',
+        base: 'h-10',
         color: {
           white: {
             outline: `bg-[--light-bg-color] dark:bg-[--dark-bg-color]

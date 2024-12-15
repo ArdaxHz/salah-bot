@@ -32,7 +32,7 @@ const salahs = ref(['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'])
               : 'text-base sm:text-2xl lg:text-4xl'
           }`
           "
-          class="font-bold skeleton"
+          class="font-bold skeleton-loader"
         >
           {{ prayer }}
         </p>
@@ -43,7 +43,7 @@ const salahs = ref(['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'])
               : 'text-base sm:text-2xl lg:text-4xl'
           }`
           "
-          class="skeleton h-6 w-10"
+          class="skeleton-loader h-6 w-10"
         />
       </div>
     </div>

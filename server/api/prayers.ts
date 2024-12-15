@@ -30,9 +30,13 @@ export default eventHandler(async (event: H3Event) => {
   const longitude = query.longitude ? Number(query.longitude) : null
   const inputTime = query.input_time ?? null
   const maxDistance
-    = query.max_distance !== undefined ? Number(query.max_distance) : 2000
+        = query.max_distance !== undefined ? Number(query.max_distance) : 2000
   const limit = query.limit !== undefined ? Number(query.limit) : 10
   const offset = query.offset !== undefined ? Number(query.offset) : 0
+
+  // Trim text values
+  const trimText = (text: string | null): string | null =>
+    text ? text.trim() : null
 
   // Validation logic
   const isNumber = (value: any): boolean =>
@@ -44,7 +48,7 @@ export default eventHandler(async (event: H3Event) => {
   if (latitude === null || longitude === null || !inputTime) {
     return {
       error:
-        'Latitude, longitude, and input_time must not be null or undefined',
+                'Latitude, longitude, and input_time must not be null or undefined',
       status: 400,
     }
   }
@@ -56,15 +60,33 @@ export default eventHandler(async (event: H3Event) => {
     }
   }
 
-  // Trim text values
-  const trimText = (text: string | null): string | null =>
-    text ? text.trim() : null
-  const sects = query.sects?.map(trimText) ?? null
-  const usageTypes = query.usage_types?.map(trimText) ?? null
-  const managementTypes = query.management_types?.map(trimText) ?? null
+  const sects = Array.isArray(query.sects)
+    ? query.sects.length > 0
+      ? query.sects.map(trimText)
+      : null
+    : typeof query.sects === 'string' && query.sects.trim() !== ''
+      ? [trimText(query.sects)]
+      : null
+
+  const usageTypes = Array.isArray(query.usage_types)
+    ? query.usage_types.length > 0
+      ? query.usage_types.map(trimText)
+      : null
+    : typeof query.usage_types === 'string' && query.usage_types.trim() !== ''
+      ? [trimText(query.usage_types)]
+      : null
+
+  const managementTypes = Array.isArray(query.management_types)
+    ? query.management_types.length > 0
+      ? query.management_types.map(trimText)
+      : null
+    : typeof query.management_types === 'string'
+      && query.management_types.trim() !== ''
+      ? [trimText(query.management_types)]
+      : null
   const name = trimText(query.name ?? null)
   const nextPrayer = trimText(query.next_prayer ?? null)
-  const orderByCapacity = trimText(query.order_by_capacity ?? null)
+  const order_by_capacity = trimText(query.order_by_capacity ?? null)
   const distanceOrder = trimText(query.distance_order ?? null)
   const prayerOrder = trimText(query.prayer_order ?? null)
 
@@ -84,7 +106,7 @@ export default eventHandler(async (event: H3Event) => {
       usage_types: usageTypes,
       management_types: managementTypes,
       search_name: name,
-      order_by_capacity: orderByCapacity,
+      order_by_capacity,
       distance_order: distanceOrder,
       prayer_order: prayerOrder,
     }),

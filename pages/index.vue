@@ -9,7 +9,7 @@ useSeoMeta({
 const todayStore = useTodayAdhanStore()
 const adhanStore = useAdhanStore()
 const { currentPrayer: currentPrayerReactive, nextPrayer: nextPrayerReactive }
-  = storeToRefs(adhanStore)
+    = storeToRefs(adhanStore)
 const location = useLocationStore()
 const { middleOfTheNight } = storeToRefs(todayStore)
 const currentPrayer = ref(null)
@@ -194,8 +194,8 @@ function getCurrentPrayerTooltipText() {
   <div class="w-full h-full">
     <div v-if="isLoading" class="flex flex-col gap-10 sm:gap-10">
       <div class="flex flex-col sm:flex-row gap-4 sm:flex-0 justify-between">
-        <div class="skeleton h-8 w-24" />
-        <div class="skeleton h-8 w-48" />
+        <div class="skeleton-loader h-8 w-24" />
+        <div class="skeleton-loader h-8 w-48" />
       </div>
       <div class="flex flex-col gap-5">
         <RootGoPageName name="Nearest Prayers" route="/prayers" />

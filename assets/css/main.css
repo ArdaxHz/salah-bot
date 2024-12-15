@@ -87,26 +87,24 @@
 }
 
 ::selection {
-    background: #cc0000;
+    background-color: theme('colors.blue.300') !important;
 }
 
 ::-moz-selection {
-    background: #cc0000;
-    color: #ffffff;
+    background-color: theme('colors.blue.300') !important;
 }
 
 ::-webkit-selection {
-    background: #cc0000;
-    color: #ffffff;
+    background-color: theme('colors.blue.300') !important;
 }
 
-.skeleton {
+.skeleton-loader {
     animation: skeleton-loading 1.5s infinite;
     background: linear-gradient(
-            90deg,
-            rgba(200, 200, 200, 0.1) 25%,
-            rgba(200, 200, 200, 0.2) 50%,
-            rgba(200, 200, 200, 0.1) 75%
+            135deg,
+            rgba(150, 150, 150, 0.2),
+            rgba(150, 150, 150, 0.3),
+            rgba(150, 150, 150, 0.2)
     );
     background-size: 200% 100%;
     color: transparent !important;
@@ -179,3 +177,23 @@ time, mark, audio, video {
     font-weight: bold;
     font-size: theme('fontSize.xl');
 }
+
+
+.slide-down-enter-active,
+.slide-down-leave-active {
+    transition: max-height 0.3s ease, opacity 0.5s ease;
+    overflow: hidden;
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to {
+    max-height: 0;
+    opacity: 0;
+}
+
+.slide-down-enter-to,
+.slide-down-leave-from {
+    max-height: 200px; /* Adjust based on your content height */
+    opacity: 1;
+}
+

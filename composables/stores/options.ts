@@ -9,15 +9,17 @@ export const useOptionsStore = defineStore(
     const pwa = ref(false)
     const adhanCustomDate = ref(DateTime.now().plus({ days: 3 }).toJSDate())
     const filters: MasjidsQueryParams | PrayersQueryParams = ref({
+      save_filter: false,
       limit: 20,
       offset: 0,
       distance: 3000,
       adhan_passed: false,
+      next_prayer: false,
       sects: null,
-      women_facility: null,
-      min_capacity: null,
-      usage_types: null,
-      management_types: null,
+      women: null,
+      capacity: null,
+      usage: null,
+      management: null,
       order_by_capacity: null,
       distance_order: 'asc',
       prayer_order: null,
@@ -32,7 +34,7 @@ export const useOptionsStore = defineStore(
   },
   {
     persist: {
-      omit: ['sidebarExpanded', 'mobile', 'pwa'],
+      omit: ['sidebarExpanded', 'mobile', 'pwa', 'filters.save_filter'],
       storage: piniaPluginPersistedstate.localStorage(),
     },
   }
