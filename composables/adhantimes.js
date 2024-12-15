@@ -1,10 +1,5 @@
 import { DateTime } from 'luxon'
-import {
-  CalculationMethod,
-  Coordinates,
-  HighLatitudeRule,
-  PrayerTimes,
-} from 'adhan'
+import { CalculationMethod, Coordinates, HighLatitudeRule, PrayerTimes, } from 'adhan'
 import HijrahDate from 'hijrah-date'
 
 const HijriMonths = {
@@ -78,7 +73,7 @@ export function calculateAdhanTimesDayRaw(
 ) {
   const coordinates = new Coordinates(latitude, longitude)
   const calculationParameters
-    = CalculationMethod[userParameters.calculationMethod]()
+        = CalculationMethod[userParameters.calculationMethod]()
 
   calculationParameters.fajrAngle = userParameters.fajrAngle
   calculationParameters.ishaAngle = userParameters.ishaAngle
@@ -89,14 +84,14 @@ export function calculateAdhanTimesDayRaw(
 
   if (userParameters.highLatitudeRule === 'recommended') {
     calculationParameters.highLatitudeRule
-      = HighLatitudeRule.recommended(coordinates)
+            = HighLatitudeRule.recommended(coordinates)
   }
   else {
     calculationParameters.highLatitudeRule = userParameters.highLatitudeRule
   }
   calculationParameters.adjustments = userParameters.adjustments
   calculationParameters.polarCircleResolution
-    = userParameters.polarCircleResolution
+        = userParameters.polarCircleResolution
   calculationParameters.rounding = userParameters.rounding
   calculationParameters.shafaq = userParameters.shafaq
 
@@ -189,15 +184,14 @@ export function currentPrayer(prayerTimes, date, middleOfNight) {
   }
   else if (
     date >= prayerTimes.isha
-    && prayerTimes.isha < (middleOfNight || midnightTomorrow)
+    && date >= middleOfNight
   ) {
-    return { prayer: 'isha', time: prayerTimes.isha }
+    return null
   }
   else if (
     date >= prayerTimes.isha
-    && prayerTimes.isha >= (middleOfNight || midnightTomorrow)
   ) {
-    return null
+    return { prayer: 'isha', time: prayerTimes.isha }
   }
   else if (date >= prayerTimes.maghrib) {
     return { prayer: 'maghrib', time: prayerTimes.maghrib }
