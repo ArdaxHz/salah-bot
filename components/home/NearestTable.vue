@@ -27,17 +27,19 @@ function checkValidData() {
         :class="[nearest.prayer ? 'grid-rows-4' : 'grid-rows-3']"
         class="grid sm:grid-rows-3 grid-cols-1 items-center px-4 py-3 justify-start sm:dark:bg-[--color-accent-700] sm:bg-[--color-accent-200] dark:hover:bg-[--color-accent-500] hover:bg-[--color-accent-300] rounded-xl sm:rounded-none"
       >
-        <NuxtLink
-          :to="`/masjids/${nearest.id}`"
-          class="font-bold text-xl sm:text-2xl text-ellipsis whitespace-nowrap overflow-hidden hover:dark:text-[--color-accent-300] hover:text-[--color-accent-800] text-[--light-text-color] dark:text-[--dark-text-color]"
+        <div
+          class="font-bold text-xl sm:text-2xl text-ellipsis whitespace-nowrap overflow-hidden text-[--light-text-color] dark:text-[--dark-text-color]"
         >
-          <span v-if="nearest.sect" class="inline-block align-middle mr-2">
+          <div v-if="nearest.sect" class="inline-block align-middle mr-2">
             <HomeSectBadge :label="nearest.sect" />
-          </span>
-          <span class="align-middle">
+          </div>
+          <NuxtLink
+            :to="`/masjids/${nearest.id}`"
+            class="align-middle hover:dark:text-[--color-accent-300] hover:text-[--color-accent-800]"
+          >
             {{ nearest.name }}
-          </span>
-        </NuxtLink>
+          </NuxtLink>
+        </div>
         <div class="flex flex-row justify-between w-full">
           <p class="text-md">
             {{ nearest.distance.toFixed(0) }} metres

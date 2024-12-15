@@ -135,6 +135,9 @@ function onCaptchaError() {
 <template>
   <div class="flex flex-col gap-4 sm:gap-6 w-full items-center">
     <RootReturnPageName name="Login" route="/" />
+    <p class="font-semibold text-lg">
+      Signups are disabled indefinitely. Only those who have an account can login.
+    </p>
     <div
       class="flex flex-col gap-4 max-w-96 w-full bg-white/75 dark:bg-white/5 shadow shadow-neutral-500 p-6 rounded-xl text-ellipsis whitespace-normal overflow-hidden items-center"
     >

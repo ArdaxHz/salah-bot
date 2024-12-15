@@ -141,11 +141,11 @@ html.light {
 }
 
 
-.dark p {
+.dark p, .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
     color: var(--dark-text-color);
 }
 
-.light p {
+.light p, .light h1, .light h2, .light h3, .light h4, .light h5, .light h6 {
     color: var(--light-text-color);
 }
 
@@ -181,7 +181,7 @@ time, mark, audio, video {
 
 .slide-down-enter-active,
 .slide-down-leave-active {
-    transition: max-height 0.3s ease, opacity 0.5s ease;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
     overflow: hidden;
 }
 

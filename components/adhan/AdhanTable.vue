@@ -11,6 +11,7 @@ function validAdhanTimes(adhan) {
   if (!adhan || Object.keys(adhan).length === 0) {
     return false
   }
+
   return Object.entries(adhan).every(([name, time]) => {
     if (!salahs.value.includes(name)) {
       return true
