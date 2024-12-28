@@ -1,8 +1,8 @@
 <script setup>
 const route = useRoute()
 const router = useRouter()
-const checked = ref('adhansettings')
-const previousTab = ref('adhansettings')
+const checked = ref('adhan')
+const previousTab = ref('adhan')
 const locationStore = useLocationStore()
 const { latitude, longitude } = storeToRefs(locationStore)
 
@@ -24,26 +24,40 @@ watch(checked, (newVal, oldVal) => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 sm:gap-6">
+  <div class="flex flex-col gap-4 sm:gap-6 h-full">
     <RootReturnPageName name="Settings" />
     <div>
       <p>Latitude: {{ latitude }}</p>
       <p>Longitude: {{ longitude }}</p>
     </div>
-    <div class="tabs tabs-bordered" role="tablist">
+    <div class="tabs tabs-bordered h-full" role="tablist">
       <input
         v-model="checked"
         :class="`${
-          checked === 'adhansettings' ? 'tab-active' : 'tab-inactive'
+          checked === 'adhan' ? 'tab-active' : 'tab-inactive'
         }`"
         aria-label="Adhan Settings"
         class="tab"
         role="tab"
         type="radio"
-        value="adhansettings"
+        value="adhan"
       >
-      <div class="tab-content p-6" role="tabpanel">
+      <div class="tab-content pt-6" role="tabpanel">
         <SettingsAdhanSettings />
+      </div>
+      <input
+        v-model="checked"
+        :class="`${
+          checked === 'filtersettings' ? 'tab-active' : 'tab-inactive'
+        }`"
+        aria-label="Filters"
+        class="tab"
+        role="tab"
+        type="radio"
+        value="filters"
+      >
+      <div class="tab-content pt-6" role="tabpanel">
+        <SettingsFilterSettings />
       </div>
     </div>
   </div>
@@ -53,10 +67,7 @@ watch(checked, (newVal, oldVal) => {
 .tabs {
   overflow: hidden;
   width: 100%;
-}
-
-.tab {
-  height: max-content;
+  height: 100%;
 }
 
 .tab-active {
@@ -89,5 +100,6 @@ watch(checked, (newVal, oldVal) => {
 
 .tab-content {
   transition: opacity 0.5s, transform 0.5s;
+  height: 100%;
 }
 </style>

@@ -1,4 +1,10 @@
 <script lang="ts" setup>
+const props = defineProps({
+  reset: { type: Boolean, default: true },
+  save: { type: Boolean, default: true },
+  search: { type: Boolean, default: true }
+})
+
 const emits = defineEmits(['updateFilters', 'resetFilters', 'storeFilters'])
 const storeLoading = ref(false)
 const resetLoading = ref(false)
@@ -26,6 +32,7 @@ function resetFilters() {
 <template>
   <div class="flex gap-2 sm:flex-row flex-col w-full">
     <UButton
+      v-if="save"
       :loading="storeLoading"
       :ui="{
         rounded: 'rounded',
@@ -39,6 +46,7 @@ function resetFilters() {
       @click="storeFilters"
     />
     <UButton
+      v-if="reset"
       :loading="resetLoading"
       :ui="{
         rounded: 'rounded',
@@ -52,6 +60,7 @@ function resetFilters() {
       @click="resetFilters"
     />
     <UButton
+      v-if="search"
       :ui="{
         rounded: 'rounded',
         inline: `text-md font-semibold

@@ -190,9 +190,9 @@ function expandFiltersButton() {
 
 function resetFilters() {
   filters.value.distance = 5000
-  filters.value.sects = null
-  filters.value.management = null
-  filters.value.usage = null
+  filters.value.sects = []
+  filters.value.management = []
+  filters.value.usage = []
   filters.value.women = null
   filters.value.capacity = null
   filters.value.order_by_capacity = null

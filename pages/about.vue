@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex h-[80svh] flex-col">
     <div class="flex flex-col gap-6">
       <div>
         <h1 class="font-bold text-lg sm:text-2xl">
@@ -93,9 +93,9 @@
         </p>
       </div>
     </div>
-    <div class="absolute bottom-10 right-1/2 left-1/2 w-24">
+    <div class="flex w-full h-full justify-center items-end">
       <div
-        class="flex items-center justify-center gap-4 w-full bg-white/75 dark:bg-white/5 shadow shadow-neutral-500 p-6 rounded-xl text-ellipsis whitespace-normal overflow-hidden"
+        class="flex items-center justify-center gap-4 w-24 bg-white/75 dark:bg-white/5 shadow shadow-neutral-500 p-6 rounded-xl text-ellipsis whitespace-normal overflow-hidden"
       >
         <NuxtLink
           class="leading-[0] text-2xl dark:text-[--dark-text-color] text-[--light-text-color]"

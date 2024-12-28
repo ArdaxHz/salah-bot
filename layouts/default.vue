@@ -111,6 +111,10 @@ const validLocation = computed(() => {
   margin-bottom: 2rem;
 }
 
+.content-container {
+  height: calc(100vh - var(--header-height));
+}
+
 @media (min-width: 640px) {
   .main-content-container {
     padding-left: 1.5rem;
@@ -134,7 +138,7 @@ const validLocation = computed(() => {
 
 .root-container {
   display: grid;
-  height: 100dvh;
+  height: 100svh;
 
   overflow-y: auto;
 }
