@@ -6,6 +6,11 @@ const masjidId = route.params.id
 definePageMeta({
   middleware: 'uuid',
 })
+
+useSeoMeta({
+  title: formatPageTitle('Masjid'),
+  description: 'See more information about the masjid'
+})
 </script>
 
 <template>

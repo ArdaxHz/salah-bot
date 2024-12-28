@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { z } from 'zod'
-import { useAdhanSettings } from '@/composables/stores/adhanSettings'
 
+const adhanStore = useAdhanStore()
 const adhanSettingsStore = useAdhanSettings()
+const saveLoading = ref(false)
+const resetLoading = ref(false)
 const model = ref({ ...adhanSettingsStore.params() })
 const madhabs = [
   { value: 'shafi', label: 'Early', hint: 'Earlier Asr time' },
@@ -172,19 +174,30 @@ const formSchema = z.object({
 })
 
 async function handleSubmit(event) {
+  saveLoading.value = true
   event.preventDefault()
   try {
     formSchema.parse(model.value)
     adhanSettingsStore.$patch({ ...model.value })
+    adhanStore.forceUpdateToday++
   }
   catch (e) {
     console.error('Form validation error:', e.errors)
   }
+  finally {
+    saveLoading.value = false
+  }
 }
 
 async function resetSettings() {
+  resetLoading.value = true
   adhanSettingsStore.$reset()
   model.value = adhanSettingsStore.params()
+
+  setTimeout(() => {
+    resetLoading.value = false
+  }, 300)
+  adhanStore.forceUpdateToday++
 }
 </script>
 
@@ -436,35 +449,39 @@ async function resetSettings() {
               />
             </div>
           </div>
-          <UButton
-            :ui="{
-              rounded: 'rounded-md',
-              inline: `flex justify-center font-bold text-sm
-                text-[--light-text-color]
-                dark:text-[--dark-text-color]`,
-            }"
-            class="button-scale"
-            type="submit"
-            @click.prevent="resetSettings"
-          >
-            Defaults
-          </UButton>
         </div>
       </div>
 
       <UButton
+        :loading="resetLoading"
         :ui="{
-          rounded: 'rounded-full',
-          inline: `flex justify-center font-bold text-sm
-            text-[--light-text-color]
-            dark:text-[--dark-text-color]`,
+          rounded: 'rounded-md',
+          inline: `flex justify-center text-md font-semibold`,
+          base: 'h-10',
         }"
         class="button-scale"
+        color="red"
+        label="Reset settings"
+        size="lg"
         type="submit"
+        variant="soft"
+        @click.prevent="resetSettings"
+      />
+
+      <UButton
+        :ui="{
+          rounded: 'rounded',
+          inline: `flex justify-center text-md font-semibold`,
+          base: 'h-10',
+        }"
+        class="button-scale"
+        color="green"
+        label="Save settings"
+        size="lg"
+        type="submit"
+        variant="soft"
         @click.prevent="handleSubmit"
-      >
-        Save
-      </UButton>
+      />
     </UForm>
   </div>
 </template>

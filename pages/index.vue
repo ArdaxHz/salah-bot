@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 
 useSeoMeta({
   title: 'salah.bot',
-  description: 'Find your nearest masjid and its Jamaa\'ah times',
+  description: 'Find the nearest Masaajid and their prayer times',
 })
 
 const todayStore = useTodayAdhanStore()
@@ -342,7 +342,7 @@ function getCurrentPrayerTooltipText() {
               v-else-if="!isError && !isLoading && !checkValidNearestPrayer()"
               class="error-message"
             >
-              <p class="!text-[--error-color-text]">
+              <p>
                 No prayers found nearby.
               </p>
             </div>
@@ -364,7 +364,7 @@ function getCurrentPrayerTooltipText() {
               v-else-if="!isError && !isLoading && !checkValidNearestMasjid()"
               class="error-message"
             >
-              <p class="!text-[--error-color-text]">
+              <p>
                 No masaajid found nearby.
               </p>
             </div>

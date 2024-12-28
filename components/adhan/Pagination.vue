@@ -35,7 +35,7 @@ onMounted(() => {
   <div v-if="total > limit" class="flex justify-center w-full">
     <VueAwesomePaginate
       v-model="page" :items-per-page="limit" :max-pages-shown="maxPagesToShow"
-      :show-breakpoint-buttons="false" :show-ending-buttons="viewport.isLessThan('sm')"
+      :show-breakpoint-buttons="false" :show-ending-buttons="true"
       :total-items="total"
       link-url="?page=[page]"
       type="link"

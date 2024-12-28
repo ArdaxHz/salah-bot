@@ -44,15 +44,22 @@ const navItemsTop = ref([
     to: '/masjids',
     active: 'material-symbols:mosque-rounded',
   },
+
+  {
+    label: 'Locate',
+    icon: 'material-symbols:location-on-outline-rounded',
+    to: '/locate',
+    active: 'material-symbols:location-on-rounded',
+  },
+])
+
+const navItemsBottom = ref([
   {
     label: 'About',
     icon: 'material-symbols:group-outline-rounded',
     to: '/about',
     active: 'material-symbols:group-rounded',
   },
-])
-
-const navItemsBottom = ref([
   {
     label: 'Account',
     icon: 'material-symbols:account-circle-outline',

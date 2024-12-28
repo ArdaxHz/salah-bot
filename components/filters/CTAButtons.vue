@@ -39,6 +39,7 @@ function resetFilters() {
         inline: `text-md font-semibold`,
         base: 'h-10',
       }"
+      class="button-scale"
       color="green"
       label="Save filters"
       size="lg"
@@ -53,6 +54,7 @@ function resetFilters() {
         inline: `text-md font-semibold`,
         base: 'h-10',
       }"
+      class="button-scale"
       color="red"
       label="Reset filters"
       size="lg"
@@ -74,6 +76,7 @@ function resetFilters() {
           },
         },
       }"
+      class="button-scale"
       icon="material-symbols:search-rounded"
       label="Filter results"
       size="lg"

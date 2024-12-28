@@ -23,7 +23,8 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Signup',
+  title: formatPageTitle('Signup'),
+  description: 'Use your invitation to signup to salah.bot'
 })
 
 const schema = z

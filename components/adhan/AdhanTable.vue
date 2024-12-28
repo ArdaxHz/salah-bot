@@ -2,9 +2,11 @@
 import { DateTime } from 'luxon'
 
 const props = defineProps({ header: Boolean, adhan: Object })
+const todayAdhanStore = useTodayAdhanStore()
+const { middleOfTheNight } = storeToRefs(todayAdhanStore)
 const adhans = ref(props.adhan)
 const exclude = ref(['sunrise', 'sunset'])
-const salahs = ref(['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'])
+const salahs = ref(['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha', 'middleofnight'])
 const polarSalah = ref(['maghrib', 'isha'])
 
 function validAdhanTimes(adhan) {

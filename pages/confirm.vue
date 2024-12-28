@@ -3,6 +3,11 @@ definePageMeta({
   middleware: 'confirm',
 })
 
+useSeoMeta({
+  title: formatPageTitle('Confirm Signup'),
+  description: 'Confirm signing up to salah.bot'
+})
+
 const user = useSupabaseUser()
 const cookieName = useRuntimeConfig().public.supabase.cookieName
 const redirectPath = useCookie(`${cookieName}-redirect-path`).value

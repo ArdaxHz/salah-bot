@@ -3,6 +3,8 @@ const route = useRoute()
 const router = useRouter()
 const location = useLocationStore()
 const optionsStore = useOptionsStore()
+
+// Reactive State
 const nearestData = ref([])
 const isLoading = ref(true)
 const isError = ref(false)
@@ -10,6 +12,8 @@ const filtersExpanded = ref(false)
 const dataKey = ref(0)
 const count = ref(0)
 const page = ref(1)
+
+// Filters
 const filterNames = ref([
   'name',
   'distance',
@@ -20,6 +24,7 @@ const filterNames = ref([
   'capacity',
   'order_by_capacity',
 ])
+
 const filters = ref({
   distance: 5000,
   sects: [],
@@ -29,6 +34,7 @@ const filters = ref({
   capacity: null,
   order_by_capacity: null,
 })
+
 const filtersInternal = ref({
   limit: 20,
   offset: 0,
@@ -42,6 +48,7 @@ const filtersInternal = ref({
   order_by_capacity: null,
 })
 
+// Computed Properties
 const filtersUri = computed(() => {
   const obj = Object.fromEntries(
     Object.entries(filtersInternal.value).filter(
@@ -53,20 +60,27 @@ const filtersUri = computed(() => {
   return obj
 })
 
+// Initialization
 checkQueries()
 updateFiltersStore()
 
+useSeoMeta({
+  title: formatPageTitle('Nearest Masajid'),
+  description: 'Find the Masaajid nearest to your location'
+})
+
+// Methods
 function checkQueries() {
   updateObj(filters.value, route.query)
   updateFilters()
+
   if (route.query.name) {
     filtersInternal.value.name = route.query.name
   }
 
   if (route.query.page) {
     page.value = Number(route.query.page)
-    filtersInternal.value.offset
-        = (page.value - 1) * filtersInternal.value.limit
+    filtersInternal.value.offset = (page.value - 1) * filtersInternal.value.limit
   }
 }
 
@@ -79,22 +93,23 @@ function updateFiltersStore() {
     return
   }
 
-  filters.value.distance = optionsStore.filters.distance
-  filters.value.sects = optionsStore.filters.sects
-  filters.value.management = optionsStore.filters.management
-  filters.value.usage = optionsStore.filters.usage
-  filters.value.women = optionsStore.filters.women
-  filters.value.capacity = optionsStore.filters.capacity
-  filters.value.order_by_capacity = optionsStore.filters.order_by_capacity
-  updateFilters()
-  filtersInternal.value.limit = optionsStore.filters.limit
-  filtersInternal.value.offset = optionsStore.filters.offset
-}
+  Object.assign(filters.value, {
+    distance: optionsStore.filters.distance,
+    sects: optionsStore.filters.sects,
+    management: optionsStore.filters.management,
+    usage: optionsStore.filters.usage,
+    women: optionsStore.filters.women,
+    capacity: optionsStore.filters.capacity,
+    order_by_capacity: optionsStore.filters.order_by_capacity,
+  })
 
-watch(filtersInternal.value, () => {
-  updateQueries()
-  fetchData()
-})
+  updateFilters()
+
+  Object.assign(filtersInternal.value, {
+    limit: optionsStore.filters.limit,
+    offset: optionsStore.filters.offset,
+  })
+}
 
 async function fetchData(extendArr = false) {
   isLoading.value = true
@@ -114,32 +129,21 @@ async function fetchData(extendArr = false) {
           sects: filtersInternal.value.sects,
           management_types: filtersInternal.value.management,
           usage_types: filtersInternal.value.usage,
-          // women_facility: filtersInternal.value.women,
           min_capacity: filtersInternal.value.capacity,
           order_by_capacity: filtersInternal.value.order_by_capacity,
         },
       })
 
-      if (
-        nearestDataResponse
-        && Array.isArray(nearestDataResponse.data)
-      ) {
-        if (extendArr) {
-          nearestData.value.push(...nearestDataResponse.data)
-        }
-        else {
-          nearestData.value = nearestDataResponse.data
-        }
-
+      if (nearestDataResponse && Array.isArray(nearestDataResponse.data)) {
+        nearestData.value = extendArr
+          ? [...nearestData.value, ...nearestDataResponse.data]
+          : nearestDataResponse.data
         dataKey.value += 1
         count.value = nearestDataResponse.count
       }
       else {
         isError.value = true
-        console.error(
-          'Data fetched is not in expected format:',
-          nearestDataResponse
-        )
+        console.error('Unexpected data format:', nearestDataResponse)
       }
     }
     catch (error) {
@@ -152,6 +156,72 @@ async function fetchData(extendArr = false) {
   }
 }
 
+function updateFilters() {
+  Object.assign(filtersInternal.value, {
+    offset: 0,
+    distance: filters.value.distance,
+    sects: filters.value.sects,
+    management: filters.value.management,
+    usage: filters.value.usage,
+    women: filters.value.women,
+    capacity: filters.value.capacity,
+    order_by_capacity: filters.value.order_by_capacity,
+  })
+}
+
+function resetFilters() {
+  Object.assign(filters.value, {
+    distance: 5000,
+    sects: [],
+    management: [],
+    usage: [],
+    women: null,
+    capacity: null,
+    order_by_capacity: null,
+  })
+  filtersInternal.value.name = null
+  updateFilters()
+}
+
+function storeFilters() {
+  Object.assign(optionsStore.filters, {
+    limit: filtersInternal.value.limit,
+    offset: filtersInternal.value.offset,
+    distance: filtersInternal.value.distance,
+    sects: filtersInternal.value.sects,
+    management: filtersInternal.value.management,
+    usage: filtersInternal.value.usage,
+    women: filtersInternal.value.women,
+    capacity: filtersInternal.value.capacity,
+    order_by_capacity: filtersInternal.value.order_by_capacity,
+    save_filter: true,
+  })
+}
+
+function expandFiltersButton() {
+  filtersExpanded.value = !filtersExpanded.value
+}
+
+function updateSearchFilter(text) {
+  filtersInternal.value.name = text || null
+  filtersInternal.value.offset = 0
+}
+
+function fetchPage() {
+  filtersInternal.value.offset = (page.value - 1) * filtersInternal.value.limit
+  fetchData()
+}
+
+function checkValidNearestMasjid() {
+  return nearestData.value && nearestData.value.length > 0
+}
+
+// Watchers
+watch(filtersInternal.value, () => {
+  updateQueries()
+  fetchData()
+})
+
 watch(
   location,
   () => {
@@ -161,63 +231,10 @@ watch(
   { immediate: true }
 )
 
-function checkValidNearestMasjid() {
-  return nearestData.value && nearestData.value.length > 0
-}
-
-function fetchPage() {
-  filtersInternal.value.offset = (page.value - 1) * filtersInternal.value.limit
-  fetchData()
-}
-
 watch(page, () => {
   fetchPage()
+  document.body.scrollTo({ top: 0, behavior: 'smooth' })
 })
-
-function updateSearchFilter(text) {
-  filtersInternal.value.name = text || null
-  filtersInternal.value.offset = 0
-}
-
-function expandFiltersButton() {
-  filtersExpanded.value = !filtersExpanded.value
-}
-
-function resetFilters() {
-  filters.value.distance = 5000
-  filters.value.sects = []
-  filters.value.management = []
-  filters.value.usage = []
-  filters.value.women = null
-  filters.value.capacity = null
-  filters.value.order_by_capacity = null
-  filtersInternal.value.name = null
-  updateFilters()
-}
-
-function updateFilters() {
-  filtersInternal.value.offset = 0
-  filtersInternal.value.distance = filters.value.distance
-  filtersInternal.value.sects = filters.value.sects
-  filtersInternal.value.management = filters.value.management
-  filtersInternal.value.usage = filters.value.usage
-  filtersInternal.value.women = filters.value.women
-  filtersInternal.value.capacity = filters.value.capacity
-  filtersInternal.value.order_by_capacity = filters.value.order_by_capacity
-}
-
-function storeFilters() {
-  optionsStore.filters.limit = filtersInternal.value.limit
-  optionsStore.filters.offset = filtersInternal.value.offset
-  optionsStore.filters.distance = filtersInternal.value.distance
-  optionsStore.filters.sects = filtersInternal.value.sects
-  optionsStore.filters.management = filtersInternal.value.management
-  optionsStore.filters.usage = filtersInternal.value.usage
-  optionsStore.filters.women = filtersInternal.value.women
-  optionsStore.filters.capacity = filtersInternal.value.capacity
-  optionsStore.filters.order_by_capacity = filtersInternal.value.order_by_capacity
-  optionsStore.filters.save_filter = true
-}
 </script>
 
 <template>

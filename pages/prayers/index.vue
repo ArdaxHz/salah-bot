@@ -47,6 +47,11 @@ const filtersInternal = ref({
   adhan_passed: false,
 })
 
+useSeoMeta({
+  title: formatPageTitle('Nearest Prayers'),
+  description: 'Find the prayers nearest to your location'
+})
+
 const filtersUri = computed(() => {
   const obj = Object.fromEntries(
     Object.entries(filtersInternal.value).filter(

@@ -6,6 +6,7 @@ import { currentPrayer as currentPrayerCalc, nextPrayer as nextPrayerCalc, } fro
 export const useAdhanStore = defineStore('adhan', () => {
   const settingsStore = useAdhanSettings()
   const todayStore = useTodayAdhanStore()
+  const forceUpdateToday = ref(0)
 
   function nextPrayer(date) {
     const tomorrow = todayStore.calculateTomorrow()
@@ -26,11 +27,13 @@ export const useAdhanStore = defineStore('adhan', () => {
   })
 
   const today = computed((state) => {
+    forceUpdateToday.value
     todayStore.calculateToday()
     return todayStore.toJson()
   })
 
   return {
+    forceUpdateToday,
     nextPrayer,
     currentPrayer,
     settings,

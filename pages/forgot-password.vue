@@ -1,6 +1,11 @@
 <script lang="ts" setup>
 import { z } from 'zod'
 
+useSeoMeta({
+  title: formatPageTitle('Forgot Password'),
+  description: 'Reset your password'
+})
+
 const client = useSupabaseClient()
 const route = useRoute()
 const router = useRouter()
@@ -161,7 +166,8 @@ function onCaptchaError() {
   isDisabled.value = true
 }
 
-async function validateAccessToken() {}
+async function validateAccessToken() {
+}
 
 onBeforeMount(async () => {
   await validateAccessToken()

@@ -1,3 +1,10 @@
+<script>
+useSeoMeta({
+  title: formatPageTitle('About'),
+  description: 'Who are we and what is the purpose of salah.bot?'
+})
+</script>
+
 <template>
   <div class="flex h-[80svh] flex-col">
     <div class="flex flex-col gap-6">

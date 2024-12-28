@@ -3,8 +3,11 @@ const route = useRoute()
 const router = useRouter()
 const checked = ref('adhan')
 const previousTab = ref('adhan')
-const locationStore = useLocationStore()
-const { latitude, longitude } = storeToRefs(locationStore)
+
+useSeoMeta({
+  title: formatPageTitle('Settings'),
+  description: 'Use your invitation to signup to salah.bot'
+})
 
 if (route.query.tab) {
   checked.value = route.query.tab
@@ -26,10 +29,6 @@ watch(checked, (newVal, oldVal) => {
 <template>
   <div class="flex flex-col gap-4 sm:gap-6 h-full">
     <RootReturnPageName name="Settings" />
-    <div>
-      <p>Latitude: {{ latitude }}</p>
-      <p>Longitude: {{ longitude }}</p>
-    </div>
     <div class="tabs tabs-bordered h-full" role="tablist">
       <input
         v-model="checked"

@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     'nuxt-authorization',
     '@nuxt/scripts',
     '@nuxtjs/turnstile',
+    '@nuxt/image',
   ],
   scripts: {
     registry: {

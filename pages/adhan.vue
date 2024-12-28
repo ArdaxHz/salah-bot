@@ -1,6 +1,11 @@
 <script setup>
 import { DateTime } from 'luxon'
 
+useSeoMeta({
+  title: formatPageTitle('Adhan'),
+  description: 'Check the adhan times for today or another day'
+})
+
 const adhanSettings = useAdhanSettings()
 const locationStore = useLocationStore()
 const optionsStore = useOptionsStore()

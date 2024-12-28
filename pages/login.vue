@@ -13,11 +13,12 @@ const state = ref({
 })
 
 definePageMeta({
-  // middleware: 'auth',
+  middleware: 'auth',
 })
 
 useSeoMeta({
-  title: 'Login',
+  title: formatPageTitle('Login'),
+  description: 'Login to salah.bot'
 })
 
 const schema = z
