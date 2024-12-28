@@ -24,7 +24,6 @@ function updateFiltersStore() {
   filters.value.women = optionsStore.filters.women
   filters.value.capacity = optionsStore.filters.capacity
   filters.value.order_by_capacity = optionsStore.filters.order_by_capacity
-  updateFilters()
   filters.value.limit = optionsStore.filters.limit
   filters.value.offset = optionsStore.filters.offset
 }
@@ -62,7 +61,7 @@ watch(filters, () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 w-full xs:h-100">
+  <div class="flex flex-col gap-4 w-full h-full xs:h-96">
     <div class="filters-row flex flex-col sm:flex-row gap-2 w-full">
       <FiltersMasjidsFilter v-model="filters" />
     </div>
@@ -70,7 +69,6 @@ watch(filters, () => {
       <FiltersCTAButtons
         :reset="true" :save="true"
         :search="false"
-        @update-filters="updateFilters"
         @reset-filters="resetFilters"
         @store-filters="storeFilters"
       />

@@ -8,6 +8,7 @@ useSeoMeta({
 
 const todayStore = useTodayAdhanStore()
 const adhanStore = useAdhanStore()
+const optionsStore = useOptionsStore()
 const { currentPrayer: currentPrayerReactive, nextPrayer: nextPrayerReactive }
     = storeToRefs(adhanStore)
 const location = useLocationStore()
@@ -17,71 +18,79 @@ const nextPrayer = ref(null)
 const updatePrayerKey = ref(0)
 const limit = ref(6)
 const offset = ref(0)
-const nearestPrayerTimes = ref({
-  data: [
-    {
-      id: '4624c1c5-b3d1-4314-b7e8-e3e03d22f429',
-      name: 'Attaqwa Mosque',
-      location: {
-        lat: 51.54174777,
-        long: 0.08471488,
-      },
-      distance: 264.95190743,
-      prayer: {
-        next: {
-          name: 'fajr',
-          time: '2024-11-09T05:20:46+00:00',
-        },
-      },
-    },
-    {
-      id: 'f27bdd4b-0f61-4084-91c5-1fe0f32a387d',
-      name: 'Al-Madina Masjid',
-      location: {
-        lat: 51.5443534,
-        long: 0.077290535,
-      },
-      distance: 769.59046919,
-      prayer: {
-        next: {
-          name: 'fajr',
-          time: '2024-11-09T05:15:46+00:00',
-        },
-      },
-    },
-    {
-      id: '67de7d8c-96ff-49f1-b9fd-a46963defd2f',
-      name: 'Masjed-e-Umar',
-      location: {
-        lat: 51.53568101,
-        long: 0.093294606,
-      },
-      distance: 873.31244919,
-      prayer: {
-        next: {
-          name: 'fajr',
-          time: '2024-11-09T05:18:46+00:00',
-        },
-      },
-    },
-    {
-      id: 'df9309d9-1ead-487c-8c8a-5831d2b57a32',
-      name: 'Ilford Muslim Community Centre and Mosque',
-      location: {
-        lat: 51.55021469,
-        long: 0.080004931,
-      },
-      distance: 995.28183959,
-      prayer: {
-        next: {
-          name: 'fajr',
-          time: '2024-11-09T05:14:46+00:00',
-        },
-      },
-    },
-  ],
-  count: 4,
+const filters = ref({
+  distance: 5000,
+  sects: [],
+  management: [],
+  usage: [],
+  women: null,
+  capacity: null,
+  order_by_capacity: null,
+  next_prayer: nextPrayer.value,
+  adhan_passed: false,
 })
+const nearestPrayerTimes = ref([
+  {
+    id: '4624c1c5-b3d1-4314-b7e8-e3e03d22f429',
+    name: 'Attaqwa Mosque',
+    location: {
+      lat: 51.54174777,
+      long: 0.08471488,
+    },
+    distance: 264.95190743,
+    prayer: {
+      next: {
+        name: 'fajr',
+        time: '2024-11-09T05:20:46+00:00',
+      },
+    },
+  },
+  {
+    id: 'f27bdd4b-0f61-4084-91c5-1fe0f32a387d',
+    name: 'Al-Madina Masjid',
+    location: {
+      lat: 51.5443534,
+      long: 0.077290535,
+    },
+    distance: 769.59046919,
+    prayer: {
+      next: {
+        name: 'fajr',
+        time: '2024-11-09T05:15:46+00:00',
+      },
+    },
+  },
+  {
+    id: '67de7d8c-96ff-49f1-b9fd-a46963defd2f',
+    name: 'Masjed-e-Umar',
+    location: {
+      lat: 51.53568101,
+      long: 0.093294606,
+    },
+    distance: 873.31244919,
+    prayer: {
+      next: {
+        name: 'fajr',
+        time: '2024-11-09T05:18:46+00:00',
+      },
+    },
+  },
+  {
+    id: 'df9309d9-1ead-487c-8c8a-5831d2b57a32',
+    name: 'Ilford Muslim Community Centre and Mosque',
+    location: {
+      lat: 51.55021469,
+      long: 0.080004931,
+    },
+    distance: 995.28183959,
+    prayer: {
+      next: {
+        name: 'fajr',
+        time: '2024-11-09T05:14:46+00:00',
+      },
+    },
+  },
+])
 const nearestMasjids = ref(null)
 const isLoading = ref(true)
 const isError = ref(false)
@@ -96,8 +105,16 @@ async function fetchData() {
     longitude: location.longitude,
     limit: limit.value,
     offset: offset.value,
-    input_time: DateTime.now().toJSDate(),
-    adhan_passed: false,
+    input_time: new Date(),
+    next_prayer: filters.value.next_prayer,
+    adhan_passed: filters.value.adhan_passed,
+    max_distance: filters.value.distance,
+    sects: filters.value.sects,
+    management_types: filters.value.management,
+    usage_types: filters.value.usage,
+    // women_facility: filters.value.women,
+    min_capacity: filters.value.capacity,
+    order_by_capacity: filters.value.order_by_capacity,
   }
   if (currentPrayer.value && currentPrayer.value.prayer) {
     prayerParams.next_prayer = currentPrayer.value.prayer
@@ -117,12 +134,46 @@ async function fetchData() {
             longitude: location.longitude,
             limit: limit.value,
             offset: offset.value,
+            max_distance: filters.value.distance,
+            sects: filters.value.sects,
+            management_types: filters.value.management,
+            usage_types: filters.value.usage,
+            // women_facility: filters.value.women,
+            min_capacity: filters.value.capacity,
+            order_by_capacity: filters.value.order_by_capacity,
           },
         }),
       ])
 
-      // nearestPrayerTimes.value = getPrayersResponse
-      nearestMasjids.value = getMasjidsResponse
+      if (
+        getPrayersResponse
+        && Array.isArray(getPrayersResponse.data)
+      ) {
+        isError.value = false
+        // nearestPrayerTimes.value = getPrayersResponse.data
+      }
+      else {
+        isError.value = true
+        console.error(
+          'Data fetched is not in expected format:',
+          getMasjidsResponse
+        )
+      }
+
+      if (
+        getMasjidsResponse
+        && Array.isArray(getMasjidsResponse.data)
+      ) {
+        isError.value = false
+        nearestMasjids.value = getMasjidsResponse.data
+      }
+      else {
+        isError.value = true
+        console.error(
+          'Data fetched is not in expected format:',
+          getMasjidsResponse
+        )
+      }
     }
     catch (error) {
       console.error('Error fetching data:', error)
@@ -137,12 +188,28 @@ async function fetchData() {
 watch(location, fetchData, { immediate: true })
 watch(() => currentPrayerReactive, scheduleNextUpdate)
 
+function updateFiltersStore() {
+  if (!optionsStore.filters.save_filter) {
+    return
+  }
+
+  // filters.value.distance = optionsStore.filters.distance
+  filters.value.sects = optionsStore.filters.sects
+  filters.value.management = optionsStore.filters.management
+  filters.value.usage = optionsStore.filters.usage
+  filters.value.women = optionsStore.filters.women
+  filters.value.capacity = optionsStore.filters.capacity
+  filters.value.order_by_capacity = optionsStore.filters.order_by_capacity
+  filters.value.adhan_passed = optionsStore.filters.adhan_passed
+  filters.value.next_prayer = optionsStore.filters.offset ? nextPrayer.value : null
+}
+
 function checkValidNearestPrayer() {
-  return nearestPrayerTimes.value && nearestPrayerTimes.value.data != null
+  return nearestPrayerTimes.value && nearestPrayerTimes.value.length > 0
 }
 
 function checkValidNearestMasjid() {
-  return nearestMasjids.value && nearestMasjids.value.data != null
+  return nearestMasjids.value && nearestMasjids.value.length > 0
 }
 
 function updatePrayers() {
@@ -174,6 +241,7 @@ function scheduleNextUpdate() {
 
 onMounted(() => {
   scheduleNextUpdate()
+  updateFiltersStore()
 })
 
 onUnmounted(() => {
@@ -264,21 +332,47 @@ function getCurrentPrayerTooltipText() {
             All the other location aspects of this website are working as
             intended.
           </p>
-          <HomeNearestTable
-            v-if="checkValidNearestPrayer()"
-            :key="nearestPrayerTimes"
-            :data="nearestPrayerTimes.data"
-          />
-          <SkeletonHomeNearestTable v-else :prayer="true" />
+          <div>
+            <HomeNearestTable
+              v-if="!isError && !isLoading && checkValidNearestPrayer()"
+              :key="nearestPrayerTimes"
+              :data="nearestPrayerTimes"
+            />
+            <div
+              v-else-if="!isError && !isLoading && !checkValidNearestPrayer()"
+              class="error-message"
+            >
+              <p class="!text-[--error-color-text]">
+                No prayers found nearby.
+              </p>
+            </div>
+            <SkeletonHomeNearestTable
+              v-else
+              :length="limit" :prayer="true"
+            />
+          </div>
         </div>
         <div class="flex flex-col gap-5">
           <RootGoPageName name="Nearest Masaajid" route="/masjids" />
-          <HomeNearestTable
-            v-if="checkValidNearestMasjid()"
-            :key="nearestMasjids"
-            :data="nearestMasjids.data"
-          />
-          <SkeletonHomeNearestTable v-else :prayer="false" />
+          <div>
+            <HomeNearestTable
+              v-if="!isError && !isLoading && checkValidNearestMasjid()"
+              :key="nearestMasjids"
+              :data="nearestMasjids"
+            />
+            <div
+              v-else-if="!isError && !isLoading && !checkValidNearestMasjid()"
+              class="error-message"
+            >
+              <p class="!text-[--error-color-text]">
+                No masaajid found nearby.
+              </p>
+            </div>
+            <SkeletonHomeNearestTable
+              v-else
+              :length="limit" :prayer="false"
+            />
+          </div>
         </div>
       </ClientOnly>
     </div>
