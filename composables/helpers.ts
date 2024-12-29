@@ -75,5 +75,5 @@ export function generateString() {
 export const verifyString = str => /^[a-z0-9]{64}$/i.test(str)
 
 export function formatPageTitle(str: string) {
-  return `${str} | ${process.env.WEBSITE_NAME}`
+  return `${str} | salah.bot`
 }

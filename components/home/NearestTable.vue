@@ -20,12 +20,12 @@ function checkValidData() {
 
 <template>
   <div>
-    <div v-if="checkValidData()" class="grid sm:grid-cols-2 flex-col gap-x-6">
+    <div v-if="checkValidData()" class="grid sm:grid-cols-2 flex-col gap-2">
       <div
         v-for="(nearest, _) in data"
         :key="nearest.name"
         :class="[nearest.prayer ? 'grid-rows-4' : 'grid-rows-3']"
-        class="grid sm:grid-rows-3 grid-cols-1 items-center px-4 py-3 justify-start sm:dark:bg-[--color-accent-700] sm:bg-[--color-accent-200] dark:hover:bg-[--color-accent-500] hover:bg-[--color-accent-300] rounded-xl sm:rounded-none"
+        class="grid sm:grid-rows-3 grid-cols-1 items-center px-4 py-3 rounded-base justify-start dark:bg-[--color-accent-700] bg-[--color-accent-200] dark:hover:bg-[--color-accent-500] hover:bg-[--color-accent-300]"
       >
         <div
           class="font-bold text-xl sm:text-2xl text-ellipsis whitespace-nowrap overflow-hidden text-[--light-text-color] dark:text-[--dark-text-color]"

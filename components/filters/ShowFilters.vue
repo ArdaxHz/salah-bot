@@ -5,6 +5,7 @@ const emits = defineEmits(['expandFilters'])
 
 <template>
   <UButton
+    :class="[filtersExpanded && 'bg-[--color-secondary-400] hover:bg-[--color-secondary-200]']"
     :ui="{
       rounded: 'rounded',
       inline: `text-md font-semibold
