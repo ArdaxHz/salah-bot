@@ -11,7 +11,7 @@ const activeItem = defineModel()
     :class="`${
       is_expanded ? 'justify-start items-start' : 'items-center justify-center'
     }`"
-    class="flex menu-header flex-col gap-0.5 standalone:flex-col-reverse standalone:sm:flex-col"
+    class="flex menu-header flex-col standalone:flex-col-reverse standalone:sm:flex-col"
   >
     <NuxtLink
       v-for="menu in navItems"

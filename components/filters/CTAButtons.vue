@@ -84,7 +84,3 @@ function resetFilters() {
     />
   </div>
 </template>
-
-<style scoped>
-
-</style>

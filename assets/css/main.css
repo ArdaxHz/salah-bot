@@ -45,6 +45,8 @@
 
 
 :root {
+    --btn-focus-scale: 0.97;
+
     --sidebar-width-expanded: 15.5rem;
     --sidebar-width-collapse: 4rem;
     --header-height: 4rem;

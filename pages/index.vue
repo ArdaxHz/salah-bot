@@ -1,21 +1,31 @@
 <script setup>
 import { DateTime } from 'luxon'
 
+// SEO metadata setup
 useSeoMeta({
   title: 'salah.bot',
   description: 'Find the nearest Masaajid and their prayer times',
 })
 
+// Store references
 const todayStore = useTodayAdhanStore()
 const adhanStore = useAdhanStore()
 const optionsStore = useOptionsStore()
-const { currentPrayer: currentPrayerReactive, nextPrayer: nextPrayerReactive }
-    = storeToRefs(adhanStore)
 const location = useLocationStore()
+
+// Reactive variables
+const { currentPrayer: currentPrayerReactive, nextPrayer: nextPrayerReactive } = storeToRefs(adhanStore)
 const { middleOfTheNight } = storeToRefs(todayStore)
 const currentPrayer = ref(null)
 const nextPrayer = ref(null)
 const updatePrayerKey = ref(0)
+const nearestMasjids = ref(null)
+const nearestPrayerTimes = ref([])
+const isLoading = ref(true)
+const isError = ref(false)
+const prayerTimeout = ref(null)
+
+// Prayer filtering options
 const limit = ref(6)
 const offset = ref(0)
 const filters = ref({
@@ -29,72 +39,8 @@ const filters = ref({
   next_prayer: nextPrayer.value,
   adhan_passed: false,
 })
-const nearestPrayerTimes = ref([
-  {
-    id: '4624c1c5-b3d1-4314-b7e8-e3e03d22f429',
-    name: 'Attaqwa Mosque',
-    location: {
-      lat: 51.54174777,
-      long: 0.08471488,
-    },
-    distance: 264.95190743,
-    prayer: {
-      next: {
-        name: 'fajr',
-        time: '2024-11-09T05:20:46+00:00',
-      },
-    },
-  },
-  {
-    id: 'f27bdd4b-0f61-4084-91c5-1fe0f32a387d',
-    name: 'Al-Madina Masjid',
-    location: {
-      lat: 51.5443534,
-      long: 0.077290535,
-    },
-    distance: 769.59046919,
-    prayer: {
-      next: {
-        name: 'fajr',
-        time: '2024-11-09T05:15:46+00:00',
-      },
-    },
-  },
-  {
-    id: '67de7d8c-96ff-49f1-b9fd-a46963defd2f',
-    name: 'Masjed-e-Umar',
-    location: {
-      lat: 51.53568101,
-      long: 0.093294606,
-    },
-    distance: 873.31244919,
-    prayer: {
-      next: {
-        name: 'fajr',
-        time: '2024-11-09T05:18:46+00:00',
-      },
-    },
-  },
-  {
-    id: 'df9309d9-1ead-487c-8c8a-5831d2b57a32',
-    name: 'Ilford Muslim Community Centre and Mosque',
-    location: {
-      lat: 51.55021469,
-      long: 0.080004931,
-    },
-    distance: 995.28183959,
-    prayer: {
-      next: {
-        name: 'fajr',
-        time: '2024-11-09T05:14:46+00:00',
-      },
-    },
-  },
-])
-const nearestMasjids = ref(null)
-const isLoading = ref(true)
-const isError = ref(false)
 
+// Fetch prayer data
 async function fetchData() {
   isLoading.value = true
   isError.value = false
@@ -105,130 +51,160 @@ async function fetchData() {
     longitude: location.longitude,
     limit: limit.value,
     offset: offset.value,
-    input_time: new Date(),
+    input_time: DateTime.now().toISO(),
     next_prayer: filters.value.next_prayer,
     adhan_passed: filters.value.adhan_passed,
     max_distance: filters.value.distance,
     sects: filters.value.sects,
     management_types: filters.value.management,
     usage_types: filters.value.usage,
-    // women_facility: filters.value.women,
     min_capacity: filters.value.capacity,
     order_by_capacity: filters.value.order_by_capacity,
   }
-  if (currentPrayer.value && currentPrayer.value.prayer) {
+
+  if (currentPrayer.value?.prayer) {
     prayerParams.next_prayer = currentPrayer.value.prayer
   }
 
-  if (location.location && location.latitude && location.longitude) {
-    try {
-      const [getPrayersResponse, getMasjidsResponse] = await Promise.all([
-        $fetch('/api/prayers', {
-          headers: useRequestHeaders(['cookie']),
-          params: prayerParams,
-        }),
-        $fetch('/api/masjids', {
-          headers: useRequestHeaders(['cookie']),
-          params: {
-            latitude: location.latitude,
-            longitude: location.longitude,
-            limit: limit.value,
-            offset: offset.value,
-            max_distance: filters.value.distance,
-            sects: filters.value.sects,
-            management_types: filters.value.management,
-            usage_types: filters.value.usage,
-            // women_facility: filters.value.women,
-            min_capacity: filters.value.capacity,
-            order_by_capacity: filters.value.order_by_capacity,
+  try {
+    const [prayersResponse, masjidsResponse] = await Promise.all([
+      $fetch('/api/prayers', {
+        headers: useRequestHeaders(['cookie']),
+        params: prayerParams,
+      }),
+      $fetch('/api/masjids', {
+        headers: useRequestHeaders(['cookie']),
+        params: {
+          latitude: location.latitude,
+          longitude: location.longitude,
+          limit: limit.value,
+          offset: offset.value,
+          max_distance: filters.value.distance,
+          sects: filters.value.sects,
+          management_types: filters.value.management,
+          usage_types: filters.value.usage,
+          min_capacity: filters.value.capacity,
+          order_by_capacity: filters.value.order_by_capacity,
+        },
+      }),
+    ])
+
+    if (Array.isArray(prayersResponse.data)) {
+      // nearestPrayerTimes.value = prayersResponse.data
+      nearestPrayerTimes.value = [
+        {
+          id: '4624c1c5-b3d1-4314-b7e8-e3e03d22f429',
+          name: 'Attaqwa Mosque',
+          location: {
+            lat: 51.54174777,
+            long: 0.08471488,
           },
-        }),
-      ])
+          distance: 264.95190743,
+          prayer: {
+            next: {
+              name: 'fajr',
+              time: '2024-11-09T05:20:46+00:00',
+            },
+          },
+        },
+        {
+          id: 'f27bdd4b-0f61-4084-91c5-1fe0f32a387d',
+          name: 'Al-Madina Masjid',
+          location: {
+            lat: 51.5443534,
+            long: 0.077290535,
+          },
+          distance: 769.59046919,
+          prayer: {
+            next: {
+              name: 'fajr',
+              time: '2024-11-09T05:15:46+00:00',
+            },
+          },
+        },
+        {
+          id: '67de7d8c-96ff-49f1-b9fd-a46963defd2f',
+          name: 'Masjed-e-Umar',
+          location: {
+            lat: 51.53568101,
+            long: 0.093294606,
+          },
+          distance: 873.31244919,
+          prayer: {
+            next: {
+              name: 'fajr',
+              time: '2024-11-09T05:18:46+00:00',
+            },
+          },
+        },
+        {
+          id: 'df9309d9-1ead-487c-8c8a-5831d2b57a32',
+          name: 'Ilford Muslim Community Centre and Mosque',
+          location: {
+            lat: 51.55021469,
+            long: 0.080004931,
+          },
+          distance: 995.28183959,
+          prayer: {
+            next: {
+              name: 'fajr',
+              time: '2024-11-09T05:14:46+00:00',
+            },
+          },
+        },
+      ]
+    }
+    else {
+      console.error('Unexpected prayers data:', prayersResponse)
+    }
 
-      if (
-        getPrayersResponse
-        && Array.isArray(getPrayersResponse.data)
-      ) {
-        isError.value = false
-        // nearestPrayerTimes.value = getPrayersResponse.data
-      }
-      else {
-        isError.value = true
-        console.error(
-          'Data fetched is not in expected format:',
-          getMasjidsResponse
-        )
-      }
-
-      if (
-        getMasjidsResponse
-        && Array.isArray(getMasjidsResponse.data)
-      ) {
-        isError.value = false
-        nearestMasjids.value = getMasjidsResponse.data
-      }
-      else {
-        isError.value = true
-        console.error(
-          'Data fetched is not in expected format:',
-          getMasjidsResponse
-        )
-      }
+    if (Array.isArray(masjidsResponse.data)) {
+      nearestMasjids.value = masjidsResponse.data
     }
-    catch (error) {
-      console.error('Error fetching data:', error)
-      isError.value = true
+    else {
+      console.error('Unexpected masjids data:', masjidsResponse)
     }
-    finally {
-      isLoading.value = false
-    }
+  }
+  catch (error) {
+    console.error('Error fetching data:', error)
+    isError.value = true
+  }
+  finally {
+    isLoading.value = false
   }
 }
 
-watch(location, fetchData, { immediate: true })
-watch(() => currentPrayerReactive, scheduleNextUpdate)
-
+// Utility functions
 function updateFiltersStore() {
   if (!optionsStore.filters.save_filter) {
     return
   }
 
-  // filters.value.distance = optionsStore.filters.distance
-  filters.value.sects = optionsStore.filters.sects
-  filters.value.management = optionsStore.filters.management
-  filters.value.usage = optionsStore.filters.usage
-  filters.value.women = optionsStore.filters.women
-  filters.value.capacity = optionsStore.filters.capacity
-  filters.value.order_by_capacity = optionsStore.filters.order_by_capacity
-  filters.value.adhan_passed = optionsStore.filters.adhan_passed
-  filters.value.next_prayer = optionsStore.filters.offset ? nextPrayer.value : null
-}
-
-function checkValidNearestPrayer() {
-  return nearestPrayerTimes.value && nearestPrayerTimes.value.length > 0
-}
-
-function checkValidNearestMasjid() {
-  return nearestMasjids.value && nearestMasjids.value.length > 0
+  filters.value = {
+    ...filters.value,
+    sects: optionsStore.filters.sects,
+    management: optionsStore.filters.management,
+    usage: optionsStore.filters.usage,
+    women: optionsStore.filters.women,
+    capacity: optionsStore.filters.capacity,
+    order_by_capacity: optionsStore.filters.order_by_capacity,
+    adhan_passed: optionsStore.filters.adhan_passed,
+    next_prayer: optionsStore.filters.offset ? nextPrayer.value : null,
+  }
 }
 
 function updatePrayers() {
   const date = new Date()
-  nextPrayer.value = adhanStore.nextPrayer(date)
   currentPrayer.value = adhanStore.currentPrayer(date)
+  nextPrayer.value = adhanStore.nextPrayer(date)
 }
 
-const prayerTimeout = ref(null)
-
 function calculateTimeUntilNextPrayer() {
-  if (nextPrayer.value && nextPrayer.value.time) {
+  if (nextPrayer.value?.time) {
     const now = DateTime.now()
-    const nextPrayerTime = DateTime.fromJSDate(nextPrayer.value.time)
+    const nextPrayerTime = DateTime.fromISO(nextPrayer.value.time)
     const diffInMillis = nextPrayerTime.diff(now).toMillis()
-    if (Number.isNaN(diffInMillis)) {
-      return 60000
-    }
-    return Math.max(diffInMillis, 0)
+    return Math.max(diffInMillis, 0) || 60000
   }
   return 60000
 }
@@ -239,9 +215,17 @@ function scheduleNextUpdate() {
   prayerTimeout.value = setTimeout(scheduleNextUpdate, timeUntilNextPrayer)
 }
 
+function getCurrentPrayerTooltipText() {
+  return currentPrayer.value.prayer === 'isha'
+    ? getValidDate(middleOfTheNight.value)
+    : getValidDate(currentPrayer.value.time)
+}
+
+// Lifecycle hooks
 onMounted(() => {
   scheduleNextUpdate()
   updateFiltersStore()
+  watch(location, fetchData, { immediate: true })
 })
 
 onUnmounted(() => {
@@ -250,11 +234,16 @@ onUnmounted(() => {
   }
 })
 
-function getCurrentPrayerTooltipText() {
-  if (currentPrayer.value.prayer === 'isha') {
-    return getValidDate(middleOfTheNight.value)
-  }
-  return getValidDate(currentPrayer.value.time)
+// Watchers
+watch(() => currentPrayerReactive, scheduleNextUpdate)
+
+// Validation helpers
+function checkValidNearestPrayer() {
+  return nearestPrayerTimes.value.length > 0
+}
+
+function checkValidNearestMasjid() {
+  return nearestMasjids.value && nearestMasjids.value.length > 0
 }
 </script>
 
@@ -310,7 +299,7 @@ function getCurrentPrayerTooltipText() {
               )}`"
             >
               <template #content>
-                <span class="p-2">
+                <span class="px-2 py-1">
                   {{ capitalizeFirstLetter(nextPrayer.prayer) }}
                   {{ DateTime.fromJSDate(nextPrayer.time).toRelative() }}
                 </span>
@@ -380,16 +369,17 @@ function getCurrentPrayerTooltipText() {
 </template>
 
 <style>
-.dark .daily-current-prayer {
-  padding: 0.5rem;
+.daily-current-prayer {
+  padding: 0.25rem 0.5rem;
   border-radius: theme("borderRadius.base");
+}
+
+.dark .daily-current-prayer {
   background-color: var(--color-secondary-600);
   color: var(--dark-text-color);
 }
 
 .light .daily-current-prayer {
-  padding: 0.5rem;
-  border-radius: theme("borderRadius.base");
   background-color: var(--color-secondary-600);
   color: var(--dark-text-color);
 }

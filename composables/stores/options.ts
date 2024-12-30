@@ -34,7 +34,7 @@ export const useOptionsStore = defineStore(
   },
   {
     persist: {
-      omit: ['sidebarExpanded', 'mobile', 'pwa', 'filters.save_filter'],
+      omit: ['sidebarExpanded', 'mobile', 'pwa'],
       storage: piniaPluginPersistedstate.localStorage(),
     },
   }

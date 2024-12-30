@@ -25,13 +25,21 @@ function checkValidData() {
         v-for="(nearest, _) in data"
         :key="nearest.name"
         :class="[nearest.prayer ? 'grid-rows-4' : 'grid-rows-3']"
-        class="grid sm:grid-rows-3 grid-cols-1 items-center px-4 py-3 rounded-base justify-start dark:bg-[--color-accent-700] bg-[--color-accent-200] dark:hover:bg-[--color-accent-500] hover:bg-[--color-accent-300]"
+        class="grid sm:grid-rows-3 grid-cols-1 items-center px-4 py-2 rounded-xl justify-start dark:bg-[--color-accent-700] bg-[--color-accent-200] dark:hover:bg-[--color-accent-500] hover:bg-[--color-accent-300]"
       >
         <div
           class="font-bold text-xl sm:text-2xl text-ellipsis whitespace-nowrap overflow-hidden text-[--light-text-color] dark:text-[--dark-text-color]"
         >
           <div v-if="nearest.sect" class="inline-block align-middle mr-2">
-            <HomeSectBadge :label="nearest.sect" />
+            <HomeSectBadge>
+              <template #default>
+                <RootToolTip :key="nearest.sect" :text="nearest.sect">
+                  <template #content>
+                    {{ nearest.sect.slice(0, 2) }}
+                  </template>
+                </RootToolTip>
+              </template>
+            </HomeSectBadge>
           </div>
           <NuxtLink
             :to="`/masjids/${nearest.id}`"

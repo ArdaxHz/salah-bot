@@ -1,4 +1,6 @@
 <script setup>
+import { DateTime } from 'luxon'
+
 const adhanStore = useAdhanStore()
 const route = useRoute()
 const router = useRouter()
@@ -42,8 +44,8 @@ const filtersInternal = ref({
   women: null,
   capacity: null,
   order_by_capacity: null,
-  next_prayer: nextPrayer.value,
-  input_time: new Date(),
+  next_prayer: nextPrayer.value.prayer,
+  input_time: DateTime.now().toJSDate().toISOString(),
   adhan_passed: false,
 })
 
@@ -100,7 +102,7 @@ function updateFiltersStore() {
   filtersInternal.value.limit = optionsStore.filters.limit
   filtersInternal.value.offset = optionsStore.filters.offset
   filtersInternal.value.adhan_passed = optionsStore.filters.adhan_passed
-  filtersInternal.value.next_prayer = optionsStore.filters.offset ? nextPrayer.value : null
+  filtersInternal.value.next_prayer = optionsStore.filters.offset ? nextPrayer.value.prayer : null
 }
 
 watch(filtersInternal.value, () => {

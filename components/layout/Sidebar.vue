@@ -263,7 +263,7 @@ const navItemsBottom = ref([
   gap: 0.5rem;
   align-items: center;
 
-  padding: 0.5rem;
+  padding: 0.3rem 0.5rem;
   border-radius: theme("borderRadius.base");
 }
 
