@@ -11,7 +11,7 @@ const props = defineProps({
       v-for="index in length"
       :key="index"
       :class="[prayer ? 'grid-rows-4' : 'grid-rows-3']"
-      class="grid sm:grid-rows-3 gap-4 grid-cols-1 items-center px-4 py-2 rounded-xl justify-start dark:bg-silver-600/70 bg-silver-300/70 dark:hover:bg-[--color-accent-600] hover:bg-[--color-accent-300]"
+      class="grid sm:grid-rows-3 gap-4 grid-cols-1 items-center px-4 py-2 rounded-lg justify-start dark:bg-silver-600/70 bg-silver-300/70 dark:hover:bg-[--color-accent-600] hover:bg-[--color-accent-300]"
     >
       <SkeletonHomeGridCell />
     </div>

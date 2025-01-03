@@ -268,7 +268,7 @@ function checkValidNearestMasjid() {
     </div>
     <div v-if="!isLoading" class="flex flex-col gap-10 sm:gap-10">
       <ClientOnly>
-        <div class="flex flex-col sm:flex-row gap-4 sm:flex-0 justify-between">
+        <div class="flex flex-col sm:flex-row gap-1 sm:flex-0 justify-between">
           <p
             v-if="currentPrayer"
             :key="updatePrayerKey"
