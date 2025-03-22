@@ -445,7 +445,7 @@ async function resetSettings() {
                   },
                 }"
                 step="1"
-                type="number"
+                type="numeric"
               />
             </div>
           </div>
