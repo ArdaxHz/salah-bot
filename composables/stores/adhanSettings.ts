@@ -55,7 +55,7 @@ export const useAdhanSettings = defineStore(
         sunrise: 0,
         dhuhr: 0,
         asr: 0,
-        maghrib: 0,
+        maghrib: 1,
         isha: 0,
       }
     }
